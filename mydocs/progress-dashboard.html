@@ -19,7 +19,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -42,6 +42,19 @@
         .subtitle {
             color: #666;
             font-size: 18px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         .stats-grid {
@@ -78,12 +91,24 @@
             letter-spacing: 1px;
         }
         
-        .progress-section {
+        .section {
             background: white;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 3px 20px rgba(0,0,0,0.08);
             margin-bottom: 30px;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .section h3 {
+            color: #495057;
+            margin: 20px 0 15px;
         }
         
         .progress-bar-container {
@@ -187,6 +212,11 @@
             line-height: 1.5;
         }
         
+        .task-description li {
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+        
         .doc-link {
             text-decoration: none;
             font-size: 18px;
@@ -222,6 +252,59 @@
             color: white;
         }
         
+        .action-item {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .action-item h4 {
+            color: #007bff;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .action-details {
+            font-size: 14px;
+            color: #495057;
+            margin-left: 20px;
+        }
+        
+        .action-details pre {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .env-section {
+            margin-bottom: 25px;
+        }
+        
+        .env-section h4 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .env-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .env-content pre {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
         .last-updated {
             text-align: center;
             color: #666;
@@ -230,6 +313,26 @@
             padding: 15px;
             background-color: #f8f9fa;
             border-radius: 8px;
+        }
+        
+        .quick-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .quick-link {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        .quick-link:hover {
+            background: #0056b3;
         }
         
         @media (max-width: 768px) {
@@ -262,149 +365,287 @@
                 <div class="stat-label">総タスク数</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">1</div>
+                <div class="stat-number">2</div>
                 <div class="stat-label">完了タスク</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">7</div>
+                <div class="stat-number">6</div>
                 <div class="stat-label">未完了タスク</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">13%</div>
+                <div class="stat-number">25%</div>
                 <div class="stat-label">完了率</div>
             </div>
         </div>
         
-        <div class="progress-section">
-            <h2>全体進捗</h2>
-            <div class="progress-bar-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 13%">
-                        <span class="progress-text">13%</span>
+        <div class="section">
+            <h2>📋 次のアクションアイテム</h2>
+            
+                <div class="action-item">
+                    <h4>技術スタックの最終決定</h4>
+                    <div class="action-details">
+                        <div>- フロントエンド：React vs Next.jsの選定</div><div>- バックエンド：Node.js vs Python FastAPIの選定</div><div>- 選定基準：パフォーマンス、開発効率、保守性</div>
                     </div>
+                </div>
+            
+                <div class="action-item">
+                    <h4>GitHubリポジトリの初期設定</h4>
+                    <div class="action-details">
+                        <pre></pre><pre></pre>
+                    </div>
+                </div>
+            
+                <div class="action-item">
+                    <h4>Jenkinsfileの作成</h4>
+                    <div class="action-details">
+                        <div>- パイプライン定義</div><div>- ステージ構成（Build, Test, Deploy）</div><div>- AWS認証情報の設定</div>
+                    </div>
+                </div>
+            
+            
+            <div class="quick-links">
+                <a href="development-setup.html" class="quick-link">開発環境セットアップガイド</a>
+                <a href="https://github.com/horiken1977/roic" class="quick-link" target="_blank">GitHubリポジトリ</a>
+            </div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="section">
+                <h2>🚀 開発進捗状況</h2>
+                <div class="progress-bar-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 25%">
+                            <span class="progress-text">25%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>タスク一覧</h3>
+                <div class="task-list">
+                    
+                        <div class="task-item completed">
+                            <div class="task-checkbox completed">
+                                ✓
+                            </div>
+                            <div class="task-content">
+                                <div class="task-title">
+                                    要件定義とアプリケーション仕様の策定
+                                    <a href="requirements-definition.html" class="doc-link" title="要件定義書を表示">📄</a> <a href="roic-calculation-spec.html" class="doc-link" title="ROIC計算仕様書を表示">📄</a>
+                                </div>
+                                <div class="task-description">
+                                    <ul><li>- 機能要件：ROIC計算、企業検索・フィルタリング、比較表示、データエクスポート</li><li>- 非機能要件：パフォーマンス、セキュリティ、可用性、スケーラビリティ</li><li>- ユーザーストーリー：投資家、アナリスト、研究者の利用シナリオ</li><li>- 完了内容：requirements-definition.md、roic-calculation-spec.mdを作成</li></ul>
+                                </div>
+                            </div>
+                            <span class="priority-badge high">高</span>
+                        </div>
+                    
+                        <div class="task-item pending">
+                            <div class="task-checkbox pending">
+                                ○
+                            </div>
+                            <div class="task-content">
+                                <div class="task-title">
+                                    技術スタックとアーキテクチャの選定
+                                    
+                                </div>
+                                <div class="task-description">
+                                    <ul><li>- フロントエンド：React/Next.js + TypeScript、チャートライブラリ（Chart.js/D3.js）</li><li>- バックエンド：Node.js/Python（FastAPI）、REST API/GraphQL</li><li>- データベース：PostgreSQL（財務データ）+ Redis（キャッシュ）</li><li>- インフラ：AWS/Azure、Docker、Kubernetes</li></ul>
+                                </div>
+                            </div>
+                            <span class="priority-badge high">高</span>
+                        </div>
+                    
+                        <div class="task-item pending">
+                            <div class="task-checkbox pending">
+                                ○
+                            </div>
+                            <div class="task-content">
+                                <div class="task-title">
+                                    データソースとAPI設計の検討
+                                    
+                                </div>
+                                <div class="task-description">
+                                    <ul><li>- 財務データ取得：EDINET API、Yahoo Finance API、Bloomberg API</li><li>- データ更新頻度：四半期決算後の自動更新</li><li>- ROIC計算式：NOPAT ÷ 投下資本の標準化</li><li>- API設計：RESTful設計、ページネーション、レート制限</li></ul>
+                                </div>
+                            </div>
+                            <span class="priority-badge high">高</span>
+                        </div>
+                    
+                        <div class="task-item pending">
+                            <div class="task-checkbox pending">
+                                ○
+                            </div>
+                            <div class="task-content">
+                                <div class="task-title">
+                                    UI/UXデザインとワイヤーフレーム作成
+                                    
+                                </div>
+                                <div class="task-description">
+                                    <ul><li>- 画面設計：ダッシュボード、検索画面、比較表、詳細画面</li><li>- レスポンシブ対応：モバイル・タブレット対応</li></ul>
+                                </div>
+                            </div>
+                            <span class="priority-badge medium">中</span>
+                        </div>
+                    
+                        <div class="task-item pending">
+                            <div class="task-checkbox pending">
+                                ○
+                            </div>
+                            <div class="task-content">
+                                <div class="task-title">
+                                    データベース設計とスキーマ定義
+                                    
+                                </div>
+                                <div class="task-description">
+                                    <ul><li>- テーブル設計：企業マスタ、財務データ、ROIC履歴、業界分類</li></ul>
+                                </div>
+                            </div>
+                            <span class="priority-badge medium">中</span>
+                        </div>
+                    
+                        <div class="task-item completed">
+                            <div class="task-checkbox completed">
+                                ✓
+                            </div>
+                            <div class="task-content">
+                                <div class="task-title">
+                                    開発環境のセットアップとCI/CD構築
+                                    <a href="development-setup.html" class="doc-link" title="ドキュメントを表示">📄</a>
+                                </div>
+                                <div class="task-description">
+                                    <ul><li>- ローカル開発環境：VSCode + Claude Code</li><li>- バージョン管理：Git + GitHub (https://github.com/horiken1977/roic)</li><li>- CI/CDツール：Jenkins</li><li>- デプロイ先：AWS Tomcat (IP: 54.199.201.201)</li><li>- 自動テスト：単体テスト、結合テスト</li><li>- 完了内容：development-setup.mdを作成、.gitignoreを更新</li></ul>
+                                </div>
+                            </div>
+                            <span class="priority-badge medium">中</span>
+                        </div>
+                    
+                        <div class="task-item pending">
+                            <div class="task-checkbox pending">
+                                ○
+                            </div>
+                            <div class="task-content">
+                                <div class="task-title">
+                                    セキュリティ要件とデータ保護対策の検討
+                                    
+                                </div>
+                                <div class="task-description">
+                                    <ul><li>- 認証・認可：JWT、RBAC</li><li>- データ保護：暗号化、入力検証、SQL インジェクション対策</li></ul>
+                                </div>
+                            </div>
+                            <span class="priority-badge medium">中</span>
+                        </div>
+                    
+                        <div class="task-item pending">
+                            <div class="task-checkbox pending">
+                                ○
+                            </div>
+                            <div class="task-content">
+                                <div class="task-title">
+                                    テスト計画とQA戦略の策定
+                                    
+                                </div>
+                                <div class="task-description">
+                                    <ul><li>- テスト：単体テスト、統合テスト、E2Eテスト、パフォーマンステスト</li></ul>
+                                </div>
+                            </div>
+                            <span class="priority-badge low">低</span>
+                        </div>
+                    
                 </div>
             </div>
             
-            <h3>タスク一覧</h3>
-            <div class="task-list">
+            <div class="section">
+                <h2>🛠️ 環境構築詳細</h2>
                 
-                    <div class="task-item completed">
-                        <div class="task-checkbox completed">
-                            ✓
+                    <div class="env-section">
+                        <h4>ローカル開発環境</h4>
+                        <div class="env-content">
+                            
                         </div>
-                        <div class="task-content">
-                            <div class="task-title">
-                                要件定義とアプリケーション仕様の策定
-                                <a href="requirements-definition.html" class="doc-link" title="要件定義書を表示">📄</a> <a href="roic-calculation-spec.html" class="doc-link" title="ROIC計算仕様書を表示">📄</a>
-                            </div>
-                            <div class="task-description"></div>
-                        </div>
-                        <span class="priority-badge high">高</span>
                     </div>
                 
-                    <div class="task-item pending">
-                        <div class="task-checkbox pending">
-                            ○
+                    <div class="env-section">
+                        <h4>#必要なツール</h4>
+                        <div class="env-content">
+                            <pre></pre><p># Homebrew経由でインストール</p><p>brew install node@18</p><p>brew install python@3.9</p><p>brew install --cask docker</p><p>brew install awscli</p><p>brew install jenkins-cli</p><pre></pre>
                         </div>
-                        <div class="task-content">
-                            <div class="task-title">
-                                技術スタックとアーキテクチャの選定
-                                
-                            </div>
-                            <div class="task-description"></div>
-                        </div>
-                        <span class="priority-badge high">高</span>
                     </div>
                 
-                    <div class="task-item pending">
-                        <div class="task-checkbox pending">
-                            ○
+                    <div class="env-section">
+                        <h4>#VSCode拡張機能</h4>
+                        <div class="env-content">
+                            <li> ESLint</li><li> Prettier</li><li> Python</li><li> Docker</li><li> GitLens</li><li> AWS Toolkit</li>
                         </div>
-                        <div class="task-content">
-                            <div class="task-title">
-                                データソースとAPI設計の検討
-                                
-                            </div>
-                            <div class="task-description"></div>
-                        </div>
-                        <span class="priority-badge high">高</span>
                     </div>
                 
-                    <div class="task-item pending">
-                        <div class="task-checkbox pending">
-                            ○
+                    <div class="env-section">
+                        <h4>GitHub設定</h4>
+                        <div class="env-content">
+                            
                         </div>
-                        <div class="task-content">
-                            <div class="task-title">
-                                UI/UXデザインとワイヤーフレーム作成
-                                
-                            </div>
-                            <div class="task-description"></div>
-                        </div>
-                        <span class="priority-badge medium">中</span>
                     </div>
                 
-                    <div class="task-item pending">
-                        <div class="task-checkbox pending">
-                            ○
+                    <div class="env-section">
+                        <h4>#リポジトリ構造</h4>
+                        <div class="env-content">
+                            <pre></pre><p>roic/</p><p>├── frontend/          # React/Next.jsアプリケーション</p><p>├── backend/           # Python FastAPI/Node.js API</p><p>├── infrastructure/    # Terraform/CloudFormation</p><p>├── jenkins/          # CI/CD設定</p><p>├── docker/           # Dockerファイル</p><p>├── docs/             # ドキュメント</p><p>└── tests/            # テストコード</p><pre></pre>
                         </div>
-                        <div class="task-content">
-                            <div class="task-title">
-                                データベース設計とスキーマ定義
-                                
-                            </div>
-                            <div class="task-description"></div>
-                        </div>
-                        <span class="priority-badge medium">中</span>
                     </div>
                 
-                    <div class="task-item pending">
-                        <div class="task-checkbox pending">
-                            ○
+                    <div class="env-section">
+                        <h4>#ブランチ運用</h4>
+                        <div class="env-content">
+                            <li> `main`: 本番環境</li><li> `develop`: 開発環境</li><li> `feature/*`: 機能開発</li><li> `hotfix/*`: 緊急修正</li>
                         </div>
-                        <div class="task-content">
-                            <div class="task-title">
-                                開発環境のセットアップとCI/CD構築
-                                
-                            </div>
-                            <div class="task-description"></div>
-                        </div>
-                        <span class="priority-badge medium">中</span>
                     </div>
                 
-                    <div class="task-item pending">
-                        <div class="task-checkbox pending">
-                            ○
+                    <div class="env-section">
+                        <h4>CI/CDパイプライン</h4>
+                        <div class="env-content">
+                            
                         </div>
-                        <div class="task-content">
-                            <div class="task-title">
-                                セキュリティ要件とデータ保護対策の検討
-                                
-                            </div>
-                            <div class="task-description"></div>
-                        </div>
-                        <span class="priority-badge medium">中</span>
                     </div>
                 
-                    <div class="task-item pending">
-                        <div class="task-checkbox pending">
-                            ○
+                    <div class="env-section">
+                        <h4>#Jenkinsパイプライン構成</h4>
+                        <div class="env-content">
+                            <pre></pre><p>pipeline {</p><p>    agent any</p><p>    stages {</p><p>        stage('Checkout') { /* GitHubからコード取得 */ }</p><p>        stage('Build') { /* ビルド処理 */ }</p><p>        stage('Test') { /* テスト実行 */ }</p><p>        stage('Quality') { /* 品質チェック */ }</p><p>        stage('Deploy') { /* AWSデプロイ */ }</p><p>    }</p><p>}</p><pre></pre>
                         </div>
-                        <div class="task-content">
-                            <div class="task-title">
-                                テスト計画とQA戦略の策定
-                                
-                            </div>
-                            <div class="task-description"></div>
+                    </div>
+                
+                    <div class="env-section">
+                        <h4>#自動テスト項目</h4>
+                        <div class="env-content">
+                            <li> 単体テスト（Jest, pytest）</li><li> 統合テスト</li><li> E2Eテスト（Cypress）</li><li> セキュリティスキャン</li><li> パフォーマンステスト</li>
                         </div>
-                        <span class="priority-badge low">低</span>
+                    </div>
+                
+                    <div class="env-section">
+                        <h4>AWS環境</h4>
+                        <div class="env-content">
+                            
+                        </div>
+                    </div>
+                
+                    <div class="env-section">
+                        <h4>#サーバー情報（SSH接続確認済み）</h4>
+                        <div class="env-content">
+                            <li> **IP**: 54.199.201.201 (プライベート: 172.31.16.38)</li><li> **OS**: Ubuntu 24.04.2 LTS (Noble Numbat)</li><li> **カーネル**: Linux 6.8.0-1029-aws x86_64</li><li> **Tomcat**: Apache Tomcat 10.1.42 (稼働中)</li><li> **Java**: OpenJDK 17.0.15 (Ubuntu 24.04)</li><li> **メモリ**: 957MB (使用可能: 517MB)</li><li> **ディスク**: 6.8GB (使用: 3.0GB, 空き: 3.8GB)</li><li> **デプロイパス**: `/opt/tomcat/webapps/`</li><li> **ポート**: 8080（HTTP）</li><li> **SSH接続**: `ssh -i AWS01.pem ubuntu@54.199.201.201`</li>
+                        </div>
+                    </div>
+                
+                    <div class="env-section">
+                        <h4>#デプロイ手順</h4>
+                        <div class="env-content">
+                            <p>1. WARファイルのビルド</p><p>2. SCPでファイル転送</p><p>3. Tomcatへのデプロイ</p><p>4. サービス再起動</p><p>5. ヘルスチェック</p>
+                        </div>
                     </div>
                 
             </div>
         </div>
         
         <div class="last-updated">
-            最終更新: 2025/6/29 17:50:24
+            最終更新: 2025/6/29 23:19:47
         </div>
     </div>
     
@@ -431,7 +672,7 @@
             
             // プログレスバーのアニメーション
             setTimeout(() => {
-                progressFill.style.width = '13%';
+                progressFill.style.width = '25%';
             }, 500);
         });
         

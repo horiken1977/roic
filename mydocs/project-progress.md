@@ -9,10 +9,10 @@
 ## 進捗統計
 
 - **総タスク数：** 8
-- **完了タスク：** 1
+- **完了タスク：** 2
 - **進行中タスク：** 0
-- **未着手タスク：** 7
-- **完了率：** 13%
+- **未着手タスク：** 6
+- **完了率：** 25%
 
 ## 開発進捗状況
 
@@ -45,8 +45,13 @@
 - [ ] **データベース設計とスキーマ定義**
   - テーブル設計：企業マスタ、財務データ、ROIC履歴、業界分類
 
-- [ ] **開発環境のセットアップとCI/CD構築**
-  - Docker、Kubernetes、AWS/Azure環境設定
+- [x] **開発環境のセットアップとCI/CD構築**
+  - ローカル開発環境：VSCode + Claude Code
+  - バージョン管理：Git + GitHub (https://github.com/horiken1977/roic)
+  - CI/CDツール：Jenkins
+  - デプロイ先：AWS Tomcat (IP: 54.199.201.201)
+  - 自動テスト：単体テスト、結合テスト
+  - 完了内容：development-setup.mdを作成、.gitignoreを更新
 
 - [ ] **セキュリティ要件とデータ保護対策の検討**
   - 認証・認可：JWT、RBAC
@@ -98,7 +103,132 @@
 - Yahoo Finance API
 - Bloomberg API
 
+## 次のアクションアイテム
+
+### 🎯 今すぐ実施すべきタスク
+
+1. **技術スタックの最終決定**
+   - フロントエンド：React vs Next.jsの選定
+   - バックエンド：Node.js vs Python FastAPIの選定
+   - 選定基準：パフォーマンス、開発効率、保守性
+
+2. **GitHubリポジトリの初期設定**
+   ```bash
+   git remote add origin https://github.com/horiken1977/roic.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+3. **Jenkinsfileの作成**
+   - パイプライン定義
+   - ステージ構成（Build, Test, Deploy）
+   - AWS認証情報の設定
+
+### 📋 準備が必要な情報
+
+- **AWS環境**
+  - EC2インスタンスへのSSH鍵
+  - Tomcatの管理者権限
+  - デプロイ用のIAMロール
+
+- **Jenkins設定**
+  - JenkinsサーバーのURL
+  - 認証情報（ユーザー名/パスワード）
+  - GitHubとの連携設定
+
+- **データソースAPI**
+  - EDINET APIキーの取得
+  - Yahoo Finance API利用規約の確認
+  - Bloomberg API契約状況
+
+## 環境構築詳細
+
+### ローカル開発環境
+
+#### 必要なツール
+```bash
+# Homebrew経由でインストール
+brew install node@18
+brew install python@3.9
+brew install --cask docker
+brew install awscli
+brew install jenkins-cli
+```
+
+#### VSCode拡張機能
+- ESLint
+- Prettier
+- Python
+- Docker
+- GitLens
+- AWS Toolkit
+
+### GitHub設定
+
+#### リポジトリ構造
+```
+roic/
+├── frontend/          # React/Next.jsアプリケーション
+├── backend/           # Python FastAPI/Node.js API
+├── infrastructure/    # Terraform/CloudFormation
+├── jenkins/          # CI/CD設定
+├── docker/           # Dockerファイル
+├── docs/             # ドキュメント
+└── tests/            # テストコード
+```
+
+#### ブランチ運用
+- `main`: 本番環境
+- `develop`: 開発環境
+- `feature/*`: 機能開発
+- `hotfix/*`: 緊急修正
+
+### CI/CDパイプライン
+
+#### Jenkinsパイプライン構成
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') { /* GitHubからコード取得 */ }
+        stage('Build') { /* ビルド処理 */ }
+        stage('Test') { /* テスト実行 */ }
+        stage('Quality') { /* 品質チェック */ }
+        stage('Deploy') { /* AWSデプロイ */ }
+    }
+}
+```
+
+#### 自動テスト項目
+- 単体テスト（Jest, pytest）
+- 統合テスト
+- E2Eテスト（Cypress）
+- セキュリティスキャン
+- パフォーマンステスト
+
+### AWS環境
+
+#### サーバー情報（SSH接続確認済み）
+- **IP**: 54.199.201.201 (プライベート: 172.31.16.38)
+- **OS**: Ubuntu 24.04.2 LTS (Noble Numbat)
+- **カーネル**: Linux 6.8.0-1029-aws x86_64
+- **Tomcat**: Apache Tomcat 10.1.42 (稼働中)
+- **Java**: OpenJDK 17.0.15 (Ubuntu 24.04)
+- **メモリ**: 957MB (使用可能: 517MB)
+- **ディスク**: 6.8GB (使用: 3.0GB, 空き: 3.8GB)
+- **デプロイパス**: `/opt/tomcat/webapps/`
+- **ポート**: 8080（HTTP）
+- **SSH接続**: `ssh -i AWS01.pem ubuntu@54.199.201.201`
+
+#### デプロイ手順
+1. WARファイルのビルド
+2. SCPでファイル転送
+3. Tomcatへのデプロイ
+4. サービス再起動
+5. ヘルスチェック
+
 ## 更新履歴
 
 - 2025-06-29: プロジェクト開始、進捗管理ファイル作成
 - 2025-06-29: 要件定義完了、requirements-definition.mdとroic-calculation-spec.md作成
+- 2025-06-29: 開発環境セットアップ完了、development-setup.mdを作成、.gitignoreを更新
