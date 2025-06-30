@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROIC分析アプリケーション - 開発環境セットアップガイド</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0;
+        }
+        
+        .nav-tab {
+            padding: 10px 20px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            color: #007bff;
+            transform: translateY(2px);
+        }
+        
+        .nav-tab:hover {
+            background: #dee2e6;
+        }
+        
+        .nav-tab.active:hover {
+            background: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 3px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        h3 {
+            color: #495057;
+            margin: 25px 0 15px;
+        }
+        
+        h4 {
+            color: #495057;
+            margin: 20px 0 10px;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .code-block pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .config-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #007bff;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #856404;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #0c5460;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #155724;
+        }
+        
+        .step-list {
+            counter-reset: step-counter;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .step-list li {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding-left: 40px;
+            position: relative;
+        }
+        
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            padding-left: 25px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .checklist li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: #0056b3;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tab {
+                border-radius: 8px;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ROIC分析アプリケーション</h1>
+            <p class="subtitle">開発環境セットアップガイド</p>
+            
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 15px;">🎯 開発環境セットアップ: 100% 完了！</h3>
+                <div style="width: 100%; background: #e9ecef; border-radius: 10px; overflow: hidden;">
+                    <div style="width: 100%; height: 30px; background: linear-gradient(90deg, #28a745, #20c997); display: flex; align-items: center; justify-content: center;">
+                        <span style="color: white; font-weight: bold;">100%</span>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                    <div>✅ Node.js v24.3.0 インストール済み</div>
+                    <div>✅ Python 3.13.0 インストール済み</div>
+                    <div>✅ Java JDK 11.0.27 インストール済み</div>
+                    <div>✅ AWS CLI 2.27.45 インストール済み</div>
+                    <div>✅ ディレクトリ構造構築完了</div>
+                    <div>✅ GitHub設定完了</div>
+                </div>
+                <div style="margin-top: 15px; padding: 15px; background: #d4edda; border-radius: 5px; border-left: 4px solid #28a745;">
+                    <strong>🎉 開発環境構築完了！</strong><br>
+                    フルスタック開発環境とGitHubリポジトリ設定が完了しました。
+                </div>
+            </div>
+        </header>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('local')">ローカル環境</button>
+            <button class="nav-tab" onclick="showTab('github')">GitHub設定</button>
+            <button class="nav-tab" onclick="showTab('cicd')">CI/CD構築</button>
+            <button class="nav-tab" onclick="showTab('aws')">AWSデプロイ</button>
+        </div>
+        
+        <div id="local" class="tab-content active">
+            <h2>🖥️ ローカル開発環境構築</h2>
+            
+            <div class="success">
+                <strong>📊 セットアップ進捗状況</strong>
+                <ul style="list-style: none; padding: 10px 0;">
+                    <li>✅ Node.js v24.3.0 (インストール済み)</li>
+                    <li>✅ Python 3.13.0 (インストール済み)</li>
+                    <li>✅ Java JDK 11.0.27 (インストール済み)</li>
+                    <li>✅ AWS CLI 2.27.45 (インストール済み)</li>
+                    <li>✅ プロジェクトディレクトリ構造 (再構築完了)</li>
+                    <li>✅ mydocsフォルダ整理 (完了)</li>
+                </ul>
+            </div>
+            
+            <h3>必須ソフトウェア（ローカル開発用）</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Node.js (v18以上)</strong> <span style="color: #28a745;">✅ インストール済み (v24.3.0)</span>
+                    <div class="info">
+                        <strong>用途:</strong> フロントエンド開発（React/Next.js）、ビルドツール
+                    </div>
+                    <div class="code-block">
+                        <pre>brew install node@18</pre>
+                    </div>
+                </li>
+                <li>
+                    <strong>Python (3.9以上)</strong> <span style="color: #28a745;">✅ インストール済み (3.13.0)</span>
+                    <div class="info">
+                        <strong>用途:</strong> バックエンド開発（FastAPI）、データ処理
+                    </div>
+                    <div class="code-block">
+                        <pre>brew install python@3.9</pre>
+                    </div>
+                </li>
+                <li>
+                    <strong>Java JDK (11以上)</strong> <span style="color: #28a745;">✅ インストール済み (11.0.27)</span>
+                    <div class="info">
+                        <strong>用途:</strong> WARファイルビルド（本番環境はTomcat+Java）
+                    </div>
+                    <div class="success">
+                        <strong>✅ 完了:</strong> OpenJDK 11.0.27がインストールされ、環境変数も設定済みです。
+                    </div>
+                    <div class="code-block">
+                        <pre># インストールコマンド（完了済み）
+brew install openjdk@11
+echo 'export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"' >> ~/.zshrc
+
+# バージョン確認
+java --version
+# openjdk 11.0.27 2025-04-15</pre>
+                    </div>
+                </li>
+            </ol>
+            
+            <h3>オプションソフトウェア</h3>
+            <div class="config-section">
+                <h4>AWS CLI <span style="color: #28a745;">✅ インストール済み (2.27.45)</span></h4>
+                <p>AWS環境へのデプロイ自動化とリモート操作のために使用します。</p>
+                <div class="success">
+                    <strong>✅ 完了:</strong> AWS CLI 2.27.45がインストールされました。
+                </div>
+                <div class="code-block">
+                    <pre># インストールコマンド（完了済み）
+brew install awscli
+
+# バージョン確認
+aws --version
+# aws-cli/2.27.45 Python/3.13.5 Darwin/24.5.0
+
+# 設定（必要に応じて実行）
+aws configure</pre>
+                </div>
+                <div class="info">
+                    <strong>💡 設定手順:</strong> 
+                    <code>aws configure</code>でアクセスキー、シークレットキー、リージョン（ap-northeast-1）を設定してください。
+                </div>
+                
+                <h4>Docker Desktop <span style="color: #6c757d;">（開発環境統一用・任意）</span></h4>
+                <div class="warning">
+                    <strong>⚠️ 注意:</strong> 本番環境はTomcatベースでDocker環境ではないため、Docker Desktopは必須ではありません。
+                </div>
+                <p><strong>Docker Desktopが有用な場合:</strong></p>
+                <ul>
+                    <li>開発チーム間での環境統一が必要</li>
+                    <li>複雑なマイクロサービス構成を採用</li>
+                    <li>将来的にコンテナ化を検討</li>
+                </ul>
+                <div class="code-block">
+                    <pre>brew install --cask docker</pre>
+                </div>
+            </div>
+            
+            <h3>推奨VSCode拡張機能</h3>
+            <ul class="checklist">
+                <li>ESLint - JavaScriptコード品質チェック</li>
+                <li>Prettier - コードフォーマッター</li>
+                <li>Python - Python開発サポート</li>
+                <li>Extension Pack for Java - Java開発サポート（WARファイル作成用）</li>
+                <li>GitLens - Git履歴表示</li>
+                <li>REST Client - API テスト用</li>
+                <li>Auto Rename Tag - HTMLタグ編集支援</li>
+            </ul>
+            
+            <div class="info">
+                <strong>オプション拡張機能:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>AWS Toolkit - AWS統合（デプロイ自動化時）</li>
+                    <li>Docker - Dockerファイルサポート（将来の拡張用）</li>
+                </ul>
+            </div>
+            
+            <h3>プロジェクトセットアップ</h3>
+            
+            <div class="success">
+                <strong>✅ プロジェクトディレクトリ構造（再構築完了）</strong>
+                <pre style="background: #d4edda; padding: 15px; border-radius: 5px; margin: 10px 0;">
+/Users/aa479881/Library/CloudStorage/OneDrive-IBM/Personal/development/roic/
+├── frontend/          ✅ 作成済み（開発用）
+├── backend/           ✅ 作成済み（開発用）
+├── infrastructure/    ✅ 作成済み（開発用）
+├── jenkins/          ✅ 作成済み（CI/CD設定）
+├── docker/           ✅ 作成済み（Docker設定）
+├── docs/             ✅ 作成済み（プロジェクトドキュメント）
+├── tests/            ✅ 作成済み（テストコード）
+└── mydocs/           ✅ 設定・進捗管理専用
+    ├── development-setup.html
+    ├── progress-dashboard.html
+    ├── project-progress.md
+    ├── requirements-definition.md
+    └── roic-calculation-spec.md</pre>
+            </div>
+            
+            <div class="code-block">
+                <pre># プロジェクトディレクトリに移動
+cd /Users/aa479881/Library/CloudStorage/OneDrive-IBM/Personal/development/roic
+
+# フロントエンド依存関係インストール
+cd frontend
+npm install
+
+# バックエンド依存関係インストール
+cd ../backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt</pre>
+            </div>
+            
+            <div class="info">
+                <strong>💡 ヒント:</strong> Claude Codeを使用してVSCodeで開発を行う際は、ターミナルで `claude code` コマンドを実行してください。
+            </div>
+        </div>
+        
+        <div id="github" class="tab-content">
+            <h2>🔧 GitHub設定</h2>
+            
+            <div class="success">
+                <strong>📊 GitHub設定状況</strong>
+                <ul style="list-style: none; padding: 10px 0;">
+                    <li>✅ リモートリポジトリ設定完了</li>
+                    <li>✅ 初回プッシュ完了</li>
+                </ul>
+            </div>
+            
+            <h3>リポジトリ初期設定</h3>
+            <div class="code-block">
+                <pre># Gitユーザー設定
+git config user.name "Your Name"
+git config user.email "your.email@example.com"
+
+# リモートリポジトリ追加
+git remote add origin https://github.com/horiken1977/roic.git
+
+# 初回プッシュ
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git push -u origin main</pre>
+            </div>
+            
+            <h3>ブランチ戦略</h3>
+            <div class="config-section">
+                <h4>ブランチ構成</h4>
+                <ul>
+                    <li><code>main</code> - 本番環境用（保護ブランチ）</li>
+                    <li><code>develop</code> - 開発統合ブランチ</li>
+                    <li><code>feature/*</code> - 機能開発用</li>
+                    <li><code>hotfix/*</code> - 緊急修正用</li>
+                </ul>
+            </div>
+            
+            <h3>プッシュ前チェックリスト</h3>
+            <ul class="checklist">
+                <li>コードのフォーマットが統一されている</li>
+                <li>単体テストが全て成功している</li>
+                <li>環境変数ファイル（.env）が含まれていない</li>
+                <li>不要なデバッグコードが削除されている</li>
+            </ul>
+            
+            <div class="warning">
+                <strong>⚠️ 注意:</strong> 秘密情報（APIキー、パスワードなど）は絶対にコミットしないでください。
+            </div>
+        </div>
+        
+        <div id="cicd" class="tab-content">
+            <h2>🚀 CI/CDパイプライン構築</h2>
+            
+            <h3>Jenkinsパイプライン構成</h3>
+            <div class="code-block">
+                <pre>pipeline {
+    agent any
+    
+    environment {
+        AWS_REGION = 'ap-northeast-1'
+        TOMCAT_URL = 'http://54.199.201.201:8080'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/horiken1977/roic.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh 'npm install'
+                sh 'npm run build'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh 'npm run test'
+                sh 'npm run test:coverage'
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                sh './scripts/deploy.sh'
+            }
+        }
+    }
+}</pre>
+            </div>
+            
+            <h3>自動テスト構成</h3>
+            <div class="config-section">
+                <h4>フロントエンドテスト</h4>
+                <ul>
+                    <li>Jest - 単体テスト</li>
+                    <li>React Testing Library - コンポーネントテスト</li>
+                    <li>Cypress - E2Eテスト</li>
+                </ul>
+                
+                <h4>バックエンドテスト</h4>
+                <ul>
+                    <li>pytest - 単体・統合テスト</li>
+                    <li>coverage.py - カバレッジ測定</li>
+                    <li>locust - 負荷テスト</li>
+                </ul>
+            </div>
+            
+            <div class="success">
+                <strong>✅ ベストプラクティス:</strong> プルリクエスト作成時に自動的にテストが実行されるよう設定しましょう。
+            </div>
+        </div>
+        
+        <div id="aws" class="tab-content">
+            <h2>☁️ AWS環境へのデプロイ</h2>
+            
+            <h3>サーバー情報</h3>
+            <div class="config-section">
+                <ul>
+                    <li><strong>IPアドレス:</strong> 54.199.201.201</li>
+                    <li><strong>OS:</strong> Ubuntu 24.04.2 LTS (Noble Numbat)</li>
+                    <li><strong>カーネル:</strong> Linux 6.8.0-1029-aws x86_64</li>
+                    <li><strong>Tomcat:</strong> Apache Tomcat 10.1.42</li>
+                    <li><strong>Java:</strong> OpenJDK 17.0.15 (Ubuntu 24.04)</li>
+                    <li><strong>メモリ:</strong> 957MB (使用可能: 517MB)</li>
+                    <li><strong>ディスク:</strong> 6.8GB (使用: 3.0GB, 空き: 3.8GB)</li>
+                    <li><strong>デプロイパス:</strong> /opt/tomcat/webapps/</li>
+                    <li><strong>ポート:</strong> 8080（HTTP）</li>
+                </ul>
+            </div>
+            
+            <div class="success">
+                <strong>✅ SSH接続確認済み:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>接続方法: <code>ssh -i AWS01.pem ubuntu@54.199.201.201</code></li>
+                    <li>Tomcatサービス: 稼働中 (systemctl status tomcat)</li>
+                    <li>Java Runtime: OpenJDK 17 (/usr/lib/jvm/java-17-openjdk-amd64)</li>
+                    <li>webappsディレクトリ: アクセス可能、既存アプリ確認済み</li>
+                </ul>
+            </div>
+            
+            <div class="info">
+                <strong>🔍 追加確認情報:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>AWS EC2インスタンス (x86_64アーキテクチャ)</li>
+                    <li>プライベートIP: 172.31.16.38</li>
+                    <li>Tomcatユーザーでサービス実行中</li>
+                    <li>webappsディレクトリにROOT、docs、examples等のデフォルトアプリが配置済み</li>
+                </ul>
+            </div>
+            
+            <h3>デプロイ手順</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>WARファイルのビルド</strong>
+                    <div class="code-block">
+                        <pre>mvn clean package</pre>
+                    </div>
+                </li>
+                <li>
+                    <strong>ファイル転送</strong>
+                    <div class="code-block">
+                        <pre>scp target/roic.war ec2-user@54.199.201.201:/tmp/</pre>
+                    </div>
+                </li>
+                <li>
+                    <strong>Tomcatへデプロイ</strong>
+                    <div class="code-block">
+                        <pre>ssh ec2-user@54.199.201.201
+sudo mv /tmp/roic.war /opt/tomcat/webapps/
+sudo systemctl restart tomcat</pre>
+                    </div>
+                </li>
+                <li>
+                    <strong>動作確認</strong>
+                    <div class="code-block">
+                        <pre>curl http://54.199.201.201:8080/roic/health</pre>
+                    </div>
+                </li>
+            </ol>
+            
+            <h3>必要な準備</h3>
+            <ul class="checklist">
+                <li>EC2インスタンスへのSSH鍵</li>
+                <li>Tomcat管理者権限</li>
+                <li>デプロイ用IAMロール</li>
+                <li>セキュリティグループの設定</li>
+            </ul>
+            
+            <div class="info">
+                <strong>💡 ヒント:</strong> デプロイスクリプトを作成して、ワンコマンドでデプロイできるようにしましょう。
+            </div>
+        </div>
+        
+        <a href="progress-dashboard.html" class="back-link">← 進捗ダッシュボードに戻る</a>
+    </div>
+    
+    <script>
+        function showTab(tabId) {
+            // すべてのタブコンテンツを非表示
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // すべてのタブボタンから active クラスを削除
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 選択されたタブコンテンツを表示
+            document.getElementById(tabId).classList.add('active');
+            
+            // 選択されたタブボタンに active クラスを追加
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
