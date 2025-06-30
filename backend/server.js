@@ -103,86 +103,27 @@ app.get('/api', (req, res) => {
     documentation: '/api/docs',
     endpoints: {
       health: '/health',
-      companies: '/api/v1/companies',
-      roic: '/api/v1/roic',
-      financials: '/api/v1/financials'
+      companies: '/api/companies',
+      roic: '/api/roic',
+      financials: '/api/financials',
+      sync: '/api/companies/sync'
     }
   });
 });
 
-// 基本的なAPI v1ルート
-app.use('/api/v1', (req, res, next) => {
-  // API v1の共通ミドルウェア
-  req.apiVersion = 'v1';
-  next();
-});
+// API ルートの設定
+const apiRoutes = require('./routes/api');
+app.use('/api', apiRoutes);
 
-// 企業データAPI（プレースホルダー）
-app.get('/api/v1/companies', async (req, res) => {
-  try {
-    logger.info('Companies API called', { query: req.query });
-    
-    // TODO: 実際の企業データ取得実装
-    res.json({
-      message: 'Companies API endpoint',
-      status: 'not implemented yet',
-      plannedFeatures: [
-        'Company search',
-        'Company listing',
-        'Company details'
-      ]
-    });
-  } catch (error) {
-    logger.error('Companies API error:', error.message);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+// データ同期ジョブの開始
+const DataSyncJob = require('./jobs/data-sync-job');
+const dataSyncJob = new DataSyncJob();
 
-// ROIC計算API（プレースホルダー）
-app.get('/api/v1/roic/:companyId', async (req, res) => {
-  try {
-    const { companyId } = req.params;
-    logger.info('ROIC API called', { companyId });
-    
-    // TODO: 実際のROIC計算実装
-    res.json({
-      message: 'ROIC calculation API endpoint',
-      companyId,
-      status: 'not implemented yet',
-      plannedFeatures: [
-        'ROIC calculation',
-        'Historical ROIC data',
-        'ROIC comparison'
-      ]
-    });
-  } catch (error) {
-    logger.error('ROIC API error:', error.message);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// 財務データAPI（プレースホルダー）
-app.get('/api/v1/financials/:companyId', async (req, res) => {
-  try {
-    const { companyId } = req.params;
-    logger.info('Financials API called', { companyId });
-    
-    // TODO: 実際の財務データ取得実装
-    res.json({
-      message: 'Financial data API endpoint',
-      companyId,
-      status: 'not implemented yet',
-      plannedFeatures: [
-        'Financial statement data',
-        'EDINET integration',
-        'Multi-year data'
-      ]
-    });
-  } catch (error) {
-    logger.error('Financials API error:', error.message);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+// 本番環境でのみバッチジョブを自動開始
+if (process.env.NODE_ENV === 'production') {
+  dataSyncJob.start();
+  logger.info('Data sync job started');
+}
 
 // 404ハンドラー
 app.use('*', (req, res) => {
