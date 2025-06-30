@@ -298,10 +298,10 @@ pipeline {
                             
                             echo "Deployment simulation - would copy to staging server"
                             # Actual deployment commands would be:
-                            # scp -i ~/.ssh/AWS01.pem target/*.tar.gz ubuntu@54.199.201.201:/tmp/
-                            # ssh -i ~/.ssh/AWS01.pem ubuntu@54.199.201.201 "sudo systemctl stop tomcat && sudo rm -rf /opt/tomcat/webapps/roic*"
-                            # ssh -i ~/.ssh/AWS01.pem ubuntu@54.199.201.201 "cd /tmp && sudo tar -xzf frontend.tar.gz -C /opt/tomcat/webapps/roic"
-                            # ssh -i ~/.ssh/AWS01.pem ubuntu@54.199.201.201 "sudo systemctl start tomcat"
+                            # scp -i ~/.ssh/[PRIVATE_KEY] target/*.tar.gz ubuntu@54.199.201.201:/tmp/
+                            # ssh -i ~/.ssh/[PRIVATE_KEY] ubuntu@54.199.201.201 "sudo systemctl stop tomcat && sudo rm -rf /opt/tomcat/webapps/roic*"
+                            # ssh -i ~/.ssh/[PRIVATE_KEY] ubuntu@54.199.201.201 "cd /tmp && sudo tar -xzf frontend.tar.gz -C /opt/tomcat/webapps/roic"
+                            # ssh -i ~/.ssh/[PRIVATE_KEY] ubuntu@54.199.201.201 "sudo systemctl start tomcat"
                         '''
                     } catch (Exception e) {
                         echo "Deployment failed: ${e.getMessage()}"

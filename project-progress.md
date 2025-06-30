@@ -334,7 +334,7 @@ pipeline {
 - **ディスク**: 6.8GB (使用: 3.0GB, 空き: 3.8GB)
 - **デプロイパス**: `/opt/tomcat/webapps/`
 - **ポート**: 8080（HTTP）
-- **SSH接続**: `ssh -i AWS01.pem ubuntu@54.199.201.201`
+- **SSH接続**: `ssh -i [PRIVATE_KEY] ubuntu@54.199.201.201`
 
 #### デプロイ手順
 1. WARファイルのビルド

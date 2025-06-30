@@ -54,8 +54,24 @@ logs/
 *.db
 *.sqlite3
 
-# AWS
+# AWS & Security Files
 .aws/
+*.pem
+*.key
+*.p12
+*.pfx
+**/secrets/
+AWS*.pem
+**/private-keys/
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+known_hosts*
+authorized_keys*
+**/credentials
+**/config
+.ssh/
 
 # Jenkins
 jenkins-cli.jar
