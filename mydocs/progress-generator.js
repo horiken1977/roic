@@ -7,7 +7,7 @@ const { marked } = require('marked');
 class ProgressGenerator {
     constructor() {
         this.mdFilePath = path.join(__dirname, 'project-progress.md');
-        this.htmlFilePath = path.join(__dirname, 'progress-dashboard.html');
+        this.htmlFilePath = path.join(__dirname, 'index.html');
     }
 
     parseMarkdown(content) {
@@ -65,6 +65,8 @@ class ProgressGenerator {
                     } else if (taskName.includes('開発環境のセットアップとCI/CD構築')) {
                         documentLink = 'development-setup.html';
                     }
+                } else if (taskName.includes('データベース設計とスキーマ定義')) {
+                    documentLink = 'database-troubleshooting.html';
                 }
                 
                 tasks.push({
@@ -269,6 +271,7 @@ class ProgressGenerator {
         return progress;
     }
 
+
     generateHTML(data) {
         const { tasks, stats, nextActions, environmentDetails, techStackDetails, developmentPhase, currentProgress } = data;
         
@@ -278,6 +281,14 @@ class ProgressGenerator {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROIC分析アプリケーション - 開発進捗ダッシュボード</title>
+    <meta name="description" content="日系上場企業のROIC算出・比較分析ツールの開発進捗をリアルタイムで確認できるダッシュボードです。">
+    <meta name="keywords" content="ROIC, 投下資本利益率, 企業分析, Next.js, Node.js, PostgreSQL, EDINET">
+    <meta property="og:title" content="ROIC分析アプリケーション - 開発進捗">
+    <meta property="og:description" content="日系上場企業のROIC算出・比較分析ツールの開発進捗">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://horiken1977.github.io/roic/mydocs/">
+    <meta name="twitter:card" content="summary">
+    <meta name="author" content="horiken1977">
     <style>
         * {
             margin: 0;
@@ -761,6 +772,7 @@ class ProgressGenerator {
                 grid-template-columns: 1fr;
             }
         }
+        
     </style>
 </head>
 <body>
@@ -816,6 +828,8 @@ class ProgressGenerator {
             <div class="quick-links">
                 <a href="development-setup.html" class="quick-link">開発環境セットアップガイド</a>
                 <a href="https://github.com/horiken1977/roic" class="quick-link" target="_blank">GitHubリポジトリ</a>
+                <a href="https://github.com/horiken1977/roic/blob/main/README.md" class="quick-link" target="_blank">プロジェクト概要</a>
+                <a href="https://github.com/horiken1977/roic/issues" class="quick-link" target="_blank">課題・要望</a>
             </div>
         </div>
         
@@ -867,6 +881,7 @@ class ProgressGenerator {
             </div>
         </div>
         ` : ''}
+        
         
         <div class="dashboard-grid">
             <div class="section">
@@ -1000,10 +1015,11 @@ class ProgressGenerator {
             }, 500);
         });
         
-        // 自動リロード（5秒間隔）
-        setInterval(() => {
-            window.location.reload();
-        }, 5000);
+        // GitHub Pagesでは自動リロードを無効化
+        // 開発環境でのみ有効化する場合は以下をコメントアウト
+        // setInterval(() => {
+        //     window.location.reload();
+        // }, 30000); // 30秒間隔に変更
     </script>
 </body>
 </html>`;
