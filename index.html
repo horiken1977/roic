@@ -508,61 +508,118 @@
         
         <div class="phase-diagram">
             <h2>🗺️ 開発フェーズ全体像</h2>
-            <div class="current-phase">Phase 1 - 基盤構築段階（100%完了） → Phase 2 開始準備中</div>
-            <div class="phase-list">✅ Phase 0: 要件定義・技術選定 (100%)
-✅ Phase 1: 基盤構築 (100%)
-├── ✅ 環境構築 (100%)
-├── ✅ AWS接続確立 (100%)
-├── ✅ データベース基盤 (100%)
-├── ✅ EDINET API実装 (100%)
-├── ✅ XBRL解析エンジン (100%)
-├── ✅ ROIC計算エンジン (100%)
-└── ✅ バッチ処理システム (100%)
-🔄 Phase 2: MVP機能開発 (準備中)
-⏭️ Phase 3: 機能拡張 (0%)
-⏭️ Phase 4: 最適化・本番移行 (0%)</div>
+            <div class="current-phase">📍 現在: Phase 2 - MVP機能開発 (40% 完了) | 次のタスク: 企業検索UI実装</div>
+            
+            <!-- フェーズ進捗バー -->
+            <div style="margin: 20px 0;">
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px;">
+                    <div style="text-align: center;">
+                        <div style="background: #28a745; height: 8px; border-radius: 4px; margin-bottom: 5px;"></div>
+                        <div style="font-size: 12px; font-weight: 600;">Phase 0<br>100%</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="background: #28a745; height: 8px; border-radius: 4px; margin-bottom: 5px;"></div>
+                        <div style="font-size: 12px; font-weight: 600;">Phase 1<br>100%</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="background: linear-gradient(to right, #ffc107 40%, #e9ecef 40%); height: 8px; border-radius: 4px; margin-bottom: 5px;"></div>
+                        <div style="font-size: 12px; font-weight: 600; color: #ffc107;">Phase 2<br>40%</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin-bottom: 5px;"></div>
+                        <div style="font-size: 12px; font-weight: 600; color: #6c757d;">Phase 3<br>0%</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin-bottom: 5px;"></div>
+                        <div style="font-size: 12px; font-weight: 600; color: #6c757d;">Phase 4<br>0%</div>
+                    </div>
+                </div>
+                <div style="font-size: 14px; color: #495057; text-align: center;">
+                    全体進捗: 2フェーズ完了、1フェーズ進行中、2フェーズ未着手
+                </div>
+            </div>
+            
+            <div class="phase-list">📋 **詳細進捗**
+
+✅ **Phase 0: 要件定義・技術選定** (100% 完了)
+   📝 機能要件・非機能要件定義、技術スタック選定
+
+✅ **Phase 1: バックエンド基盤構築** (100% 完了)
+   🏗️ AWS環境、PostgreSQL、EDINET API、ROIC計算エンジン
+
+🔄 **Phase 2: フロントエンドMVP開発** (40% 完了) ← 現在ここ
+   ├── ✅ Next.js基盤構築 (100%)
+   ├── ✅ TypeScript型定義 (100%)
+   ├── ✅ 状態管理・API連携 (100%)
+   ├── 🔄 企業検索UI (0% - 次のタスク)
+   ├── ⏭️ ROICダッシュボード詳細 (0%)
+   └── ⏭️ チャート可視化 (0%)
+
+⏭️ **Phase 3: 機能拡張・最適化** (0% 未着手)
+   🚀 パフォーマンス改善、高度分析機能、ユーザー管理
+
+⏭️ **Phase 4: 本番移行・運用開始** (0% 未着手)
+   🌐 本番環境デプロイ、監視システム、ドキュメント整備
+
+📌 **次に実行すべきタスク:**
+1. 企業検索フォーム機能実装
+2. バックエンドAPI連携テスト
+3. 検索結果一覧表示機能</div>
         </div>
         
         
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-number">12</div>
-                <div class="stat-label">総タスク数</div>
+                <div class="stat-number">5</div>
+                <div class="stat-label">総フェーズ数</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">12</div>
-                <div class="stat-label">完了タスク</div>
+                <div class="stat-number">2</div>
+                <div class="stat-label">完了フェーズ</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">0</div>
-                <div class="stat-label">未完了タスク</div>
+                <div class="stat-number">40%</div>
+                <div class="stat-label">現在フェーズ進捗</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">完了率</div>
+                <div class="stat-number">48%</div>
+                <div class="stat-label">プロジェクト全体進捗</div>
             </div>
         </div>
         
         <div class="section">
-            <h2>🎉 Phase 1 完了報告 & Phase 2 アクションアイテム</h2>
+            <h2>🎉 Phase 2 進捗報告 & 次期アクションアイテム</h2>
             
                 <div class="action-item" style="background: #e8f5e8; border-left-color: #28a745;">
-                    <h4>✅ 完了: EDINET API & ROIC計算エンジン実装</h4>
+                    <h4>✅ 完了: Next.js フロントエンド基盤構築</h4>
                     <div class="action-details">
-                        <div>✓ EDINET APIサービス実装 (15+メソッド)</div>
-                        <div>✓ XBRL解析エンジン実装 (財務データ抽出)</div>
-                        <div>✓ ROIC計算エンジン (4つの計算方式)</div>
-                        <div>✓ バッチ処理システム (日次/週次/月次)</div>
-                        <div>✓ REST API (15+エンドポイント)</div>
+                        <div>✓ Next.js 15 + TypeScript プロジェクト初期化</div>
+                        <div>✓ Tailwind CSS レスポンシブデザイン</div>
+                        <div>✓ Zustand 状態管理ライブラリ統合</div>
+                        <div>✓ Axios API通信基盤構築</div>
+                        <div>✓ TypeScript型定義 (Company, ROIC, FinancialStatement)</div>
+                        <div>✓ 基本ルーティング (/、/companies、/dashboard)</div>
+                        <div>✓ ナビゲーション・レイアウト実装</div>
                     </div>
                 </div>
             
                 <div class="action-item">
-                    <h4>🔄 次期: フロントエンドMVP開発</h4>
+                    <h4>🔄 進行中: 企業検索UI機能実装</h4>
                     <div class="action-details">
-                        <div>- Next.js + TypeScriptプロジェクトセットアップ</div>
-                        <div>- 企業検索・一覧表示コンポーネント</div>
-                        <div>- ROICダッシュボードUI実装</div>
+                        <div>- 企業検索フォーム機能実装</div>
+                        <div>- 業界・市場フィルタリング機能</div>
+                        <div>- 検索結果一覧表示</div>
+                        <div>- バックエンドAPI連携</div>
+                    </div>
+                </div>
+            
+                <div class="action-item">
+                    <h4>📊 進行中: ROICダッシュボード詳細実装</h4>
+                    <div class="action-details">
+                        <div>- ROIC計算結果表示機能</div>
+                        <div>- 企業比較テーブル</div>
+                        <div>- 統計情報ダッシュボード</div>
+                        <div>- リアルタイムデータ更新</div>
                     </div>
                 </div>
             
@@ -579,6 +636,7 @@
             
             <div class="quick-links">
                 <a href="development-setup.html" class="quick-link">開発環境セットアップガイド</a>
+                <a href="http://localhost:3000" class="quick-link" target="_blank">🚀 フロントエンドアプリ</a>
                 <a href="https://github.com/horiken1977/roic" class="quick-link" target="_blank">GitHubリポジトリ</a>
                 <a href="https://github.com/horiken1977/roic/blob/main/README.md" class="quick-link" target="_blank">プロジェクト概要</a>
                 <a href="https://github.com/horiken1977/roic/issues" class="quick-link" target="_blank">課題・要望</a>
@@ -593,8 +651,8 @@
                 <h2>🚀 開発進捗状況</h2>
                 <div class="progress-bar-container">
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%">
-                            <span class="progress-text">100%</span>
+                        <div class="progress-fill" style="width: 48%">
+                            <span class="progress-text">48%</span>
                         </div>
                     </div>
                 </div>
@@ -890,7 +948,7 @@
         </div>
         
         <div class="last-updated">
-            最終更新: 2025/6/30 22:30:00 - Phase 1 完全実装完了🎉
+            最終更新: 2025/7/1 17:00:00 - Phase 2 フロントエンド基盤完了🚀
         </div>
     </div>
     
@@ -917,7 +975,7 @@
             
             // プログレスバーのアニメーション
             setTimeout(() => {
-                progressFill.style.width = '100%';
+                progressFill.style.width = '48%';
             }, 500);
         });
         
