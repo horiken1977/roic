@@ -10,7 +10,9 @@ export default function TestPlanPage() {
   useEffect(() => {
     const loadTestPlan = async () => {
       try {
-        const response = await fetch('/test-docs/test-plan.html')
+        // GitHub Pages用のbasePathを考慮
+        const basePath = '/roic'
+        const response = await fetch(`${basePath}/test-docs/test-plan.html`)
         if (!response.ok) {
           throw new Error(`Failed to load test plan: ${response.status}`)
         }

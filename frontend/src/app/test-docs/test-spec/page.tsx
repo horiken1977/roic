@@ -10,7 +10,9 @@ export default function TestSpecPage() {
   useEffect(() => {
     const loadTestSpec = async () => {
       try {
-        const response = await fetch('/test-docs/test-spec.html')
+        // GitHub Pages用のbasePathを考慮
+        const basePath = '/roic'
+        const response = await fetch(`${basePath}/test-docs/test-spec.html`)
         if (!response.ok) {
           throw new Error(`Failed to load test specification: ${response.status}`)
         }
