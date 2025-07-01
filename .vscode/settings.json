@@ -1,0 +1,38 @@
+{
+  "git.enabled": true,
+  "git.path": "/usr/bin/git",
+  "git.autoRepositoryDetection": true,
+  "git.autorefresh": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.pullTags": false,
+  "git.showPushSuccessNotification": true,
+  "terminal.integrated.defaultProfile.osx": "bash",
+  "terminal.integrated.env.osx": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"
+  },
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.suggest.autoImports": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.workingDirectories": ["frontend"],
+  "files.associations": {
+    "*.tsx": "typescriptreact",
+    "*.ts": "typescript"
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.next": true,
+    "**/build": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/.next/**": true
+  }
+}
