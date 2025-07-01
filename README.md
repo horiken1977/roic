@@ -1,137 +1,178 @@
-# ROIC分析アプリケーション 進捗管理システム
+# ROIC分析アプリケーション
 
-## 概要
+日系上場企業のROIC（投下資本利益率）を自動計算・分析・比較できるWebアプリケーションです。
 
-このシステムは、マークダウンファイル（`project-progress.md`）を自動的に監視し、進捗が更新されると美しいHTMLダッシュボード（`progress-dashboard.html`）を自動生成します。
+## 🚀 ライブデモ
 
-## ファイル構成
+**🌐 https://horiken1977.github.io/roic/**
 
-```
-docs/
-├── project-progress.md      # 進捗管理用マークダウンファイル（編集対象）
-├── progress-dashboard.html  # 自動生成されるHTMLダッシュボード
-├── progress-generator.js    # HTMLダッシュボード生成スクリプト
-├── package.json            # Node.js依存関係
-└── README.md              # このファイル
-```
+## ✨ 主な機能
 
-## セットアップ
+- ✅ **ROIC自動計算** - 4つの計算方式に対応
+- ✅ **企業検索・フィルタリング** - 効率的な企業検索
+- ✅ **業界内比較・ランキング** - 同業界内でのROIC比較
+- ✅ **トレンドチャート・可視化** - データの視覚的分析
+- ✅ **自動テスト・デプロイ** - CI/CDパイプライン完備
+- ✅ **リアルタイム進捗管理** - 開発状況の自動追跡
 
-1. **依存関係のインストール**
-   ```bash
-   cd docs
-   npm install
-   ```
+## 🏗️ 技術スタック
 
-## 使用方法
+### フロントエンド
+- **Next.js 15** - React ベースのフルスタックフレームワーク
+- **TypeScript** - 型安全性を提供
+- **Tailwind CSS** - ユーティリティファーストのCSSフレームワーク
+- **Zustand** - 軽量な状態管理
 
-### 1. 一回だけHTMLを生成する場合
+### バックエンド
+- **Node.js** - サーバーサイドJavaScript実行環境
+- **Express.js** - Webアプリケーションフレームワーク
+- **EDINET API** - 財務データ取得
 
+### テスト・品質管理
+- **Jest** - ユニットテストフレームワーク
+- **React Testing Library** - Reactコンポーネントテスト
+- **Playwright** - E2Eテストフレームワーク
+- **ESLint** - コード品質管理
+
+### CI/CD・デプロイ
+- **GitHub Actions** - 自動化ワークフロー
+- **GitHub Pages** - 静的サイトホスティング
+- **Jenkins** - CI/CDパイプライン
+
+## 🛠️ セットアップ
+
+### 前提条件
+- Node.js 18.0.0 以上
+- npm 9.0.0 以上
+
+### インストール
+
+1. リポジトリをクローン
 ```bash
-cd docs
+git clone https://github.com/horiken1977/roic.git
+cd roic
+```
+
+2. 依存関係をインストール
+```bash
+npm run setup
+```
+
+3. 開発サーバーを起動
+```bash
+npm run dev
+```
+
+4. ブラウザで http://localhost:3000 を開く
+
+## 📊 自動化システム
+
+### 自動ダッシュボード更新
+```bash
+npm run auto-dashboard
+```
+- コードの変更を監視
+- 機能一覧を自動更新
+- 進捗状況を自動計算
+- テスト仕様書を自動生成
+
+### インクリメンタル開発サイクル
+```bash
+npm run auto-dev-cycle
+```
+- ファイル変更を検知
+- 品質チェック実行
+- テスト自動実行
+- ビルド・デプロイ自動化
+
+### 全自動化システム開始
+```bash
+npm run start-automation
+```
+- すべての自動化システムを同時起動
+- リアルタイム進捗監視
+- 自動エラー修正
+
+## 🧪 テスト
+
+### ユニットテスト
+```bash
+npm test
+```
+
+### E2Eテスト
+```bash
+npm run test:e2e
+```
+
+### テスト監視モード
+```bash
+npm run test:watch
+```
+
+## 🚀 デプロイ
+
+### 本番ビルド
+```bash
 npm run build
 ```
 
-または
-
+### GitHub Pagesデプロイ
 ```bash
-cd docs
-node progress-generator.js
+npm run deploy
 ```
 
-### 2. マークダウンファイルを監視して自動更新する場合
+## 📈 進捗管理
 
-```bash
-cd docs
-npm run watch
+プロジェクトの進捗は以下で確認できます：
+
+- **ダッシュボード**: https://horiken1977.github.io/roic/dashboard/
+- **テスト計画書**: https://horiken1977.github.io/roic/test-docs/test-plan/
+- **テスト仕様書**: https://horiken1977.github.io/roic/test-docs/test-spec/
+
+## 📁 プロジェクト構成
+
+```
+roic/
+├── frontend/                 # Next.jsフロントエンド
+│   ├── src/app/             # アプリケーションページ
+│   ├── src/components/      # 再利用可能コンポーネント
+│   ├── src/stores/          # 状態管理
+│   └── __tests__/           # フロントエンドテスト
+├── backend/                 # Node.jsバックエンド（予定）
+├── docs/                    # プロジェクトドキュメント
+├── scripts/                 # 自動化スクリプト
+│   ├── auto-dashboard-updater.js
+│   ├── incremental-dev-cycle.js
+│   ├── test-docs-generator.js
+│   └── test-progress-updater.js
+└── tests/                   # E2Eテスト
 ```
 
-または
+## 🔄 開発フロー
 
-```bash
-cd docs
-node progress-generator.js --watch
-```
+1. **機能開発** - 新機能の実装
+2. **自動テスト** - コード変更時に自動実行
+3. **品質チェック** - ESLint、TypeScript型チェック
+4. **自動ビルド** - 成功時に自動ビルド
+5. **自動デプロイ** - GitHub Pagesに自動デプロイ
+6. **進捗更新** - ダッシュボード、文書の自動更新
 
-**注意:** 監視モードでは、`project-progress.md`ファイルが変更されるたびに自動的にHTMLダッシュボードが更新されます。終了するには `Ctrl+C` を押してください。
+## 🤝 コントリビューション
 
-### 3. 初回セットアップから監視開始まで一括実行
+1. フォークを作成
+2. 機能ブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成
 
-```bash
-cd docs
-npm start
-```
+## 📄 ライセンス
 
-## 進捗の更新方法
+このプロジェクトはMITライセンスの下で公開されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
 
-1. `project-progress.md`ファイルを開く
-2. 完了したタスクのチェックボックスを更新する
-   - 未完了: `- [ ] **タスク名**`
-   - 完了: `- [x] **タスク名**`
-3. ファイルを保存
-4. 監視モードが動いている場合、自動的にHTMLダッシュボードが更新される
+## 📞 サポート
 
-## HTMLダッシュボードの機能
-
-- **リアルタイム統計**: 総タスク数、完了タスク数、完了率
-- **視覚的進捗バー**: 全体の完了率をバーで表示
-- **タスク一覧**: 各タスクの状態と優先度を色分け表示
-- **レスポンシブデザイン**: PC・タブレット・スマホ対応
-- **自動リロード**: 5秒間隔でページを自動更新（監視モード時）
-
-## カスタマイズ
-
-### スタイルの変更
-`progress-generator.js`の`generateHTML()`メソッド内のCSSを編集してください。
-
-### データ構造の変更
-マークダウンの解析ロジックは`parseMarkdown()`メソッドで制御されています。
-
-### 更新間隔の変更
-HTMLファイル内の自動リロード間隔は以下の行で変更できます：
-```javascript
-setInterval(() => {
-    window.location.reload();
-}, 5000); // 5000ms = 5秒
-```
-
-## トラブルシューティング
-
-### よくある問題
-
-1. **「module not found」エラー**
-   ```bash
-   cd docs
-   npm install
-   ```
-
-2. **HTMLが生成されない**
-   - `project-progress.md`ファイルが存在することを確認
-   - ファイルの読み取り権限を確認
-
-3. **監視が動作しない**
-   - ファイルパスが正しいことを確認
-   - 別のプロセスでファイルがロックされていないか確認
-
-### ログの確認
-監視モードではコンソールにログが表示されます：
-```
-Watching for changes in: /path/to/project-progress.md
-Progress dashboard updated: /path/to/progress-dashboard.html
-```
-
-## 開発者向け情報
-
-### 依存関係
-- **Node.js**: v14以上推奨
-- **marked**: マークダウンパーサー（HTMLダッシュボード生成では直接使用していませんが、将来の拡張用）
-
-### API
-`ProgressGenerator`クラスの主要メソッド：
-- `parseMarkdown(content)`: マークダウンコンテンツを解析
-- `generateHTML(data)`: HTMLダッシュボードを生成
-- `generateDashboard()`: 一回だけHTMLを生成
-- `watchFile()`: ファイル監視を開始
+問題や質問がある場合は、GitHubのIssuesページでお知らせください。
 
 ## ⚠️ セキュリティ注記
 
@@ -148,4 +189,6 @@ Progress dashboard updated: /path/to/progress-dashboard.html
 - 🛡️ **予防策**: 強化された.gitignoreパターンで今後の事故を防止
 - 📊 **監視**: GitGuardianによる継続的なセキュリティ監視
 
-この注記は透明性を保つために記載されており、実際のセキュリティリスクは存在しません。
+---
+
+**🤖 このプロジェクトは自動化システムにより継続的に更新されています**
