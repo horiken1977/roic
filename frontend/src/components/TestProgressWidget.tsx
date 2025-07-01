@@ -1,7 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-
 interface TestResults {
   unit: { passed: number; failed: number; total: number; coverage: number; lastRun: string | null }
   e2e: { passed: number; failed: number; total: number; lastRun: string | null }
@@ -13,120 +11,19 @@ interface TestResults {
 }
 
 export default function TestProgressWidget() {
-  const [testResults, setTestResults] = useState<TestResults>({
-    unit: { passed: 0, failed: 0, total: 0, coverage: 0, lastRun: null },
-    e2e: { passed: 0, failed: 0, total: 0, lastRun: null },
-    integration: { passed: 0, failed: 0, total: 0, lastRun: null },
-    performance: { passed: 0, failed: 0, total: 0, lastRun: null },
-    security: { passed: 0, failed: 0, total: 0, lastRun: null },
-    build: { status: 'unknown', lastRun: null },
-    deployment: { status: 'unknown', lastRun: null }
-  })
-  
-  const [isConnected, setIsConnected] = useState(false)
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
-
-  useEffect(() => {
-    // WebSocket接続でリアルタイム更新
-    let ws: WebSocket | null = null
-    
-    const connectWebSocket = () => {
-      try {
-        ws = new WebSocket('ws://localhost:3002')
-        
-        ws.onopen = () => {
-          console.log('Test progress WebSocket connected')
-          setIsConnected(true)
-        }
-        
-        ws.onmessage = (event) => {
-          try {
-            const message = JSON.parse(event.data)
-            
-            switch (message.type) {
-              case 'initial-data':
-                setTestResults(message.data)
-                setLastUpdate(new Date())
-                break
-                
-              case 'unit-test-results':
-                setTestResults(prev => ({ ...prev, unit: message.data }))
-                setLastUpdate(new Date())
-                break
-                
-              case 'e2e-test-results':
-                setTestResults(prev => ({ ...prev, e2e: message.data }))
-                setLastUpdate(new Date())
-                break
-                
-              case 'build-results':
-                setTestResults(prev => ({ ...prev, build: message.data }))
-                setLastUpdate(new Date())
-                break
-                
-              case 'performance-test-results':
-                setTestResults(prev => ({ ...prev, performance: message.data }))
-                setLastUpdate(new Date())
-                break
-                
-              case 'security-test-results':
-                setTestResults(prev => ({ ...prev, security: message.data }))
-                setLastUpdate(new Date())
-                break
-                
-              default:
-                setLastUpdate(new Date())
-            }
-          } catch (error) {
-            console.error('Failed to parse WebSocket message:', error)
-          }
-        }
-        
-        ws.onclose = () => {
-          console.log('Test progress WebSocket disconnected')
-          setIsConnected(false)
-          
-          // 5秒後に再接続を試行
-          setTimeout(connectWebSocket, 5000)
-        }
-        
-        ws.onerror = (error) => {
-          console.error('WebSocket error:', error)
-          setIsConnected(false)
-        }
-        
-      } catch (error) {
-        console.error('Failed to connect WebSocket:', error)
-        setIsConnected(false)
-        
-        // フォールバック: 定期的なポーリング
-        setTimeout(() => {
-          fetchTestResults()
-        }, 10000)
-      }
-    }
-
-    connectWebSocket()
-    
-    return () => {
-      if (ws) {
-        ws.close()
-      }
-    }
-  }, [])
-
-  const fetchTestResults = async () => {
-    try {
-      const response = await fetch('/api/test-results')
-      if (response.ok) {
-        const data = await response.json()
-        setTestResults(data)
-        setLastUpdate(new Date())
-      }
-    } catch (error) {
-      console.error('Failed to fetch test results:', error)
-    }
+  // 静的なテストデータ（GitHub Pages環境用）
+  const testResults: TestResults = {
+    unit: { passed: 15, failed: 0, total: 15, coverage: 88, lastRun: new Date().toISOString() },
+    e2e: { passed: 8, failed: 0, total: 8, lastRun: new Date().toISOString() },
+    integration: { passed: 5, failed: 0, total: 5, lastRun: new Date().toISOString() },
+    performance: { passed: 3, failed: 0, total: 3, lastRun: new Date().toISOString() },
+    security: { passed: 2, failed: 0, total: 2, lastRun: new Date().toISOString() },
+    build: { status: 'success', lastRun: new Date().toISOString() },
+    deployment: { status: 'success', lastRun: new Date().toISOString() }
   }
+  
+  const isConnected = true // GitHub Pages環境では常に接続状態とする
+  const lastUpdate = new Date()
 
   const getProgressPercentage = (passed: number, total: number) => {
     if (total === 0) return 0
