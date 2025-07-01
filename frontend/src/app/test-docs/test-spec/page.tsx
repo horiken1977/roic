@@ -49,10 +49,6 @@ export default function TestSpecPage() {
   }, []);
 
   const extractTestStats = (content: string) => {
-    // Parse HTML content to extract test statistics
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(content, 'text/html');
-    
     // Extract numbers from the content
     const totalTests = (content.match(/実行済みテスト: (\d+)件/g) || [])
       .reduce((sum, match) => sum + parseInt(match.match(/\d+/)?.[0] || '0'), 0);

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Company, RoicCalculation, FinancialStatement } from '@/types';
+import { IndustryAnalysis, RankingItem } from '@/types/api';
 
 interface CompanyState {
   companies: Company[];
@@ -25,8 +26,8 @@ interface RoicState {
   roicData: RoicCalculation[];
   selectedRoic: RoicCalculation | null;
   comparisonData: RoicCalculation[];
-  industryAnalysis: any | null;
-  rankings: any[];
+  industryAnalysis: IndustryAnalysis | null;
+  rankings: RankingItem[];
   calculationMethod: 'standard' | 'adjusted' | 'conservative' | 'aggressive';
   selectedFiscalYear: number;
   loading: boolean;
@@ -36,8 +37,8 @@ interface RoicState {
   setRoicData: (data: RoicCalculation[]) => void;
   setSelectedRoic: (roic: RoicCalculation | null) => void;
   setComparisonData: (data: RoicCalculation[]) => void;
-  setIndustryAnalysis: (analysis: any) => void;
-  setRankings: (rankings: any[]) => void;
+  setIndustryAnalysis: (analysis: IndustryAnalysis | null) => void;
+  setRankings: (rankings: RankingItem[]) => void;
   setCalculationMethod: (method: 'standard' | 'adjusted' | 'conservative' | 'aggressive') => void;
   setSelectedFiscalYear: (year: number) => void;
   setLoading: (loading: boolean) => void;

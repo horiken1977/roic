@@ -42,7 +42,7 @@ export interface RoicCalculation {
   roic: number;
   roic_percentage: number;
   calculation_method: 'standard' | 'adjusted' | 'conservative' | 'aggressive';
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }

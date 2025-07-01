@@ -42,8 +42,7 @@ export default function FunctionalSpecPage() {
   }, []);
 
   const extractSections = (htmlContent: string) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlContent, 'text/html');
+    // Remove unused variables
     
     const sectionData: Section[] = [
       {
@@ -83,9 +82,7 @@ export default function FunctionalSpecPage() {
       }
     ];
     
-    // Count actual completed items from HTML
-    const completedItems = (htmlContent.match(/status-completed/g) || []).length;
-    const totalItems = (htmlContent.match(/ステータス/g) || []).length;
+    // Removed unused variables for completed items counting
     
     setSections(sectionData);
   };

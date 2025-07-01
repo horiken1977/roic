@@ -164,7 +164,7 @@ export default function EnvironmentDesignPage() {
               <div className="bg-green-50 p-4 rounded-lg">
                 <h4 className="font-bold text-green-800 mb-2">バックエンド</h4>
                 <ul className="text-sm text-green-600 space-y-1">
-                  <li>• Node.js >=18.0.0</li>
+                  <li>• Node.js &gt;=18.0.0</li>
                   <li>• Express.js 4.18.2</li>
                   <li>• PostgreSQL</li>
                   <li>• AWS SDK 2.x</li>

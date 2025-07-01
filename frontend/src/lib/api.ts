@@ -8,6 +8,7 @@ import {
   CompanySearchParams,
   RoicAnalysisParams 
 } from '@/types';
+import { IndustryAnalysis, RankingItem, HealthCheckResponse } from '@/types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
@@ -118,14 +119,14 @@ export const roicApi = {
   },
 
   // Get industry ROIC analysis
-  getIndustryAnalysis: async (industry: string, fiscalYear?: number): Promise<ApiResponse<any>> => {
+  getIndustryAnalysis: async (industry: string, fiscalYear?: number): Promise<ApiResponse<IndustryAnalysis>> => {
     const params = fiscalYear ? { fiscal_year: fiscalYear } : {};
     const response = await api.get(`/roic/industry/${industry}`, { params });
     return response.data;
   },
 
   // Get ROIC rankings
-  getRankings: async (industry?: string, limit?: number): Promise<ApiResponse<any[]>> => {
+  getRankings: async (industry?: string, limit?: number): Promise<ApiResponse<RankingItem[]>> => {
     const params = {
       ...(industry && { industry }),
       ...(limit && { limit }),
@@ -137,7 +138,7 @@ export const roicApi = {
 
 // Health Check API
 export const healthApi = {
-  check: async (): Promise<ApiResponse<any>> => {
+  check: async (): Promise<ApiResponse<HealthCheckResponse>> => {
     const response = await api.get('/health');
     return response.data;
   },
