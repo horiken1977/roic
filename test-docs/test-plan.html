@@ -1,0 +1,518 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROIC分析アプリケーション テスト計画書</title>
+    <style>
+        
+        :root {
+            --primary-color: #3182ce;
+            --accent-color: #4299e1;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --error-color: #f56565;
+            --bg-color: #f7fafc;
+            --text-color: #2d3748;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .last-update {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .section {
+            margin: 32px 0;
+        }
+        
+        .section h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+        }
+        
+        .content {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            line-height: 1.7;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .suite-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .suite-stats {
+                margin-top: 8px;
+            }
+        }
+    
+        .phase-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--accent-color);
+        }
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .phase-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .phase-status {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-completed { background: #c6f6d5; color: #22543d; }
+        .status-in-progress { background: #fef5e7; color: #c05621; }
+        .status-pending { background: #e2e8f0; color: #4a5568; }
+        .status-failed { background: #fed7d7; color: #c53030; }
+        .progress-container {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 8px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #4299e1, #3182ce);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .overall-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .stat-label {
+            color: #718096;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>ROIC分析アプリケーション テスト計画書</h1>
+            <div class="last-update">最終更新: 2025/7/1 13:44:54</div>
+        </header>
+
+        <div class="overall-stats">
+            <div class="stat-card">
+                <div class="stat-number">0%</div>
+                <div class="stat-label">全体進捗</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">総テスト数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0%</div>
+                <div class="stat-label">コードカバレッジ</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>テストフェーズ進捗</h2>
+            
+            <div class="phase-card">
+                <div class="phase-header">
+                    <div class="phase-name">Unit Testing</div>
+                    <div class="phase-status status-pending">pending</div>
+                </div>
+                <div class="phase-description">個別モジュールのテスト</div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: #718096;">
+                    進捗: 0%
+                </div>
+            </div>
+            
+            <div class="phase-card">
+                <div class="phase-header">
+                    <div class="phase-name">Integration Testing</div>
+                    <div class="phase-status status-pending">pending</div>
+                </div>
+                <div class="phase-description">システム統合テスト</div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: #718096;">
+                    進捗: 0%
+                </div>
+            </div>
+            
+            <div class="phase-card">
+                <div class="phase-header">
+                    <div class="phase-name">E2E Testing</div>
+                    <div class="phase-status status-pending">pending</div>
+                </div>
+                <div class="phase-description">エンドツーエンドテスト</div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: #718096;">
+                    進捗: 0%
+                </div>
+            </div>
+            
+            <div class="phase-card">
+                <div class="phase-header">
+                    <div class="phase-name">Performance Testing</div>
+                    <div class="phase-status status-pending">pending</div>
+                </div>
+                <div class="phase-description">パフォーマンステスト</div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: #718096;">
+                    進捗: 0%
+                </div>
+            </div>
+            
+            <div class="phase-card">
+                <div class="phase-header">
+                    <div class="phase-name">Security Testing</div>
+                    <div class="phase-status status-pending">pending</div>
+                </div>
+                <div class="phase-description">セキュリティテスト</div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: #718096;">
+                    進捗: 0%
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="section">
+            <h2>テスト計画詳細</h2>
+            <div class="content">
+                {<p><h1>ROIC分析アプリケーション テスト計画書</h1></p><p><h2>📋 文書情報</h2></p><p>| 項目 | 内容 |</p></p>
+<p>|------|------|</p></p>
+<p>| 文書名 | ROIC分析アプリケーション テスト計画書 |</p></p>
+<p>| バージョン | 1.0 |</p></p>
+<p>| 作成日 | 2025年7月1日 |</p></p>
+<p>| 更新日 | 2025年7月1日 |</p></p>
+<p>| 作成者 | 開発チーム |</p><p><h2>🎯 テスト目的</h2></p><p><h3>主要目的</h3></p></p>
+<p>1. <strong>機能品質の保証</strong>: 全ての機能が要件通りに動作することを確認</p></p>
+<p>2. <strong>非機能品質の保証</strong>: パフォーマンス、セキュリティ、可用性の確認</p></p>
+<p>3. <strong>ユーザビリティの検証</strong>: 実際のユーザー視点での使いやすさ検証</p></p>
+<p>4. <strong>システム統合の確認</strong>: フロントエンド・バックエンド・データベースの連携確認</p><p><h3>品質目標</h3></p></p>
+<p><ul><li><strong>機能テストカバレッジ</strong>: 100%</li></p></p>
+<p><li><strong>コードカバレッジ</strong>: 80%以上</li></p></p>
+<p><li><strong>E2Eテストカバレッジ</strong>: 主要シナリオ100%</li></p></p>
+<p><li><strong>パフォーマンス</strong>: 応答時間2秒以内（90パーセンタイル）</li></p><p><h2>🏗️ テスト戦略</h2></p><p><h3>テストピラミッド構成</h3></p><p><code></code>`</p></p>
+<p>    /\</p></p>
+<p>   /  \     E2E Tests (10%)</p></p>
+<p>  /    \    - Critical user journeys</p></p>
+<p> /______\   - Cross-browser testing</p></p>
+<p>/        \  </p></p>
+<p>|  IT    |  Integration Tests (20%)</p></p>
+<p>|        |  - API integration</p></p>
+<p>|________|  - Database integration</p></p>
+<p>|        |</p></p>
+<p>|  Unit  |  Unit Tests (70%)</p></p>
+<p>|        |  - Component testing</p></p>
+<p>|________|  - Function testing</p></p>
+<p><code></code>`</p><p><h3>テストレベル</h3></p><p>#### 1. 単体テスト (Unit Tests)</p></p>
+<p><li><strong>対象</strong>: 個別のコンポーネント、関数、クラス</li></p></p>
+<p><li><strong>ツール</strong>: Jest, React Testing Library</li></p></p>
+<p><li><strong>実行頻度</strong>: 全ての開発サイクル</li></p></p>
+<p><li><strong>自動化率</strong>: 100%</li></p><p>#### 2. 統合テスト (Integration Tests)</p></p>
+<p><li><strong>対象</strong>: API連携、データベース連携</li></p></p>
+<p><li><strong>ツール</strong>: Jest, Supertest</li></p></p>
+<p><li><strong>実行頻度</strong>: CI/CDパイプライン</li></p></p>
+<p><li><strong>自動化率</strong>: 100%</li></p><p>#### 3. E2Eテスト (End-to-End Tests)</p></p>
+<p><li><strong>対象</strong>: ユーザーの主要操作フロー</li></p></p>
+<p><li><strong>ツール</strong>: Playwright</li></p></p>
+<p><li><strong>実行頻度</strong>: デプロイ前・本番環境監視</li></p></p>
+<p><li><strong>自動化率</strong>: 100%</li></p><p>#### 4. パフォーマンステスト</p></p>
+<p><li><strong>対象</strong>: 応答時間、スループット、リソース使用量</li></p></p>
+<p><li><strong>ツール</strong>: Artillery, Lighthouse</li></p></p>
+<p><li><strong>実行頻度</strong>: 週次・リリース前</li></p></p>
+<p><li><strong>自動化率</strong>: 100%</li></p><p>#### 5. セキュリティテスト</p></p>
+<p><li><strong>対象</strong>: 脆弱性、認証・認可、データ保護</li></p></p>
+<p><li><strong>ツール</strong>: OWASP ZAP, npm audit</li></p></p>
+<p><li><strong>実行頻度</strong>: CI/CDパイプライン</li></p></p>
+<p><li><strong>自動化率</strong>: 100%</li></p><p><h2>📊 テスト範囲</h2></p><p><h3>フロントエンド機能</h3></p><p>#### ページ別テスト範囲</p><p>| ページ | 機能 | 単体テスト | 統合テスト | E2Eテスト |</p></p>
+<p>|--------|------|------------|------------|-----------|</p></p>
+<p>| ホーム | UI表示、ナビゲーション | ✅ | ✅ | ✅ |</p></p>
+<p>| 企業検索 | 検索、フィルタリング、結果表示 | ✅ | ✅ | ✅ |</p></p>
+<p>| ダッシュボード | ROIC表示、チャート、ランキング | ✅ | ✅ | ✅ |</p><p>#### コンポーネント別テスト範囲</p><p>| コンポーネント | テスト項目 | 優先度 |</p></p>
+<p>|----------------|------------|--------|</p></p>
+<p>| 検索フォーム | 入力検証、API連携、エラーハンドリング | 高 |</p></p>
+<p>| ROICテーブル | データ表示、ソート、ページング | 高 |</p></p>
+<p>| チャート | データ可視化、インタラクション | 中 |</p></p>
+<p>| ナビゲーション | ルーティング、アクセス制御 | 高 |</p><p><h3>バックエンド機能</h3></p><p>#### API別テスト範囲</p><p>| API エンドポイント | 機能 | 単体テスト | 統合テスト | 負荷テスト |</p></p>
+<p>|-------------------|------|------------|------------|------------|</p></p>
+<p>| GET /api/companies | 企業一覧取得 | ✅ | ✅ | ✅ |</p></p>
+<p>| GET /api/companies/search | 企業検索 | ✅ | ✅ | ✅ |</p></p>
+<p>| GET /api/roic/calculate/:id | ROIC計算 | ✅ | ✅ | ✅ |</p></p>
+<p>| GET /api/roic/rankings | ランキング取得 | ✅ | ✅ | ✅ |</p></p>
+<p>| GET /api/health | ヘルスチェック | ✅ | ✅ | ✅ |</p><p>#### サービス別テスト範囲</p><p>| サービス | 機能 | 単体テスト | 統合テスト |</p></p>
+<p>|----------|------|------------|------------|</p></p>
+<p>| EdinetService | EDINET API連携 | ✅ | ✅ |</p></p>
+<p>| XbrlParser | XBRL解析 | ✅ | ✅ |</p></p>
+<p>| RoicCalculator | ROIC計算エンジン | ✅ | ✅ |</p></p>
+<p>| DatabaseModels | データベース操作 | ✅ | ✅ |</p><p><h2>🔄 テスト自動化戦略</h2></p><p><h3>1. 継続的テスト実行</h3></p><p><code></code>`mermaid</p></p>
+<p>graph LR</p></p>
+<p>    A[コード変更] --> B[単体テスト]</p></p>
+<p>    B --> C[統合テスト]</p></p>
+<p>    C --> D[E2Eテスト]</p></p>
+<p>    D --> E[パフォーマンステスト]</p></p>
+<p>    E --> F[セキュリティテスト]</p></p>
+<p>    F --> G[デプロイ]</p></p>
+<p><code></code>`</p><p><h3>2. 自動テスト生成システム</h3></p><p>#### コード解析による自動テスト生成</p></p>
+<p><code></code>`typescript</p></p>
+<p>// 新しいコンポーネント検出時に自動生成されるテスト</p></p>
+<p>describe('AutoGenerated: NewComponent', () => {</p></p>
+<p>  test('renders without crashing', () => {</p></p>
+<p>    render(<NewComponent />)</p></p>
+<p>  })</p></p>
+<p>  </p></p>
+<p>  test('handles props correctly', () => {</p></p>
+<p>    // Props analysis based on TypeScript types</p></p>
+<p>  })</p></p>
+<p>  </p></p>
+<p>  test('handles user interactions', () => {</p></p>
+<p>    // Event handlers analysis</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p>#### API変更検出による自動テスト更新</p></p>
+<p><code></code>`typescript</p></p>
+<p>// OpenAPI スキーマ変更検出時に自動更新</p></p>
+<p>describe('AutoGenerated: API /api/companies', () => {</p></p>
+<p>  test('returns correct response structure', () => {</p></p>
+<p>    // Schema validation based on OpenAPI spec</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p><h3>3. テスト実行トリガー</h3></p><p>| トリガー | 実行テスト | 実行タイミング |</p></p>
+<p>|----------|------------|----------------|</p></p>
+<p>| ファイル保存 | 関連単体テスト | リアルタイム |</p></p>
+<p>| コミット | 全単体テスト + 統合テスト | 即座 |</p></p>
+<p>| プルリクエスト | フルテストスイート | 自動 |</p></p>
+<p>| マージ | E2E + パフォーマンステスト | 自動 |</p></p>
+<p>| デプロイ | 本番環境テスト | 自動 |</p><p><h2>🛠️ テストツール・フレームワーク</h2></p><p><h3>フロントエンド</h3></p></p>
+<p><code></code>`json</p></p>
+<p>{</p></p>
+<p>  "unitTesting": {</p></p>
+<p>    "framework": "Jest",</p></p>
+<p>    "renderer": "React Testing Library",</p></p>
+<p>    "coverage": "Jest built-in",</p></p>
+<p>    "mocking": "Jest mocks + MSW"</p></p>
+<p>  },</p></p>
+<p>  "e2eTesting": {</p></p>
+<p>    "framework": "Playwright",</p></p>
+<p>    "browsers": ["Chromium", "Firefox", "Safari"],</p></p>
+<p>    "devices": ["Desktop", "Mobile", "Tablet"]</p></p>
+<p>  }</p></p>
+<p>}</p></p>
+<p><code></code>`</p><p><h3>バックエンド</h3></p></p>
+<p><code></code>`json</p></p>
+<p>{</p></p>
+<p>  "unitTesting": {</p></p>
+<p>    "framework": "Jest",</p></p>
+<p>    "httpTesting": "Supertest",</p></p>
+<p>    "dbTesting": "Jest with test containers"</p></p>
+<p>  },</p></p>
+<p>  "loadTesting": {</p></p>
+<p>    "framework": "Artillery",</p></p>
+<p>    "scenarios": "User journey based"</p></p>
+<p>  }</p></p>
+<p>}</p></p>
+<p><code></code>`</p><p><h3>共通</h3></p></p>
+<p><code></code>`json</p></p>
+<p>{</p></p>
+<p>  "cicd": "Jenkins",</p></p>
+<p>  "reporting": "Allure Reports",</p></p>
+<p>  "monitoring": "Prometheus + Grafana",</p></p>
+<p>  "security": "OWASP ZAP + npm audit"</p></p>
+<p>}</p></p>
+<p><code></code>`</p><p><h2>📈 テストメトリクス・KPI</h2></p><p><h3>品質メトリクス</h3></p></p>
+<p><li><strong>コードカバレッジ</strong>: 目標 80%、最低 70%</li></p></p>
+<p><li><strong>テスト成功率</strong>: 目標 98%以上</li></p></p>
+<p><li><strong>平均修正時間</strong>: 目標 4時間以内</li></p></p>
+<p><li><strong>エスケープ欠陥率</strong>: 目標 5%以下</li></p><p><h3>パフォーマンスメトリクス</h3></p></p>
+<p><li><strong>ページ読み込み時間</strong>: 目標 2秒以内</li></p></p>
+<p><li><strong>API応答時間</strong>: 目標 500ms以内</li></p></p>
+<p><li><strong>スループット</strong>: 目標 100 req/sec</li></p></p>
+<p><li><strong>可用性</strong>: 目標 99.9%</li></p><p><h3>自動化メトリクス</h3></p></p>
+<p><li><strong>テスト自動化率</strong>: 目標 95%以上</li></p></p>
+<p><li><strong>CI/CD パイプライン実行時間</strong>: 目標 15分以内</li></p></p>
+<p><li><strong>デプロイ頻度</strong>: 目標 1日1回以上</li></p></p>
+<p><li><strong>本番障害からの復旧時間</strong>: 目標 30分以内</li></p><p><h2>🔧 テスト環境</h2></p><p><h3>環境構成</h3></p></p>
+<p><code></code>`yaml</p></p>
+<p>environments:</p></p>
+<p>  development:</p></p>
+<p>    purpose: "開発者によるローカルテスト"</p></p>
+<p>    data: "モックデータ"</p></p>
+<p>    automation: "単体テスト + 基本統合テスト"</p></p>
+<p>    </p></p>
+<p>  staging:</p></p>
+<p>    purpose: "CI/CDパイプラインでの自動テスト"</p></p>
+<p>    data: "テスト用サンプルデータ"</p></p>
+<p>    automation: "フルテストスイート"</p></p>
+<p>    </p></p>
+<p>  production:</p></p>
+<p>    purpose: "本番環境での監視テスト"</p></p>
+<p>    data: "本番データ（読み取り専用）"</p></p>
+<p>    automation: "スモークテスト + 監視"</p></p>
+<p><code></code>`</p><p><h3>データ管理戦略</h3></p></p>
+<p><li><strong>テストデータ生成</strong>: Factory pattern による自動生成</li></p></p>
+<p><li><strong>データクリーンアップ</strong>: テスト後の自動削除</li></p></p>
+<p><li><strong>データプライバシー</strong>: 本番データの匿名化</li></p></p>
+<p><li><strong>データ版数管理</strong>: スキーマ変更時の自動更新</li></p><p><h2>🚀 テスト実行計画</h2></p><p><h3>デイリーテスト実行</h3></p></p>
+<p><code></code>`bash</p></p>
+<p><h1>6:00 AM - 夜間フルテスト</h1></p></p>
+<p>npm run test:full</p></p>
+<p>npm run test:e2e</p></p>
+<p>npm run test:performance</p><p><h1>継続的実行 - 開発時間中</h1></p></p>
+<p>npm run test:watch</p></p>
+<p>npm run test:coverage:watch</p></p>
+<p><code></code>`</p><p><h3>週次テスト実行</h3></p></p>
+<p><code></code>`bash</p></p>
+<p><h1>日曜日 2:00 AM - 包括的テスト</h1></p></p>
+<p>npm run test:security:full</p></p>
+<p>npm run test:performance:extended</p></p>
+<p>npm run test:compatibility:browsers</p></p>
+<p>npm run test:accessibility</p></p>
+<p><code></code>`</p><p><h3>リリース前テスト実行</h3></p></p>
+<p><code></code>`bash</p></p>
+<p><h1>リリース24時間前</h1></p></p>
+<p>npm run test:release:preparation</p></p>
+<p>npm run test:rollback:scenario</p></p>
+<p>npm run test:production:readiness</p></p>
+<p><code></code>`</p><p><h2>📋 リスクベーステスト</h2></p><p><h3>高リスク機能 (重点テスト対象)</h3></p></p>
+<p>1. <strong>ROIC計算エンジン</strong>: 金融計算の正確性</p></p>
+<p>2. <strong>EDINET API連携</strong>: 外部システム依存</p></p>
+<p>3. <strong>認証・認可</strong>: セキュリティ要件</p></p>
+<p>4. <strong>データベース操作</strong>: データ整合性</p><p><h3>中リスク機能</h3></p></p>
+<p>1. <strong>検索・フィルタリング</strong>: パフォーマンス影響</p></p>
+<p>2. <strong>チャート表示</strong>: ブラウザ互換性</p></p>
+<p>3. <strong>エクスポート機能</strong>: データ形式対応</p><p><h3>低リスク機能</h3></p></p>
+<p>1. <strong>UI表示</strong>: 基本的な表示機能</p></p>
+<p>2. <strong>ナビゲーション</strong>: 標準的な操作</p></p>
+<p>3. <strong>ヘルプ・ドキュメント</strong>: 静的コンテンツ</p><p><h2>🔄 継続的改善</h2></p><p><h3>テストプロセス改善サイクル</h3></p></p>
+<p>1. <strong>測定</strong>: テストメトリクスの収集・分析</p></p>
+<p>2. <strong>分析</strong>: ボトルネックと改善ポイントの特定</p></p>
+<p>3. <strong>改善</strong>: テストプロセス・ツールの最適化</p></p>
+<p>4. <strong>実装</strong>: 改善策の適用と効果測定</p><p><h3>自動学習システム</h3></p></p>
+<p><li><strong>失敗パターン学習</strong>: 過去の障害からテストケース自動生成</li></p></p>
+<p><li><strong>ユーザー行動学習</strong>: アクセスログからテストシナリオ自動更新</li></p></p>
+<p><li><strong>パフォーマンス学習</strong>: 負荷パターンからテスト条件自動調整</li></ul></p><p>---</p><p><h2>📞 連絡先・承認</h2></p><p>| 役割 | 担当者 | 承認日 |</p></p>
+<p>|------|--------|--------|</p></p>
+<p>| テスト計画作成者 | 開発チーム | 2025/7/1 |</p></p>
+<p>| レビュー担当者 | プロジェクトマネージャー | 未定 |</p></p>
+<p>| 承認者 | プロダクトオーナー | 未定 |</p><p>---</p><p><strong>※ この文書は開発進捗に応じて継続的に更新されます</strong></p></p>}
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>このドキュメントは自動生成されています。最新の情報は定期的に更新されます。</p>
+        </footer>
+    </div>
+
+    <script>
+        // 自動更新機能
+        setInterval(() => {
+            location.reload();
+        }, 30000); // 30秒ごと
+
+        // プログレスバーアニメーション
+        document.addEventListener('DOMContentLoaded', () => {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
+    
