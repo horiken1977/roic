@@ -1,0 +1,189 @@
+name: Auto Chat-based Updates
+
+on:
+  # Manual trigger for chat-based updates
+  repository_dispatch:
+    types: [chat-update]
+  
+  # Watch for config file changes
+  push:
+    paths:
+      - 'config/project-config.json'
+      - 'scripts/centralized-manager.js'
+    branches: [ main ]
+
+env:
+  AWS_REGION: ap-northeast-1
+  NODE_VERSION: 18
+
+jobs:
+  # Detect chat-based changes and auto-commit
+  auto-commit:
+    name: 🤖 Auto-commit Chat Updates
+    runs-on: ubuntu-latest
+    if: github.actor == 'claude-code' || contains(github.event.head_commit.message, 'Auto-update')
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+    
+    - name: 🏗️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: 📦 Install dependencies
+      working-directory: ./frontend
+      run: npm ci
+    
+    - name: 🔄 Run centralized manager
+      run: |
+        echo "Running centralized manager to update documents..."
+        npm run centralized-manager &
+        MANAGER_PID=$!
+        
+        # Wait for updates to complete (max 60 seconds)
+        sleep 60
+        kill $MANAGER_PID 2>/dev/null || true
+    
+    - name: 📊 Check for changes
+      id: changes
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "changes=true" >> $GITHUB_OUTPUT
+          echo "📝 Changes detected:"
+          git status --porcelain
+        else
+          echo "changes=false" >> $GITHUB_OUTPUT
+          echo "ℹ️ No changes detected"
+        fi
+    
+    - name: 🚀 Auto-commit and push
+      if: steps.changes.outputs.changes == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Add all changes
+        git add .
+        
+        # Create commit with timestamp
+        TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S JST')
+        git commit -m "🤖 Auto-update from chat interaction
+
+        📅 Generated: $TIMESTAMP
+        🔄 Triggered by: Chat-based feature/document update
+        📋 Changes: Automated documentation sync
+        
+        🤖 Generated with Claude Code
+        
+        Co-Authored-By: Claude <noreply@anthropic.com>" || exit 0
+        
+        # Push changes
+        git push origin main
+        
+        echo "✅ Changes committed and pushed successfully"
+
+  # Trigger full CI/CD pipeline after auto-commit
+  trigger-pipeline:
+    name: 🚀 Trigger Full Pipeline
+    runs-on: ubuntu-latest
+    needs: auto-commit
+    if: success()
+    
+    steps:
+    - name: 📡 Trigger CI/CD Pipeline
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        event-type: auto-deployment
+        client-payload: |
+          {
+            "source": "chat-update",
+            "timestamp": "${{ github.event.head_commit.timestamp }}",
+            "commit_sha": "${{ github.sha }}"
+          }
+
+  # Update AWS resources schedule
+  update-aws-schedule:
+    name: ⏰ Update AWS Shutdown Schedule
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'aws_cost_optimization')
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: ⚙️ Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: 🏗️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    
+    - name: ⏰ Update shutdown schedules
+      run: |
+        echo "Updating AWS Lambda functions for shutdown schedule..."
+        
+        # Read config and update Lambda functions
+        cat config/project-config.json | jq -r '.automation.chat_based_rules.aws_cost_optimization.schedule.shutdown_time' > /tmp/shutdown_time
+        cat config/project-config.json | jq -r '.automation.chat_based_rules.aws_cost_optimization.schedule.startup_time' > /tmp/startup_time
+        
+        SHUTDOWN_TIME=$(cat /tmp/shutdown_time)
+        STARTUP_TIME=$(cat /tmp/startup_time)
+        
+        echo "📅 Shutdown time: $SHUTDOWN_TIME"
+        echo "📅 Startup time: $STARTUP_TIME"
+        
+        # Update EventBridge rules (if they exist)
+        aws events list-rules --name-prefix "roic-shutdown" --query 'Rules[].Name' --output text | while read rule_name; do
+          if [ -n "$rule_name" ]; then
+            echo "Updating rule: $rule_name"
+            # Convert JST to UTC cron expression
+            SHUTDOWN_HOUR=$(echo $SHUTDOWN_TIME | cut -d':' -f1)
+            SHUTDOWN_MINUTE=$(echo $SHUTDOWN_TIME | cut -d':' -f2)
+            UTC_HOUR=$((SHUTDOWN_HOUR - 9))
+            if [ $UTC_HOUR -lt 0 ]; then
+              UTC_HOUR=$((UTC_HOUR + 24))
+            fi
+            
+            aws events put-rule \
+              --name "$rule_name" \
+              --schedule-expression "cron($SHUTDOWN_MINUTE $UTC_HOUR * * ? *)" \
+              --state ENABLED
+          fi
+        done
+        
+        echo "✅ AWS schedules updated successfully"
+
+  # Notify completion
+  notify:
+    name: 📢 Notify Completion
+    runs-on: ubuntu-latest
+    needs: [auto-commit, trigger-pipeline, update-aws-schedule]
+    if: always()
+    
+    steps:
+    - name: 📢 Summary
+      run: |
+        echo "## 🤖 Chat-based Update Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Status:" >> $GITHUB_STEP_SUMMARY
+        echo "- Auto-commit: ${{ needs.auto-commit.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Pipeline trigger: ${{ needs.trigger-pipeline.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- AWS schedule update: ${{ needs.update-aws-schedule.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+        echo "- Full CI/CD pipeline will be triggered automatically" >> $GITHUB_STEP_SUMMARY
+        echo "- Documents will be updated and deployed" >> $GITHUB_STEP_SUMMARY
+        echo "- AWS resources will follow the updated schedule" >> $GITHUB_STEP_SUMMARY

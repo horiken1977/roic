@@ -130,12 +130,12 @@ export default function TestSpecPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header - Same style as home page */}
-      <div className="bg-blue-50 py-8 border-b border-gray-200">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header - Unified style with dashboard */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">テスト仕様書</h1>
-          <p className="text-gray-600">
+          <h1 className="text-4xl font-bold mb-4">🧪 テスト仕様書</h1>
+          <p className="text-xl text-blue-100 mb-6">
             ユニット・E2Eテストの実行状況・進捗管理
           </p>
         </div>

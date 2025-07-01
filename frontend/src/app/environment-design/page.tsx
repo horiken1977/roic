@@ -68,26 +68,27 @@ export default function EnvironmentDesignPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gray-50">
       <Navigation />
-      <div className="container mx-auto px-4 py-8">
-        <Breadcrumb items={breadcrumbItems} />
-        
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold text-gray-800 flex items-center">
-              <span className="text-4xl mr-3">🏗️</span>
-              環境設計書
-            </h1>
-            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-              最終更新: {environmentInfo?.lastUpdated}
-            </div>
+      
+      {/* Header - Unified style with dashboard */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
+        <div className="container mx-auto px-4">
+          <Breadcrumb items={breadcrumbItems} />
+          <h1 className="text-4xl font-bold mb-4">🏗️ 環境設計書</h1>
+          <p className="text-xl text-blue-100 mb-6">
+            ROIC分析アプリケーションの開発・本番環境の詳細設計とインフラストラクチャ構成
+          </p>
+          <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium inline-block">
+            最終更新: {environmentInfo?.lastUpdated}
           </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
 
           <div className="prose max-w-none">
-            <p className="text-lg text-gray-600 mb-8">
-              ROIC分析アプリケーションの開発・本番環境の詳細設計とインフラストラクチャ構成
-            </p>
 
             {/* 環境概要カード */}
             <div className="grid md:grid-cols-2 gap-6 mb-8">
