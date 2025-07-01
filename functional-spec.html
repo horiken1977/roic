@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>機能設計書</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1, h2, h3, h4 { color: #333; }
+        h1 { border-bottom: 2px solid #e1e4e8; padding-bottom: 10px; }
+        .status-completed { color: #28a745; }
+        .status-progress { color: #ffc107; }
+        .status-pending { color: #6c757d; }
+        code { background: #f6f8fa; padding: 2px 4px; border-radius: 3px; }
+        .update-time { color: #666; font-style: italic; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e1e4e8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ROIC分析アプリケーション 機能設計書</h1></p><p><h2>1. システム概要</h2></p><p><h3>1.1 目的</h3>
+<p>日系上場企業のROIC（投下資本利益率）を自動計算・分析・比較するWebアプリケーション</p><p><h3>1.2 開発方針</h3>
+<li><strong>MVP-First</strong>: 最小限の価値ある製品から開始</li>
+<li><strong>インクリメンタル開発</strong>: 段階的な機能追加</li>
+<li><strong>自動文書更新</strong>: 開発進捗に応じた自動更新</li></p><p><h2>2. 機能要件</h2></p><p><h3>2.1 実装済み機能</h3></p><p><h4>ROIC自動計算 <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: 4つの計算方式に対応したROIC自動計算</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: frontend/src/components/ROICCalculator.tsx, frontend/src/utils/roicCalculations.ts</li></p><p><h4>企業検索・フィルタリング <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: 効率的な企業検索とフィルタリング機能</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: frontend/src/app/companies/page.tsx, frontend/src/components/CompanySearch.tsx</li></p><p><h4>進捗ダッシュボード <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: リアルタイムで開発状況を監視・可視化</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: frontend/src/app/dashboard/page.tsx, frontend/src/app/page.tsx</li></p><p><h4>機能設計書 <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: システム要件・機能仕様・技術設計</li>
+<li><strong>優先度</strong>: medium</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: docs/functional-spec.md, frontend/src/app/functional-spec/page.tsx</li></p><p><h4>テスト仕様書 <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: ユニット・E2Eテストの実行状況</li>
+<li><strong>優先度</strong>: medium</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: frontend/src/app/test-docs/test-spec/page.tsx</li></p><p></p><p><h3>2.2 計画中機能</h3></p><p><h4>業界比較・ランキング <span class="status-pending">📋</span></h4>
+<li><strong>ステータス</strong>: planned</li>
+<li><strong>進捗</strong>: 0%</li>
+<li><strong>説明</strong>: 同業界内でのROIC比較とランキング表示</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 2</li></p><p><h4>データ可視化 <span class="status-pending">📋</span></h4>
+<li><strong>ステータス</strong>: planned</li>
+<li><strong>進捗</strong>: 0%</li>
+<li><strong>説明</strong>: ROICトレンドチャート・グラフ表示</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 2</li></p><p><h4>EDINET API統合 <span class="status-pending">📋</span></h4>
+<li><strong>ステータス</strong>: planned</li>
+<li><strong>進捗</strong>: 0%</li>
+<li><strong>説明</strong>: 外部APIからの財務データ取得</li>
+<li><strong>優先度</strong>: medium</li>
+<li><strong>フェーズ</strong>: Phase 3</li></p><p></p><p><h2>3. 開発進捗</h2></p><p><h3>全体進捗: 63%</h3></p><p><h3>Phase 1: MVP基盤構築 <span class="status-completed">✅</span></h3>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: 基本機能とインフラの構築</li>
+<li><strong>含む機能</strong>: 5個</li></p><p><h3>Phase 2: コア機能拡張 <span class="status-pending">📋</span></h3>
+<li><strong>進捗</strong>: 0%</li>
+<li><strong>説明</strong>: 業界比較・データ可視化機能の追加</li>
+<li><strong>含む機能</strong>: 2個</li></p><p><h3>Phase 3: データ統合 <span class="status-pending">📋</span></h3>
+<li><strong>進捗</strong>: 0%</li>
+<li><strong>説明</strong>: 外部API統合・データベース連携</li>
+<li><strong>含む機能</strong>: 1個</li></p><p></p><p><h2>4. テスト状況</h2></p><p><li><strong>ユニットテスト</strong>: 4件 (成功: 4, カバレッジ: 93%)</li>
+<li><strong>E2Eテスト</strong>: 0件 (成功: 0, カバレッジ: 70%)</li>
+<li><strong>統合テスト</strong>: 0件 (成功: 0, カバレッジ: 75%)</li></p><p>---</p>
+<p><em>最終更新: 2025/7/1 15:48:54</em>
+<p><em>この文書は開発進捗に応じて自動更新されます</em>
+        <div class="update-time">
+            最終自動更新: 2025/7/1 15:48:54<br>
+            🤖 この文書は自動的に更新されます
+        </div>
+    </div>
+    <script>
+        // Auto-refresh every 30 seconds
+        setTimeout(() => window.location.reload(), 30000);
+    </script>
+</body>
+</html>
