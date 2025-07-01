@@ -1,4 +1,5 @@
 import Link from "next/link";
+import TestProgressWidget from '@/components/TestProgressWidget';
 
 export default function Home() {
   return (
@@ -223,6 +224,46 @@ export default function Home() {
                 <span className="ml-auto text-green-600 text-sm">✅</span>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Test Progress Section */}
+        <TestProgressWidget />
+
+        {/* Sample Data Section - Will be replaced with real data */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">ROIC上位企業（サンプル）</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-2">順位</th>
+                  <th className="text-left py-2">企業名</th>
+                  <th className="text-left py-2">業界</th>
+                  <th className="text-left py-2">ROIC</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2">1</td>
+                  <td className="py-2">サンプル企業A</td>
+                  <td className="py-2">テクノロジー</td>
+                  <td className="py-2 text-green-600 font-semibold">25.3%</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2">2</td>
+                  <td className="py-2">サンプル企業B</td>
+                  <td className="py-2">ヘルスケア</td>
+                  <td className="py-2 text-green-600 font-semibold">22.1%</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2">3</td>
+                  <td className="py-2">サンプル企業C</td>
+                  <td className="py-2">消費財</td>
+                  <td className="py-2 text-green-600 font-semibold">19.8%</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 

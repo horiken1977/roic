@@ -16,7 +16,6 @@ class CentralizedProjectManager {
       functional_spec: path.join(this.projectRoot, 'docs/functional-spec.md'),
       test_spec: path.join(this.projectRoot, 'docs/test-spec.md'),
       dashboard: path.join(this.projectRoot, 'frontend/src/app/page.tsx'),
-      dashboard_detail: path.join(this.projectRoot, 'frontend/src/app/dashboard/page.tsx'),
       functional_spec_html: path.join(this.projectRoot, 'frontend/public/functional-spec.html'),
       test_spec_html: path.join(this.projectRoot, 'frontend/public/test-docs/test-spec.html')
     };
@@ -378,22 +377,24 @@ ${this.generateTestList('integration')}
   }
 
   updateDashboard() {
-    // ダッシュボードの統計を更新
+    // ホームページ（統合ダッシュボード）の統計を更新
     const dashboardContent = fs.readFileSync(this.paths.dashboard, 'utf8');
     
     const totalFeatures = this.config.features.core.length;
     const completedFeatures = this.config.features.core.filter(f => f.status === 'completed').length;
     const overallProgress = totalFeatures > 0 ? Math.round((completedFeatures / totalFeatures) * 100) : 0;
     const totalTests = this.config.tests.unit.total + this.config.tests.e2e.total + this.config.tests.integration.total;
+    const inProgressFeatures = this.config.features.core.filter(f => f.status === 'in_progress').length;
 
-    // 統計数値を更新
+    // 統計数値を更新（ホームページの統合ダッシュボード）
     let updatedContent = dashboardContent
       .replace(/text-3xl font-bold text-blue-600 mb-2">\d+%/, `text-3xl font-bold text-blue-600 mb-2">${overallProgress}%`)
       .replace(/text-3xl font-bold text-green-600 mb-2">\d+/, `text-3xl font-bold text-green-600 mb-2">${completedFeatures}`)
+      .replace(/text-3xl font-bold text-orange-600 mb-2">\d+/, `text-3xl font-bold text-orange-600 mb-2">${inProgressFeatures}`)
       .replace(/text-3xl font-bold text-purple-600 mb-2">\d+/, `text-3xl font-bold text-purple-600 mb-2">${totalTests}`);
 
     fs.writeFileSync(this.paths.dashboard, updatedContent);
-    console.log('✅ ダッシュボードを更新');
+    console.log('✅ ホームページ（統合ダッシュボード）を更新');
   }
 
   updateHTMLDocuments() {
