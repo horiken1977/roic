@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Navigation from "../components/Navigation";
+import Breadcrumb from "../components/Breadcrumb";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,7 +17,8 @@ export default function RootLayout({
     <html lang="ja">
       <body className="antialiased">
         <Navigation />
-        <main className="container mx-auto p-4">
+        <Breadcrumb />
+        <main className="min-h-screen">
           {children}
         </main>
       </body>

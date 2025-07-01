@@ -149,18 +149,42 @@ export default function TestSpecPage() {
         {/* Navigation */}
         <div className="bg-white border-b border-gray-200 rounded-t-lg">
           <nav className="flex space-x-8 px-6 py-4">
-            <a href="#unit-tests" className="text-purple-600 hover:text-purple-800 font-medium">
+            <button 
+              onClick={() => {
+                const element = document.getElementById('unit-tests');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-purple-600 hover:text-purple-800 font-medium cursor-pointer"
+            >
               ユニットテスト
-            </a>
-            <a href="#e2e-tests" className="text-purple-600 hover:text-purple-800 font-medium">
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.getElementById('e2e-tests');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-purple-600 hover:text-purple-800 font-medium cursor-pointer"
+            >
               E2Eテスト
-            </a>
-            <a href="#coverage" className="text-purple-600 hover:text-purple-800 font-medium">
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.getElementById('coverage');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-purple-600 hover:text-purple-800 font-medium cursor-pointer"
+            >
               カバレッジ
-            </a>
-            <a href="#recommendations" className="text-purple-600 hover:text-purple-800 font-medium">
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.getElementById('recommendations');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-purple-600 hover:text-purple-800 font-medium cursor-pointer"
+            >
               推奨テスト
-            </a>
+            </button>
           </nav>
         </div>
 

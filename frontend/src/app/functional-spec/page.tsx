@@ -76,21 +76,51 @@ export default function FunctionalSpecPage() {
       <div className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4">
           <nav className="flex space-x-8 py-4">
-            <a href="#overview" className="text-blue-600 hover:text-blue-800 font-medium">
+            <button 
+              onClick={() => {
+                const element = document.getElementById('overview');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+            >
               システム概要
-            </a>
-            <a href="#requirements" className="text-blue-600 hover:text-blue-800 font-medium">
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.getElementById('requirements');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+            >
               機能要件
-            </a>
-            <a href="#technical" className="text-blue-600 hover:text-blue-800 font-medium">
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.getElementById('technical');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+            >
               技術仕様
-            </a>
-            <a href="#progress" className="text-blue-600 hover:text-blue-800 font-medium">
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.getElementById('progress');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+            >
               開発計画
-            </a>
-            <a href="#quality" className="text-blue-600 hover:text-blue-800 font-medium">
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.getElementById('quality');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+            >
               品質保証
-            </a>
+            </button>
           </nav>
         </div>
       </div>
