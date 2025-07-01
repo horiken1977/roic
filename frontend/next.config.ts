@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/roic' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/roic/' : '',
+  basePath: '/roic',
+  assetPrefix: '/roic/',
   eslint: {
     ignoreDuringBuilds: true,
   },
