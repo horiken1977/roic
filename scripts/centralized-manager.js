@@ -264,7 +264,8 @@ class CentralizedProjectManager {
 
 ### 2.1 実装済み機能
 
-${this.config.features.core.map(feature => `#### ${feature.name} ${this.getStatusEmoji(feature.status)}
+${this.config.features.core.map(feature => {
+  let content = `#### ${feature.name} ${this.getStatusEmoji(feature.status)}
 - **ステータス**: ${feature.status}
 - **進捗**: ${feature.progress}%
 - **説明**: ${feature.description}
@@ -272,7 +273,19 @@ ${this.config.features.core.map(feature => `#### ${feature.name} ${this.getStatu
 - **フェーズ**: Phase ${feature.phase}
 ${feature.files.length > 0 ? `- **ファイル**: ${feature.files.join(', ')}` : ''}
 
-`).join('')}
+`;
+
+  // 詳細仕様の追加
+  if (feature.technical_details) {
+    content += this.generateTechnicalDetails(feature.technical_details);
+  }
+
+  if (feature.file_specifications) {
+    content += this.generateFileSpecifications(feature.file_specifications);
+  }
+
+  return content;
+}).join('')}
 
 ### 2.2 計画中機能
 
@@ -317,7 +330,7 @@ ${this.config.phases.map(phase => `### Phase ${phase.id}: ${phase.name} ${this.g
     const totalTests = this.config.tests.unit.total + this.config.tests.e2e.total + this.config.tests.integration.total;
     const totalPassed = this.config.tests.unit.passed + this.config.tests.e2e.passed + this.config.tests.integration.passed;
 
-    return `# テスト仕様書
+    let content = `# テスト仕様書
 
 ## 概要
 
@@ -343,28 +356,15 @@ ${this.generateTestList('e2e')}
 
 ## 統合テスト
 
-### 実行済みテスト: ${this.config.tests.integration.total}件
-- **成功**: ${this.config.tests.integration.passed}件
-- **失敗**: ${this.config.tests.integration.failed}件
-- **カバレッジ**: ${this.config.tests.integration.coverage}%
+### 実行済みテスト: ${this.config.tests.integration.total}件`;
 
-${this.generateTestList('integration')}
+    // テスト詳細仕様の追加
+    const testFeature = this.config.features.core.find(f => f.id === 'test-spec');
+    if (testFeature && testFeature.test_specifications) {
+      content += this.generateTestSpecifications(testFeature.test_specifications);
+    }
 
-## 推奨追加テスト
-
-### MVPフェーズ
-- ROIC計算の精度テスト
-- UI/UXのユーザビリティテスト
-- レスポンシブデザインテスト
-
-### 次期フェーズ
-- 大量データ処理のパフォーマンステスト
-- セキュリティテスト
-- ブラウザ互換性テスト
-
----
-*最終更新: ${new Date().toLocaleString('ja-JP')}*
-*この文書はテスト実行状況に応じて自動更新されます*`;
+    return content;
   }
 
   generateTestList(type) {
@@ -666,6 +666,145 @@ npm run deploy
     </script>
 </body>
 </html>`;
+  }
+
+  generateTestSpecifications(testSpecs) {
+    let content = '\n\n## 📋 詳細テスト仕様\n\n';
+    
+    if (testSpecs.implemented_tests) {
+      content += '### ✅ 実装済みテスト\n\n';
+      Object.entries(testSpecs.implemented_tests).forEach(([filePath, spec]) => {
+        content += `#### ${filePath}\n\n`;
+        content += `**目的**: ${spec.purpose}\n\n`;
+        content += `**テストケース**:\n`;
+        spec.test_cases.forEach(testCase => {
+          content += `- ${testCase}\n`;
+        });
+        content += `\n**カバレッジ**: ${spec.coverage}\n`;
+        if (spec.issues) {
+          content += `\n⚠️ **課題**: ${spec.issues}\n`;
+        }
+        content += '\n';
+      });
+    }
+
+    if (testSpecs.missing_tests) {
+      content += '### ⚠️ 不足しているテスト\n\n';
+      Object.entries(testSpecs.missing_tests).forEach(([testType, spec]) => {
+        content += `#### ${spec.description}\n\n`;
+        content += `**優先度**: ${spec.priority}\n\n`;
+        content += `**必要なテスト**:\n`;
+        spec.required_tests.forEach(test => {
+          content += `- ${test}\n`;
+        });
+        content += '\n';
+      });
+    }
+
+    if (testSpecs.test_metrics) {
+      content += '### 📊 テストメトリクス\n\n';
+      const metrics = testSpecs.test_metrics;
+      content += `- **現在のカバレッジ**: ${metrics.current_coverage}\n`;
+      content += `- **テスト数**: ${metrics.test_count}件\n`;
+      content += `- **成功**: ${metrics.passed}件\n`;
+      content += `- **失敗**: ${metrics.failed}件\n\n`;
+    }
+
+    return content;
+  }
+
+  generateTechnicalDetails(technicalDetails) {
+    let content = '\n##### 📊 技術詳細\n\n';
+    
+    if (technicalDetails.calculation_methods) {
+      content += '**計算方式:**\n\n';
+      technicalDetails.calculation_methods.forEach((method, index) => {
+        content += `${index + 1}. **${method.name}**\n`;
+        content += `   - 公式: \`${method.formula}\`\n`;
+        content += `   - 根拠: ${method.rationale}\n`;
+        content += `   - 適用場面: ${method.use_case}\n\n`;
+      });
+    }
+
+    if (technicalDetails.accuracy_adjustments) {
+      content += '**精度向上のための調整:**\n\n';
+      Object.entries(technicalDetails.accuracy_adjustments).forEach(([key, value]) => {
+        content += `- **${key}**: ${value}\n`;
+      });
+      content += '\n';
+    }
+
+    if (technicalDetails.api_overview) {
+      content += '**API概要:**\n\n';
+      const api = technicalDetails.api_overview;
+      content += `- **名称**: ${api.name}\n`;
+      content += `- **提供者**: ${api.provider}\n`;
+      content += `- **目的**: ${api.purpose}\n`;
+      content += `- **URL**: ${api.url}\n`;
+      content += `- **データ形式**: ${api.data_format}\n\n`;
+    }
+
+    if (technicalDetails.data_acquisition_flow) {
+      content += '**データ取得フロー:**\n\n';
+      technicalDetails.data_acquisition_flow.forEach(step => {
+        content += `${step.step}. **${step.name}**\n`;
+        if (step.api_endpoint) content += `   - エンドポイント: \`${step.api_endpoint}\`\n`;
+        if (step.method) content += `   - メソッド: ${step.method}\n`;
+        if (step.technology) content += `   - 技術: ${step.technology}\n`;
+        content += `   - 説明: ${step.description}\n\n`;
+      });
+    }
+
+    return content;
+  }
+
+  generateFileSpecifications(fileSpecs) {
+    let content = '\n##### 📁 ファイル仕様\n\n';
+    
+    Object.entries(fileSpecs).forEach(([filePath, spec]) => {
+      content += `**${filePath}**\n\n`;
+      content += `- **目的**: ${spec.purpose}\n`;
+      
+      if (spec.main_functions) {
+        content += '- **主要機能**:\n';
+        spec.main_functions.forEach(func => {
+          content += `  - ${func}\n`;
+        });
+      }
+
+      if (spec.key_features) {
+        content += '- **主要特徴**:\n';
+        spec.key_features.forEach(feature => {
+          content += `  - ${feature}\n`;
+        });
+      }
+
+      if (spec.algorithms) {
+        content += '- **アルゴリズム**:\n';
+        Object.entries(spec.algorithms).forEach(([key, formula]) => {
+          content += `  - **${key}**: \`${formula}\`\n`;
+        });
+      }
+
+      if (spec.ui_components) {
+        content += '- **UIコンポーネント**:\n';
+        spec.ui_components.forEach(component => {
+          content += `  - ${component}\n`;
+        });
+      }
+
+      if (spec.current_status) {
+        content += `- **現在の状況**: ${spec.current_status}\n`;
+      }
+
+      if (spec.status) {
+        content += `- **ステータス**: ${spec.status}\n`;
+      }
+
+      content += '\n';
+    });
+
+    return content;
   }
 
   getStatusEmoji(status) {
