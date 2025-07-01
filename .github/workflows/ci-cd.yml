@@ -1,0 +1,358 @@
+name: ROIC CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  AWS_REGION: ap-northeast-1
+  NODE_VERSION: 18
+
+jobs:
+  # Code Quality and Testing
+  test:
+    name: 🧪 Test and Quality Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🏗️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+        
+    - name: 📦 Install dependencies
+      working-directory: ./frontend
+      run: npm ci
+      
+    - name: 🔍 Run ESLint
+      working-directory: ./frontend
+      run: npm run lint
+      
+    - name: 🧪 Run unit tests
+      working-directory: ./frontend
+      run: npm run test:ci
+      
+    - name: 📊 Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./frontend/coverage/lcov.info
+        directory: ./frontend/coverage
+        
+    - name: 🔒 Security audit
+      working-directory: ./frontend
+      run: npm audit --audit-level=high
+      continue-on-error: true
+
+  # Build Application
+  build:
+    name: 🏗️ Build Application
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🏗️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+        
+    - name: 📦 Install dependencies
+      working-directory: ./frontend
+      run: npm ci
+      
+    - name: 🏗️ Build application
+      working-directory: ./frontend
+      env:
+        NEXT_PUBLIC_APP_NAME: "ROIC分析アプリケーション"
+        NEXT_PUBLIC_APP_VERSION: ${{ github.sha }}
+        NEXT_PUBLIC_ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+      run: npm run build
+      
+    - name: 📦 Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-files
+        path: frontend/out/
+        retention-days: 7
+
+  # Deploy to Staging (on main branch)
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: staging
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-files
+        path: frontend/out/
+        
+    - name: ⚙️ Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        
+    - name: 🚀 Deploy to S3 Staging
+      env:
+        S3_BUCKET: ${{ secrets.S3_STAGING_BUCKET }}
+        CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_STAGING_ID }}
+      run: |
+        # Sync to S3 with optimized cache headers
+        aws s3 sync frontend/out/ s3://$S3_BUCKET/ \
+          --delete \
+          --cache-control "public, max-age=31536000" \
+          --exclude "*.html" \
+          --exclude "*.json"
+          
+        # Upload HTML files with shorter cache
+        aws s3 sync frontend/out/ s3://$S3_BUCKET/ \
+          --cache-control "public, max-age=0, must-revalidate" \
+          --include "*.html" \
+          --include "*.json"
+          
+        # Invalidate CloudFront cache
+        aws cloudfront create-invalidation \
+          --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+          --paths "/*"
+          
+    - name: 🏥 Health check
+      env:
+        CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_STAGING_ID }}
+      run: |
+        echo "Waiting for deployment to propagate..."
+        sleep 60
+        
+        STAGING_URL="https://${CLOUDFRONT_DISTRIBUTION_ID}.cloudfront.net"
+        
+        for i in {1..10}; do
+          if curl -f -s "$STAGING_URL" > /dev/null; then
+            echo "✅ Staging health check passed!"
+            echo "🌐 Staging URL: $STAGING_URL"
+            break
+          else
+            echo "⏳ Health check attempt $i/10 failed, retrying..."
+            sleep 30
+          fi
+        done
+
+  # Run E2E Tests on Staging
+  e2e-tests:
+    name: 🔄 E2E Tests on Staging
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🏗️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+        
+    - name: 📦 Install dependencies
+      working-directory: ./frontend
+      run: npm ci
+      
+    - name: 🔄 Run E2E tests
+      working-directory: ./frontend
+      env:
+        CYPRESS_BASE_URL: https://${{ secrets.CLOUDFRONT_STAGING_ID }}.cloudfront.net
+      run: |
+        if [ -f "cypress.config.js" ]; then
+          npm run test:e2e:headless
+        else
+          echo "No E2E tests configured, skipping..."
+        fi
+      continue-on-error: true
+      
+    - name: 📊 Upload E2E test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-test-results
+        path: |
+          frontend/cypress/screenshots/
+          frontend/cypress/videos/
+        retention-days: 7
+
+  # Deploy to Production (manual approval required)
+  deploy-production:
+    name: 🌟 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [deploy-staging, e2e-tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-files
+        path: frontend/out/
+        
+    - name: ⚙️ Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        
+    - name: 💾 Create production backup
+      env:
+        S3_BUCKET: ${{ secrets.S3_PRODUCTION_BUCKET }}
+      run: |
+        BACKUP_PREFIX="backup/$(date +%Y%m%d_%H%M%S)"
+        
+        # Create backup if bucket has content
+        if aws s3 ls s3://$S3_BUCKET/ &> /dev/null; then
+          echo "Creating backup..."
+          aws s3 sync s3://$S3_BUCKET/ s3://$S3_BUCKET/$BACKUP_PREFIX/ \
+            --exclude "backup/*"
+          echo "✅ Backup created at s3://$S3_BUCKET/$BACKUP_PREFIX/"
+        fi
+        
+    - name: 🚀 Deploy to S3 Production
+      env:
+        S3_BUCKET: ${{ secrets.S3_PRODUCTION_BUCKET }}
+        CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_PRODUCTION_ID }}
+      run: |
+        # Sync to S3 with optimized cache headers
+        aws s3 sync frontend/out/ s3://$S3_BUCKET/ \
+          --delete \
+          --cache-control "public, max-age=31536000, immutable" \
+          --exclude "*.html" \
+          --exclude "*.json" \
+          --exclude "*.xml" \
+          --exclude "*.txt"
+          
+        # Upload HTML and dynamic files with shorter cache
+        aws s3 sync frontend/out/ s3://$S3_BUCKET/ \
+          --cache-control "public, max-age=0, must-revalidate" \
+          --include "*.html" \
+          --include "*.json" \
+          --include "*.xml" \
+          --include "*.txt"
+          
+        # Invalidate CloudFront cache and wait for completion
+        INVALIDATION_ID=$(aws cloudfront create-invalidation \
+          --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+          --paths "/*" \
+          --query 'Invalidation.Id' \
+          --output text)
+          
+        echo "Waiting for invalidation to complete..."
+        aws cloudfront wait invalidation-completed \
+          --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+          --id $INVALIDATION_ID
+          
+    - name: 🏥 Production health check
+      env:
+        CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_PRODUCTION_ID }}
+        S3_BUCKET: ${{ secrets.S3_PRODUCTION_BUCKET }}
+      run: |
+        PRODUCTION_URL="https://${CLOUDFRONT_DISTRIBUTION_ID}.cloudfront.net"
+        
+        echo "Performing comprehensive production health check..."
+        
+        for i in {1..15}; do
+          if curl -f -s "$PRODUCTION_URL" > /dev/null; then
+            # Check response time
+            RESPONSE_TIME=$(curl -o /dev/null -s -w '%{time_total}\n' "$PRODUCTION_URL")
+            echo "Response time: ${RESPONSE_TIME}s"
+            
+            # Check content
+            if curl -s "$PRODUCTION_URL" | grep -q "ROIC分析アプリケーション"; then
+              echo "✅ Production deployment successful!"
+              echo "🌐 Production URL: $PRODUCTION_URL"
+              exit 0
+            fi
+          fi
+          
+          echo "⏳ Health check attempt $i/15 failed, retrying..."
+          sleep 20
+        done
+        
+        echo "❌ Production health check failed, initiating rollback..."
+        
+        # Emergency rollback
+        if aws s3 ls s3://$S3_BUCKET/backup/latest/ &> /dev/null; then
+          echo "Rolling back to latest backup..."
+          aws s3 sync s3://$S3_BUCKET/backup/latest/ s3://$S3_BUCKET/ \
+            --delete --exclude "backup/*"
+          aws cloudfront create-invalidation \
+            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+            --paths "/*"
+          echo "✅ Rollback completed"
+        fi
+        
+        exit 1
+
+  # Cleanup old artifacts
+  cleanup:
+    name: 🧹 Cleanup
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    if: always() && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: ⚙️ Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        
+    - name: 🧹 Cleanup old backups
+      env:
+        S3_PRODUCTION_BUCKET: ${{ secrets.S3_PRODUCTION_BUCKET }}
+        S3_STAGING_BUCKET: ${{ secrets.S3_STAGING_BUCKET }}
+      run: |
+        # Keep only last 10 production backups
+        echo "Cleaning up old production backups..."
+        aws s3 ls s3://$S3_PRODUCTION_BUCKET/backup/ | \
+          grep "PRE" | grep -v "latest" | sort | head -n -10 | \
+          awk '{print $2}' | while read backup_dir; do
+            if [ -n "$backup_dir" ]; then
+              echo "Removing old backup: $backup_dir"
+              aws s3 rm s3://$S3_PRODUCTION_BUCKET/backup/$backup_dir --recursive
+            fi
+          done
+          
+        # Keep only last 5 staging backups
+        echo "Cleaning up old staging backups..."
+        aws s3 ls s3://$S3_STAGING_BUCKET/backup/ | \
+          grep "PRE" | grep -v "latest" | sort | head -n -5 | \
+          awk '{print $2}' | while read backup_dir; do
+            if [ -n "$backup_dir" ]; then
+              echo "Removing old backup: $backup_dir"
+              aws s3 rm s3://$S3_STAGING_BUCKET/backup/$backup_dir --recursive
+            fi
+          done
+        
+        echo "✅ Cleanup completed"

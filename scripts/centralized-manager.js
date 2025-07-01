@@ -15,9 +15,11 @@ class CentralizedProjectManager {
     this.paths = {
       functional_spec: path.join(this.projectRoot, 'docs/functional-spec.md'),
       test_spec: path.join(this.projectRoot, 'docs/test-spec.md'),
+      environment_design: path.join(this.projectRoot, 'docs/environment-design.md'),
       dashboard: path.join(this.projectRoot, 'frontend/src/app/page.tsx'),
       functional_spec_html: path.join(this.projectRoot, 'frontend/public/functional-spec.html'),
-      test_spec_html: path.join(this.projectRoot, 'frontend/public/test-docs/test-spec.html')
+      test_spec_html: path.join(this.projectRoot, 'frontend/public/test-docs/test-spec.html'),
+      environment_design_html: path.join(this.projectRoot, 'frontend/public/environment-design.html')
     };
 
     this.initializeWatchers();
@@ -230,6 +232,7 @@ class CentralizedProjectManager {
     
     this.updateFunctionalSpec();
     this.updateTestSpec();
+    this.updateEnvironmentDesign();
     this.updateDashboard();
     this.updateHTMLDocuments();
   }
@@ -397,6 +400,189 @@ ${this.generateTestList('integration')}
     console.log('✅ ホームページ（統合ダッシュボード）を更新');
   }
 
+  updateEnvironmentDesign() {
+    const content = this.generateEnvironmentDesignContent();
+    fs.writeFileSync(this.paths.environment_design, content);
+    console.log('✅ 環境設計書を更新');
+  }
+
+  generateEnvironmentDesignContent() {
+    // 動的に環境情報を取得・更新
+    const { execSync } = require('child_process');
+    
+    let nodeVersion = 'unknown';
+    let npmVersion = 'unknown';
+    let gitVersion = 'unknown';
+    let osInfo = 'unknown';
+    
+    try {
+      nodeVersion = execSync('node --version', { encoding: 'utf8' }).trim();
+      npmVersion = execSync('npm --version', { encoding: 'utf8' }).trim();
+      gitVersion = execSync('git --version', { encoding: 'utf8' }).trim().replace('git version ', '');
+      osInfo = execSync('uname -a', { encoding: 'utf8' }).trim();
+    } catch (error) {
+      console.warn('環境情報の取得に一部失敗:', error.message);
+    }
+
+    // パッケージ情報を読み取り
+    let frontendDeps = {};
+    let backendDeps = {};
+    
+    try {
+      const frontendPackage = JSON.parse(fs.readFileSync(path.join(this.projectRoot, 'frontend/package.json'), 'utf8'));
+      const backendPackage = JSON.parse(fs.readFileSync(path.join(this.projectRoot, 'backend/package.json'), 'utf8'));
+      frontendDeps = { ...frontendPackage.dependencies, ...frontendPackage.devDependencies };
+      backendDeps = { ...backendPackage.dependencies, ...backendPackage.devDependencies };
+    } catch (error) {
+      console.warn('パッケージ情報の読み取りに失敗:', error.message);
+    }
+
+    return `# 環境設計書
+
+**最終更新日:** ${new Date().toISOString().split('T')[0]}
+
+## 🏗️ システム概要
+
+### プロジェクト情報
+- **プロジェクト名:** ${this.config.project.name}
+- **バージョン:** ${this.config.project.version}
+- **開発フェーズ:** MVP基盤構築（完了）
+- **アーキテクチャ:** フルスタック Web アプリケーション
+
+## 💻 開発環境
+
+### ローカル開発環境
+- **Node.js:** ${nodeVersion}
+- **npm:** ${npmVersion}
+- **Git:** ${gitVersion}
+- **OS:** ${osInfo.includes('Darwin') ? 'macOS' : 'Linux/Unix'}
+
+### Git設定
+- **認証方式:** HTTPS
+- **リモートリポジトリ:** https://github.com/horiken1977/roic.git
+- **パフォーマンス最適化:**
+  - \`core.preloadindex=true\`
+  - \`core.fscache=true\`
+  - \`status.submoduleSummary=false\`
+  - \`**/node_modules/\` .gitignore追加
+
+## 🏗️ アプリケーション構成
+
+### フロントエンド (Next.js)
+- **Framework:** Next.js ${frontendDeps.next || 'unknown'}
+- **Runtime:** React ${frontendDeps.react || 'unknown'}
+- **Language:** TypeScript ${frontendDeps.typescript || 'unknown'}
+- **Styling:** Tailwind CSS ${frontendDeps.tailwindcss || 'unknown'}
+- **State Management:** Zustand ${frontendDeps.zustand || 'unknown'}
+- **HTTP Client:** Axios ${frontendDeps.axios || 'unknown'}
+
+### バックエンド (Node.js/Express)
+- **Framework:** Express.js ${backendDeps.express || 'unknown'}
+- **Database:** PostgreSQL (AWS RDS) ${backendDeps.pg || 'unknown'}
+- **Cloud:** AWS SDK ${backendDeps['aws-sdk'] || 'unknown'}
+- **Logger:** Winston ${backendDeps.winston || 'unknown'}
+- **Security:** Helmet, CORS, Rate Limiting
+
+## ☁️ インフラストラクチャ
+
+### デプロイメント環境
+- **フロントエンド:** GitHub Pages (Static Export)
+- **バックエンド:** AWS Lambda + API Gateway (予定)
+- **データベース:** AWS RDS (PostgreSQL)
+- **ストレージ:** AWS S3
+- **CDN:** CloudFront
+
+### CI/CD パイプライン
+- **自動テスト:** Jest, Playwright
+- **静的解析:** ESLint, TypeScript
+- **ビルド & デプロイ:** GitHub Actions
+- **セキュリティスキャン:** 実装済み
+
+## 🛡️ セキュリティ設定
+
+### Git セキュリティ
+- **.gitignore設定:** 環境変数、認証キー、AWSクレデンシャル除外
+- **機密ファイル除外:** .env*, *.pem, *.key, secrets/
+
+### アプリケーションセキュリティ
+- **HTTPS通信:** 本番環境必須
+- **JWT認証:** バックエンドAPI
+- **入力検証:** Joi + express-validator
+- **レート制限:** express-rate-limit
+
+## 🔄 自動化機能
+
+### ファイル監視・自動更新
+- **監視ファイル:**
+  - Frontend: \`frontend/src/**/*.{tsx,ts,js}\`
+  - Backend: \`backend/**/*.{js,ts,py}\`
+  - Docs: \`docs/**/*.md\`
+  - Tests: \`tests/**/*.{js,ts,spec.js,test.js}\`
+  - Config: \`config/project-config.json\`
+
+### 自動更新対象
+- 機能設計書 (\`docs/functional-spec.md\`)
+- テスト仕様書 (\`docs/test-spec.md\`)
+- 環境設計書 (\`docs/environment-design.md\`)
+- プロジェクト進捗 (\`project-progress.md\`)
+
+## 📊 パフォーマンス最適化
+
+### Git最適化 (最新実施: ${new Date().toISOString().split('T')[0]})
+- \`**/node_modules/\` .gitignore追加
+- \`core.preloadindex=true\` (ファイルシステム最適化)
+- \`core.fscache=true\` (キャッシュ有効化)
+- \`status.submoduleSummary=false\` (サブモジュール無効化)
+
+### Next.js最適化
+- **Turbopack:** 開発サーバー高速化
+- **Static Export:** 本番環境最適化
+- **Image Optimization:** 自動画像最適化
+
+## 🧪 テスト環境
+
+### テスト設定
+- **Unit Tests:** Jest ${frontendDeps.jest || 'unknown'}
+- **Component Tests:** Testing Library ${frontendDeps['@testing-library/react'] || 'unknown'}
+- **E2E Tests:** Playwright ${frontendDeps['@playwright/test'] || 'unknown'}
+- **Coverage Threshold:** 85%
+
+### テスト実行状況
+- **ユニットテスト:** ${this.config.tests.unit.total}件 (カバレッジ: ${this.config.tests.unit.coverage}%)
+- **E2Eテスト:** ${this.config.tests.e2e.total}件 (カバレッジ: ${this.config.tests.e2e.coverage}%)
+- **統合テスト:** ${this.config.tests.integration.total}件 (カバレッジ: ${this.config.tests.integration.coverage}%)
+
+## 🔧 開発ワークフロー
+
+### ローカル開発
+\`\`\`bash
+# フロントエンド開発サーバー起動
+cd frontend && npm run dev
+
+# バックエンド開発サーバー起動  
+cd backend && npm run dev
+
+# テスト実行
+npm test
+
+# ビルド & デプロイ
+npm run deploy
+\`\`\`
+
+---
+
+**注意:** この環境設計書は自動更新されます。環境設定変更時は \`/config/project-config.json\` および関連スクリプトが自動的に本ドキュメントを更新します。
+
+**更新トリガー:**
+- パッケージ依存関係の変更
+- インフラ設定の変更  
+- セキュリティ設定の変更
+- パフォーマンス最適化の実施
+
+*最終更新: ${new Date().toLocaleString('ja-JP')}*
+*この文書は環境変更に応じて自動更新されます*`;
+  }
+
   updateHTMLDocuments() {
     // 機能設計書のHTML更新
     const functionalSpecHTML = this.generateFunctionalSpecHTML();
@@ -410,6 +596,10 @@ ${this.generateTestList('integration')}
     }
     fs.writeFileSync(this.paths.test_spec_html, testSpecHTML);
     
+    // 環境設計書のHTML更新
+    const environmentDesignHTML = this.generateEnvironmentDesignHTML();
+    fs.writeFileSync(this.paths.environment_design_html, environmentDesignHTML);
+    
     console.log('✅ HTMLドキュメントを更新');
   }
 
@@ -421,6 +611,11 @@ ${this.generateTestList('integration')}
   generateTestSpecHTML() {
     const markdownContent = this.generateTestSpecContent();
     return this.convertMarkdownToHTML(markdownContent, 'テスト仕様書');
+  }
+
+  generateEnvironmentDesignHTML() {
+    const markdownContent = this.generateEnvironmentDesignContent();
+    return this.convertMarkdownToHTML(markdownContent, '環境設計書');
   }
 
   convertMarkdownToHTML(markdown, title) {

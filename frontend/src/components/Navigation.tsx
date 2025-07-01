@@ -21,10 +21,13 @@ export default function Navigation() {
             ホーム
           </Link>
           <Link href="/dashboard" className="hover:text-blue-200 transition-colors font-medium">
-            進捗ダッシュボード
+            開発進捗ダッシュボード
           </Link>
           <Link href="/functional-spec" className="hover:text-blue-200 transition-colors font-medium">
             機能設計書
+          </Link>
+          <Link href="/environment-design" className="hover:text-blue-200 transition-colors font-medium">
+            環境設計書
           </Link>
           <Link href="/test-docs/test-spec" className="hover:text-blue-200 transition-colors font-medium">
             テスト仕様書
@@ -53,10 +56,13 @@ export default function Navigation() {
           ホーム
         </Link>
         <Link href="/dashboard" className="block py-2 px-4 hover:bg-blue-700 rounded transition-colors">
-          進捗ダッシュボード
+          開発進捗ダッシュボード
         </Link>
         <Link href="/functional-spec" className="block py-2 px-4 hover:bg-blue-700 rounded transition-colors">
           機能設計書
+        </Link>
+        <Link href="/environment-design" className="block py-2 px-4 hover:bg-blue-700 rounded transition-colors">
+          環境設計書
         </Link>
         <Link href="/test-docs/test-spec" className="block py-2 px-4 hover:bg-blue-700 rounded transition-colors">
           テスト仕様書

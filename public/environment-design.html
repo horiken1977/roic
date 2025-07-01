@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>環境設計書 - ROIC分析システム</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .header h1 {
+            color: #2d3748;
+            margin: 0 0 1rem 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .badge {
+            background: #48bb78;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .nav-link {
+            background: #4299e1;
+            color: white;
+            text-decoration: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background: #3182ce;
+            transform: translateY(-2px);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .card h3 {
+            color: #2d3748;
+            margin: 0 0 1rem 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .env-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .env-item:last-child {
+            border-bottom: none;
+        }
+        .env-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+        .env-value {
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: #f7fafc;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            color: #2d3748;
+            font-size: 0.9rem;
+        }
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .tech-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        .tech-card h4 {
+            margin: 0 0 1rem 0;
+            color: #2d3748;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .tech-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .tech-list li {
+            padding: 0.3rem 0;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        .alert {
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        .alert-info {
+            background: #ebf8ff;
+            border-color: #3182ce;
+            color: #2c5282;
+        }
+        .alert-success {
+            background: #f0fff4;
+            border-color: #38a169;
+            color: #2f855a;
+        }
+        .alert-warning {
+            background: #fffbeb;
+            border-color: #d69e2e;
+            color: #b7791f;
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        .architecture-diagram {
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .diagram-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ 環境設計書</h1>
+            <div class="badge">最終更新: 2025-07-01</div>
+            <p style="color: #4a5568; font-size: 1.1rem; margin: 1rem 0;">
+                ROIC分析アプリケーションの開発・本番環境の詳細設計とインフラストラクチャ構成
+            </p>
+            
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">🏠 ホーム</a>
+                <a href="../dashboard/index.html" class="nav-link">📊 開発進捗ダッシュボード</a>
+                <a href="../functional-spec/index.html" class="nav-link">📋 機能設計書</a>
+                <a href="../test-docs/test-spec/index.html" class="nav-link">🧪 テスト仕様書</a>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>💻 開発環境</h3>
+                <div class="env-item">
+                    <span class="env-label">OS</span>
+                    <span class="env-value">macOS 15.5 (ARM64)</span>
+                </div>
+                <div class="env-item">
+                    <span class="env-label">Node.js</span>
+                    <span class="env-value">v24.3.0</span>
+                </div>
+                <div class="env-item">
+                    <span class="env-label">npm</span>
+                    <span class="env-value">11.4.2</span>
+                </div>
+                <div class="env-item">
+                    <span class="env-label">Git</span>
+                    <span class="env-value">2.39.5</span>
+                </div>
+                <div class="env-item">
+                    <span class="env-label">エディタ</span>
+                    <span class="env-value">VS Code</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>☁️ インフラ構成</h3>
+                <div class="env-item">
+                    <span class="env-label">フロントエンド</span>
+                    <span class="env-value">GitHub Pages</span>
+                </div>
+                <div class="env-item">
+                    <span class="env-label">バックエンド</span>
+                    <span class="env-value">AWS Lambda (予定)</span>
+                </div>
+                <div class="env-item">
+                    <span class="env-label">データベース</span>
+                    <span class="env-value">AWS RDS (PostgreSQL)</span>
+                </div>
+                <div class="env-item">
+                    <span class="env-label">ストレージ</span>
+                    <span class="env-value">AWS S3</span>
+                </div>
+                <div class="env-item">
+                    <span class="env-label">CDN</span>
+                    <span class="env-value">CloudFront</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🏗️ システムアーキテクチャ</h3>
+            <div class="architecture-diagram">
+                <div class="diagram-icon">📊</div>
+                <h4 style="color: #4a5568; margin: 0;">システム構成図</h4>
+                <p style="color: #718096; margin: 0.5rem 0 0 0;">
+                    Next.js (Frontend) ↔ Express API (Backend) ↔ PostgreSQL (Database)
+                </p>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <div class="tech-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h4>フロントエンド</h4>
+                <ul class="tech-list" style="color: rgba(255,255,255,0.9);">
+                    <li>• Next.js 15.3.4</li>
+                    <li>• React 19.0.0</li>
+                    <li>• TypeScript 5.x</li>
+                    <li>• Tailwind CSS 4.x</li>
+                    <li>• Zustand 5.0.6</li>
+                </ul>
+            </div>
+            
+            <div class="tech-card" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white;">
+                <h4>バックエンド</h4>
+                <ul class="tech-list" style="color: rgba(255,255,255,0.9);">
+                    <li>• Node.js >=18.0.0</li>
+                    <li>• Express.js 4.18.2</li>
+                    <li>• PostgreSQL</li>
+                    <li>• AWS SDK 2.x</li>
+                    <li>• Winston Logger</li>
+                </ul>
+            </div>
+            
+            <div class="tech-card" style="background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%); color: white;">
+                <h4>開発ツール</h4>
+                <ul class="tech-list" style="color: rgba(255,255,255,0.9);">
+                    <li>• Jest 30.0.3</li>
+                    <li>• Playwright 1.53.2</li>
+                    <li>• ESLint 9.x</li>
+                    <li>• GitHub Actions</li>
+                    <li>• Docker</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert alert-success">
+            <h4 style="margin: 0 0 1rem 0;">⚡ 最新の最適化実装 (2025-07-01)</h4>
+            <p style="margin: 0 0 1rem 0;"><strong>Git パフォーマンス最適化:</strong></p>
+            <ul style="margin: 0;">
+                <li>core.preloadindex=true (ファイルシステム最適化)</li>
+                <li>core.fscache=true (キャッシュ有効化)</li>
+                <li>**/node_modules/ .gitignore追加</li>
+                <li>status.submoduleSummary=false (高速化)</li>
+            </ul>
+        </div>
+
+        <div class="alert alert-warning">
+            <h4 style="margin: 0 0 1rem 0;">🛡️ セキュリティ設定</h4>
+            <p style="margin: 0 0 1rem 0;"><strong>認証・認可:</strong> JWT Token認証、HTTPS通信必須、CORS設定済み</p>
+            <p style="margin: 0;"><strong>機密情報保護:</strong> .env*, *.key, *.pem除外、AWSクレデンシャル除外、Rate Limiting実装</p>
+        </div>
+
+        <div class="alert alert-info">
+            <h4 style="margin: 0 0 1rem 0;">🔄 自動化機能</h4>
+            <p style="margin: 0 0 1rem 0;"><strong>ドキュメント自動更新:</strong></p>
+            <ul style="margin: 0;">
+                <li>環境設定変更時の自動検知</li>
+                <li>設計書・仕様書の自動更新</li>
+                <li>テスト結果の自動反映</li>
+                <li>GitHub Pages自動デプロイ</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>📄 このドキュメントは自動更新されます</p>
+            <p>詳細: <a href="../docs/environment-design.md" style="color: rgba(255,255,255,0.8);">docs/environment-design.md</a></p>
+        </div>
+    </div>
+</body>
+</html>

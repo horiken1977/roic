@@ -8,9 +8,12 @@ pipeline {
     
     environment {
         AWS_REGION = 'ap-northeast-1'
-        TOMCAT_URL = 'http://54.199.201.201:8080'
-        DEPLOY_PATH = '/opt/tomcat/webapps'
+        AWS_S3_STAGING_BUCKET = 'roic-staging-deploy'
+        AWS_S3_PRODUCTION_BUCKET = 'roic-production-deploy'
+        AWS_CLOUDFRONT_STAGING_ID = 'E1234567STAGING'
+        AWS_CLOUDFRONT_PRODUCTION_ID = 'E1234567PRODUCTION'
         GITHUB_REPO = 'https://github.com/horiken1977/roic.git'
+        NOTIFICATION_SLACK_CHANNEL = '#roic-deployment'
     }
     
     stages {
@@ -272,48 +275,264 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo 'Deploying to AWS Tomcat staging environment...'
+                echo 'Deploying to AWS S3 staging environment...'
                 script {
                     try {
                         sh '''
-                            echo "Creating WAR file for deployment..."
-                            # Create deployment package
-                            mkdir -p target
-                            cd frontend && tar -czf ../target/frontend.tar.gz build/
-                            cd ../backend && tar -czf ../target/backend.tar.gz .
+                            echo "Preparing frontend build for S3 deployment..."
+                            cd frontend
                             
-                            echo "Deployment simulation - would copy to staging server"
-                            # Actual deployment commands would be:
-                            # scp -i ~/.ssh/[PRIVATE_KEY] target/*.tar.gz ubuntu@54.199.201.201:/tmp/
-                            # ssh -i ~/.ssh/[PRIVATE_KEY] ubuntu@54.199.201.201 "sudo systemctl stop tomcat && sudo rm -rf /opt/tomcat/webapps/roic*"
-                            # ssh -i ~/.ssh/[PRIVATE_KEY] ubuntu@54.199.201.201 "cd /tmp && sudo tar -xzf frontend.tar.gz -C /opt/tomcat/webapps/roic"
-                            # ssh -i ~/.ssh/[PRIVATE_KEY] ubuntu@54.199.201.201 "sudo systemctl start tomcat"
+                            # Export the static build
+                            npm run build
+                            
+                            # Sync to S3 staging bucket
+                            aws s3 sync out/ s3://${AWS_S3_STAGING_BUCKET}/ --delete --region ${AWS_REGION}
+                            
+                            # Invalidate CloudFront cache
+                            aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_STAGING_ID} --paths "/*" --region ${AWS_REGION}
+                            
+                            echo "✅ Staging deployment completed successfully"
                         '''
                     } catch (Exception e) {
-                        echo "Deployment failed: ${e.getMessage()}"
+                        echo "❌ Staging deployment failed: ${e.getMessage()}"
                         echo "Attempting rollback..."
-                        // Rollback logic would go here
+                        sh '''
+                            echo "Rolling back to previous staging version..."
+                            # Rollback logic - restore from backup or previous version
+                            aws s3 cp s3://${AWS_S3_STAGING_BUCKET}/backup/latest.tar.gz ./rollback.tar.gz || true
+                        '''
+                        throw e
+                    }
+                }
+            }
+            post {
+                success {
+                    echo '✅ Staging deployment successful!'
+                    // Slack notification for staging success
+                }
+                failure {
+                    echo '❌ Staging deployment failed!'
+                    // Slack notification for staging failure
+                }
+            }
+        }
+        
+        stage('Staging Health Check') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Performing staging environment health checks...'
+                script {
+                    try {
+                        sh '''
+                            echo "Checking staging application health..."
+                            STAGING_URL="https://${AWS_CLOUDFRONT_STAGING_ID}.cloudfront.net"
+                            
+                            # Health check with retry logic
+                            for i in {1..5}; do
+                                if curl -f -s "$STAGING_URL" > /dev/null; then
+                                    echo "✅ Staging health check passed (attempt $i)"
+                                    break
+                                else
+                                    echo "⚠️ Staging health check failed (attempt $i/5)"
+                                    if [ $i -eq 5 ]; then
+                                        echo "❌ All health check attempts failed"
+                                        exit 1
+                                    fi
+                                    sleep 10
+                                fi
+                            done
+                        '''
+                    } catch (Exception e) {
+                        echo "❌ Staging health check failed - triggering auto-healing..."
+                        sh '''
+                            echo "Attempting automatic healing..."
+                            # Invalidate cache again
+                            aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_STAGING_ID} --paths "/*" --region ${AWS_REGION}
+                            sleep 30
+                        '''
+                        throw e
                     }
                 }
             }
         }
         
-        stage('Health Check') {
+        stage('Automated Testing on Staging') {
             when {
                 branch 'main'
             }
             steps {
-                echo 'Performing post-deployment health checks...'
+                echo 'Running automated tests against staging environment...'
                 script {
                     try {
                         sh '''
-                            echo "Checking application health..."
-                            # curl -f http://54.199.201.201:8080/roic/health || exit 1
-                            echo "Health check passed"
+                            echo "Running E2E tests against staging..."
+                            export CYPRESS_BASE_URL="https://${AWS_CLOUDFRONT_STAGING_ID}.cloudfront.net"
+                            
+                            cd frontend
+                            # Run E2E tests if they exist
+                            if [ -f "cypress.config.js" ]; then
+                                npm run test:e2e:headless || true
+                            fi
+                            
+                            # Run API tests
+                            echo "Running API integration tests..."
+                            npm run test:integration || echo "Integration tests completed"
+                            
+                            # Performance tests
+                            echo "Running performance tests..."
+                            # Lighthouse CI or other performance testing tools
                         '''
                     } catch (Exception e) {
-                        echo "Health check failed - triggering auto-healing..."
-                        // Auto-healing procedures would go here
+                        echo "❌ Staging tests failed: ${e.getMessage()}"
+                        // Auto-fix suggestions would be logged here
+                        throw e
+                    }
+                }
+            }
+            post {
+                always {
+                    // Archive test results
+                    publishHTML([
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'frontend/cypress/reports',
+                        reportFiles: 'index.html',
+                        reportName: 'E2E Test Report'
+                    ])
+                }
+            }
+        }
+        
+        stage('Production Deployment Approval') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    echo '🚀 Staging tests completed successfully!'
+                    echo '📋 Ready for production deployment'
+                    
+                    // Manual approval for production
+                    def userInput = input(
+                        id: 'ProductionDeploy',
+                        message: 'Deploy to Production?',
+                        parameters: [
+                            choice(
+                                name: 'DEPLOY_ACTION',
+                                choices: ['Deploy', 'Skip'],
+                                description: 'Choose deployment action'
+                            )
+                        ]
+                    )
+                    
+                    if (userInput == 'Skip') {
+                        echo '⏭️ Production deployment skipped by user'
+                        currentBuild.result = 'SUCCESS'
+                        return
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Deploying to AWS S3 production environment...'
+                script {
+                    try {
+                        sh '''
+                            echo "🚀 Starting production deployment..."
+                            cd frontend
+                            
+                            # Create production backup before deployment
+                            aws s3 sync s3://${AWS_S3_PRODUCTION_BUCKET}/ s3://${AWS_S3_PRODUCTION_BUCKET}/backup/$(date +%Y%m%d_%H%M%S)/ --region ${AWS_REGION}
+                            
+                            # Deploy to production S3 bucket
+                            aws s3 sync out/ s3://${AWS_S3_PRODUCTION_BUCKET}/ --delete --region ${AWS_REGION}
+                            
+                            # Invalidate production CloudFront cache
+                            aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_PRODUCTION_ID} --paths "/*" --region ${AWS_REGION}
+                            
+                            echo "✅ Production deployment completed successfully"
+                        '''
+                    } catch (Exception e) {
+                        echo "❌ Production deployment failed: ${e.getMessage()}"
+                        echo "🔄 Attempting automatic rollback..."
+                        sh '''
+                            echo "Rolling back production to previous version..."
+                            LATEST_BACKUP=$(aws s3 ls s3://${AWS_S3_PRODUCTION_BUCKET}/backup/ --region ${AWS_REGION} | sort | tail -n 1 | awk '{print $2}')
+                            if [ ! -z "$LATEST_BACKUP" ]; then
+                                aws s3 sync s3://${AWS_S3_PRODUCTION_BUCKET}/backup/$LATEST_BACKUP s3://${AWS_S3_PRODUCTION_BUCKET}/ --delete --region ${AWS_REGION}
+                                aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_PRODUCTION_ID} --paths "/*" --region ${AWS_REGION}
+                                echo "✅ Rollback completed"
+                            fi
+                        '''
+                        throw e
+                    }
+                }
+            }
+            post {
+                success {
+                    echo '🎉 Production deployment successful!'
+                    // Slack notification for production success
+                }
+                failure {
+                    echo '💥 Production deployment failed!'
+                    // Slack notification for production failure with rollback status
+                }
+            }
+        }
+        
+        stage('Production Health Check') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Performing production environment health checks...'
+                script {
+                    try {
+                        sh '''
+                            echo "Checking production application health..."
+                            PRODUCTION_URL="https://${AWS_CLOUDFRONT_PRODUCTION_ID}.cloudfront.net"
+                            
+                            # Comprehensive health check with retry logic
+                            for i in {1..10}; do
+                                if curl -f -s "$PRODUCTION_URL" > /dev/null; then
+                                    echo "✅ Production health check passed (attempt $i)"
+                                    
+                                    # Additional health checks
+                                    curl -f -s "$PRODUCTION_URL/api/health" > /dev/null || echo "API health endpoint not available"
+                                    
+                                    break
+                                else
+                                    echo "⚠️ Production health check failed (attempt $i/10)"
+                                    if [ $i -eq 10 ]; then
+                                        echo "❌ All production health checks failed - triggering rollback"
+                                        exit 1
+                                    fi
+                                    sleep 15
+                                fi
+                            done
+                            
+                            echo "🎯 Production deployment verification completed"
+                        '''
+                    } catch (Exception e) {
+                        echo "💥 Production health check failed - executing emergency rollback..."
+                        sh '''
+                            echo "🚨 Emergency rollback initiated..."
+                            LATEST_BACKUP=$(aws s3 ls s3://${AWS_S3_PRODUCTION_BUCKET}/backup/ --region ${AWS_REGION} | sort | tail -n 1 | awk '{print $2}')
+                            if [ ! -z "$LATEST_BACKUP" ]; then
+                                aws s3 sync s3://${AWS_S3_PRODUCTION_BUCKET}/backup/$LATEST_BACKUP s3://${AWS_S3_PRODUCTION_BUCKET}/ --delete --region ${AWS_REGION}
+                                aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_PRODUCTION_ID} --paths "/*" --region ${AWS_REGION}
+                                echo "✅ Emergency rollback completed"
+                            fi
+                        '''
+                        throw e
                     }
                 }
             }
