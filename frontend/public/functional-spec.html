@@ -28,19 +28,72 @@
 <li><strong>説明</strong>: 4つの計算方式に対応したROIC自動計算</li>
 <li><strong>優先度</strong>: high</li>
 <li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: frontend/src/components/ROICCalculator.tsx, frontend/src/utils/roicCalculations.ts</li></p><p><h4>企業検索・フィルタリング <span class="status-completed">✅</span></h4>
+<li><strong>ファイル</strong>: frontend/src/components/ROICCalculator.tsx, frontend/src/utils/roicCalculations.ts</li></p><p>
+<p>##### 📊 技術詳細</p><p><strong>計算方式:</strong></p><p>1. <strong>基本方式（財務指標直接計算）</strong>
+<p>   - 公式: <code>ROIC = 営業利益 × (1 - 実効税率) ÷ (総資産 - 現金及び現金同等物)</code>
+<p>   - 根拠: 最もシンプルな計算方式、営業利益をベースにした税引後利益を使用</p>
+<p>   - 適用場面: 基本的なROIC分析、業界間比較</p><p>2. <strong>詳細方式（NOPAT個別計算）</strong>
+<p>   - 公式: <code>NOPAT = (営業利益 + 受取利息) × (1 - 実効税率), 投下資本 = 株主資本 + 有利子負債, ROIC = NOPAT ÷ 投下資本</code>
+<p>   - 根拠: より精密な計算、金融収益も含めた事業利益を評価</p>
+<p>   - 適用場面: 詳細分析、投資判断</p><p>3. <strong>アセット方式（総資産ベース）</strong>
+<p>   - 公式: <code>投下資本 = 総資産 - 無利子負債（買掛金、未払金等）, ROIC = NOPAT ÷ 投下資本</code>
+<p>   - 根拠: バランスシート全体から運転資本効率を評価</p>
+<p>   - 適用場面: 資産効率性分析、製造業評価</p><p>4. <strong>修正方式（リース調整）</strong>
+<p>   - 公式: <code>修正NOPAT = NOPAT + リース費用 × (1 - 実効税率), 修正投下資本 = 投下資本 + リース債務, 修正ROIC = 修正NOPAT ÷ 修正投下資本</code>
+<p>   - 根拠: IFRS16対応、オペレーティングリースの資本化調整</p>
+<p>   - 適用場面: 国際会計基準企業、小売・航空業界</p><p><strong>精度向上のための調整:</strong></p><p><li><strong>effective_tax_rate</strong>: 法人税等 ÷ 税引前当期純利益（異常値は30%でキャップ）</li>
+<li><strong>outlier_handling</strong>: ROIC > 100% または < -50% の場合は警告表示</li>
+<li><strong>industry_adjustments</strong>: 金融業は除外、不動産業は簿価調整オプション</li>
+<li><strong>period_adjustments</strong>: 期首期末平均値使用、四半期データは年換算</li></p><p>
+<p>##### 📁 ファイル仕様</p><p><strong>backend/controllers/roic-calculator.js</strong></p><p><li><strong>目的</strong>: ROIC計算エンジンの中核ロジック</li>
+<li><strong>主要機能</strong>:</li>
+<p>  - 4つの計算方式（標準、調整済み、保守的、積極的）の実装</p>
+<p>  - NOPAT（税引き後営業利益）の精密計算</p>
+<p>  - 投下資本の多角的算定</p>
+<p>  - 補助指標（運転資本、資産回転率等）の算出</p>
+<li><strong>主要特徴</strong>:</li>
+<p>  - 実効税率の自動計算（0%〜50%の妥当性チェック）</p>
+<p>  - ゼロ除算防止とエラーハンドリング</p>
+<p>  - 業界別調整機能</p>
+<p>  - 詳細なログ記録システム</p>
+<li><strong>アルゴリズム</strong>:</li>
+<p>  - <strong>nopat_calculation</strong>: <code>営業利益 × (1 - 実効税率)</code>
+<p>  - <strong>invested_capital_standard</strong>: <code>総資産 - 無利子負債（流動負債の70%）</code>
+<p>  - <strong>invested_capital_adjusted</strong>: <code>純資産 + 有利子負債</code>
+<p>  - <strong>invested_capital_conservative</strong>: <code>純資産 + 有利子負債 - のれん - 無形資産</code>
+<p>  - <strong>invested_capital_aggressive</strong>: <code>総資産 - （流動負債の90%）</code></p><p><strong>frontend/src/utils/roicCalculations.ts</strong></p><p><li><strong>目的</strong>: フロントエンド向けROIC計算ユーティリティ</li>
+<li><strong>主要機能</strong>:</li>
+<p>  - バックエンドAPIとの連携</p>
+<p>  - 計算結果のフォーマット</p>
+<p>  - エラーハンドリングとユーザー向けメッセージ</p>
+<li><strong>ステータス</strong>: 実装予定（現在はバックエンドのみ実装）</li></p><p><h4>企業検索・フィルタリング <span class="status-completed">✅</span></h4>
 <li><strong>ステータス</strong>: completed</li>
 <li><strong>進捗</strong>: 100%</li>
 <li><strong>説明</strong>: 効率的な企業検索とフィルタリング機能</li>
 <li><strong>優先度</strong>: high</li>
 <li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: frontend/src/app/companies/page.tsx, frontend/src/components/CompanySearch.tsx</li></p><p><h4>進捗ダッシュボード <span class="status-completed">✅</span></h4>
+<li><strong>ファイル</strong>: frontend/src/app/companies/page.tsx, frontend/src/components/CompanySearch.tsx</li></p><p>
+<p>##### 📁 ファイル仕様</p><p><strong>frontend/src/app/companies/page.tsx</strong></p><p><li><strong>目的</strong>: 企業検索・フィルタリング画面のメインコンポーネント</li>
+<li><strong>主要機能</strong>:</li>
+<p>  - 企業名による検索機能</p>
+<p>  - 業界別フィルタリング（製造業、金融業、小売業）</p>
+<p>  - 市場別フィルタリング（プライム、スタンダード、グロース）</p>
+<p>  - 検索結果の表示エリア</p>
+<li><strong>UIコンポーネント</strong>:</li>
+<p>  - 検索入力フィールド</p>
+<p>  - 業界選択ドロップダウン</p>
+<p>  - 市場選択ドロップダウン</p>
+<p>  - 検索ボタン</p>
+<p>  - 検索結果表示エリア（実装予定）</p>
+<li><strong>現在の状況</strong>: UI完成、バックエンド連携未実装</li></p><p><strong>frontend/src/components/CompanySearch.tsx</strong></p><p><li><strong>目的</strong>: 企業検索専用コンポーネント</li>
+<li><strong>ステータス</strong>: 未実装（現在は companies/page.tsx に統合）</li></p><p><h4>進捗ダッシュボード <span class="status-completed">✅</span></h4>
 <li><strong>ステータス</strong>: completed</li>
 <li><strong>進捗</strong>: 100%</li>
 <li><strong>説明</strong>: リアルタイムで開発状況を監視・可視化</li>
 <li><strong>優先度</strong>: high</li>
 <li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: frontend/src/app/dashboard/page.tsx, frontend/src/app/page.tsx</li></p><p><h4>機能設計書 <span class="status-completed">✅</span></h4>
+<li><strong>ファイル</strong>: frontend/src/app/dashboard/page.tsx, frontend/src/app/page.tsx</li></p><p>
+<p>##### 📁 ファイル仕様</p><p><strong>frontend/src/app/dashboard/page.tsx</strong></p><p><li><strong>目的</strong>: 開発進捗ダッシュボード（現在はリダイレクト処理）</li></p><p><strong>frontend/src/app/page.tsx</strong></p><p><li><strong>目的</strong>: 統合ダッシュボード機能付きホームページ</li></p><p><h4>機能設計書 <span class="status-completed">✅</span></h4>
 <li><strong>ステータス</strong>: completed</li>
 <li><strong>進捗</strong>: 100%</li>
 <li><strong>説明</strong>: システム要件・機能仕様・技術設計</li>
@@ -52,7 +105,19 @@
 <li><strong>説明</strong>: ユニット・E2Eテストの実行状況</li>
 <li><strong>優先度</strong>: medium</li>
 <li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: frontend/src/app/test-docs/test-spec/page.tsx</li></p><p></p><p><h3>2.2 計画中機能</h3></p><p><h4>業界比較・ランキング <span class="status-pending">📋</span></h4>
+<li><strong>ファイル</strong>: frontend/src/app/test-docs/test-spec/page.tsx</li></p><p><h4>環境設計書 <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: 開発・本番環境の詳細設計とインフラ構成</li>
+<li><strong>優先度</strong>: medium</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: frontend/src/app/environment-design/page.tsx, docs/environment-design.md</li></p><p><h4>運用設計書 <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: システム運用ルールと自動化設定</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: frontend/src/app/operations-design/page.tsx, docs/operations-design.md</li></p><p></p><p><h3>2.2 計画中機能</h3></p><p><h4>業界比較・ランキング <span class="status-pending">📋</span></h4>
 <li><strong>ステータス</strong>: planned</li>
 <li><strong>進捗</strong>: 0%</li>
 <li><strong>説明</strong>: 同業界内でのROIC比較とランキング表示</li>
@@ -67,10 +132,10 @@
 <li><strong>進捗</strong>: 0%</li>
 <li><strong>説明</strong>: 外部APIからの財務データ取得</li>
 <li><strong>優先度</strong>: medium</li>
-<li><strong>フェーズ</strong>: Phase 3</li></p><p></p><p><h2>3. 開発進捗</h2></p><p><h3>全体進捗: 63%</h3></p><p><h3>Phase 1: MVP基盤構築 <span class="status-completed">✅</span></h3>
+<li><strong>フェーズ</strong>: Phase 3</li></p><p></p><p><h2>3. 開発進捗</h2></p><p><h3>全体進捗: 70%</h3></p><p><h3>Phase 1: MVP基盤構築 <span class="status-completed">✅</span></h3>
 <li><strong>進捗</strong>: 100%</li>
 <li><strong>説明</strong>: 基本機能とインフラの構築</li>
-<li><strong>含む機能</strong>: 5個</li></p><p><h3>Phase 2: コア機能拡張 <span class="status-pending">📋</span></h3>
+<li><strong>含む機能</strong>: 7個</li></p><p><h3>Phase 2: コア機能拡張 <span class="status-pending">📋</span></h3>
 <li><strong>進捗</strong>: 0%</li>
 <li><strong>説明</strong>: 業界比較・データ可視化機能の追加</li>
 <li><strong>含む機能</strong>: 2個</li></p><p><h3>Phase 3: データ統合 <span class="status-pending">📋</span></h3>
@@ -79,10 +144,10 @@
 <li><strong>含む機能</strong>: 1個</li></p><p></p><p><h2>4. テスト状況</h2></p><p><li><strong>ユニットテスト</strong>: 4件 (成功: 4, カバレッジ: 93%)</li>
 <li><strong>E2Eテスト</strong>: 0件 (成功: 0, カバレッジ: 70%)</li>
 <li><strong>統合テスト</strong>: 0件 (成功: 0, カバレッジ: 75%)</li></p><p>---</p>
-<p><em>最終更新: 2025/7/1 15:48:54</em>
+<p><em>最終更新: 2025/7/2 7:49:54</em>
 <p><em>この文書は開発進捗に応じて自動更新されます</em>
         <div class="update-time">
-            最終自動更新: 2025/7/1 15:48:54<br>
+            最終自動更新: 2025/7/2 7:49:54<br>
             🤖 この文書は自動的に更新されます
         </div>
     </div>

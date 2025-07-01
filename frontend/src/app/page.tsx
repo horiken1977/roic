@@ -148,11 +148,11 @@ export default function Home() {
               <div className="text-gray-600">全体進捗</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">5</div>
+              <div className="text-3xl font-bold text-green-600 mb-2">7</div>
               <div className="text-gray-600">完了機能</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-orange-600 mb-2">3</div>
+              <div className="text-3xl font-bold text-orange-600 mb-2">0</div>
               <div className="text-gray-600">開発中</div>
             </div>
             <div className="text-center">
