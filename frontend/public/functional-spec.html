@@ -3,443 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROIC分析アプリケーション 機能設計書</title>
+    <title>機能設計書</title>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
-            line-height: 1.6; 
-            margin: 0; 
-            padding: 0; 
-            background: #f5f5f5; 
-            color: #333;
-        }
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            background: white; 
-            padding: 30px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         h1, h2, h3, h4 { color: #333; }
-        h1 { 
-            border-bottom: 3px solid #22c55e; 
-            padding-bottom: 15px; 
-            color: #22c55e;
-            font-size: 2.5rem;
-        }
-        h2 { 
-            border-bottom: 2px solid #e1e4e8; 
-            padding-bottom: 10px; 
-            margin-top: 2rem;
-            color: #16a34a;
-        }
-        h3 {
-            color: #15803d;
-            margin-top: 1.5rem;
-        }
-        h4 {
-            color: #166534;
-            margin-top: 1rem;
-        }
-        .status-completed { 
-            color: #22c55e; 
-            background: #f0fdf4;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .status-progress { 
-            color: #f59e0b; 
-            background: #fffbeb;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .status-pending { 
-            color: #6b7280; 
-            background: #f9fafb;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e5e7eb;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-        .progress-fill {
-            height: 100%;
-            background: #22c55e;
-            transition: width 0.3s ease;
-        }
-        .progress-fill.in-progress {
-            background: #3b82f6;
-        }
-        .progress-fill.planned {
-            background: #f59e0b;
-        }
-        code { 
-            background: #f6f8fa; 
-            padding: 2px 4px; 
-            border-radius: 3px; 
-            color: #d73a49;
-            font-size: 0.875rem;
-        }
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        .feature-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 1rem;
-            background: #fafafa;
-        }
-        .feature-card h4 {
-            margin: 0 0 0.5rem 0;
-            color: #374151;
-        }
-        .feature-description {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-bottom: 0.5rem;
-        }
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 1rem 0;
-        }
-        .tech-tag {
-            background: #dbeafe;
-            color: #1e40af;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        .update-time { 
-            color: #666; 
-            font-style: italic; 
-            margin-top: 30px; 
-            padding-top: 20px; 
-            border-top: 1px solid #e1e4e8;
-            text-align: center;
-        }
-        ul, ol {
-            padding-left: 1.5rem;
-        }
-        li {
-            margin-bottom: 0.5rem;
-        }
-        .section {
-            margin-bottom: 2rem;
-        }
-        .highlight {
-            background: #fef3c7;
-            padding: 1rem;
-            border-left: 4px solid #f59e0b;
-            border-radius: 0 4px 4px 0;
-            margin: 1rem 0;
-        }
-        @media print {
-            body { background: white; }
-            .container { box-shadow: none; }
-            .no-print { display: none; }
-        }
+        h1 { border-bottom: 2px solid #e1e4e8; padding-bottom: 10px; }
+        .status-completed { color: #28a745; }
+        .status-progress { color: #ffc107; }
+        .status-pending { color: #6c757d; }
+        code { background: #f6f8fa; padding: 2px 4px; border-radius: 3px; }
+        .update-time { color: #666; font-style: italic; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e1e4e8; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 id="overview">ROIC分析アプリケーション 機能設計書</h1>
-
-        <div class="section">
-            <h2>1. システム概要</h2>
-            
-            <h3>1.1 目的</h3>
-            <p>日系上場企業のROIC（投下資本利益率）を自動計算・分析・比較するWebアプリケーション</p>
-            
-            <h3>1.2 対象ユーザー</h3>
-            <ul>
-                <li>投資アナリスト</li>
-                <li>ファンドマネージャー</li>
-                <li>財務担当者</li>
-                <li>投資家</li>
-            </ul>
-        </div>
-
-        <div class="section" id="requirements">
-            <h2>2. 機能要件</h2>
-            
-            <h3>2.1 コア機能</h3>
-            
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h4>2.1.1 ROIC計算機能 <span class="status-completed">✅ 実装完了</span></h4>
-                    <div class="feature-description">4つの計算方式に対応したROIC自動計算</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%"></div>
-                    </div>
-                    <strong>計算方式:</strong>
-                    <ol>
-                        <li>基本ROIC = 営業利益 / 投下資本</li>
-                        <li>調整ROIC = (営業利益 - 税金) / 投下資本</li>
-                        <li>拡張ROIC = NOPAT / 投下資本</li>
-                        <li>詳細ROIC = (営業利益 × (1 - 税率)) / (固定資産 + 運転資本)</li>
-                    </ol>
-                </div>
-
-                <div class="feature-card">
-                    <h4>2.1.2 企業検索・フィルタリング機能 <span class="status-completed">✅ 実装完了</span></h4>
-                    <div class="feature-description">効率的な企業検索とフィルタリング</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%"></div>
-                    </div>
-                    <strong>機能詳細:</strong>
-                    <ul>
-                        <li>企業名による検索</li>
-                        <li>業界コードでのフィルタリング</li>
-                        <li>資本金規模での絞り込み</li>
-                        <li>上場市場での分類</li>
-                    </ul>
-                </div>
-
-                <div class="feature-card">
-                    <h4>2.1.3 業界比較・ランキング機能 <span class="status-progress">🚧 開発中</span></h4>
-                    <div class="feature-description">同業界内でのROIC比較とランキング</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill in-progress" style="width: 60%"></div>
-                    </div>
-                    <strong>機能詳細:</strong>
-                    <ul>
-                        <li>同業界内ROIC比較</li>
-                        <li>業界平均との比較</li>
-                        <li>ランキング表示</li>
-                        <li>パーセンタイル表示</li>
-                    </ul>
-                </div>
-
-                <div class="feature-card">
-                    <h4>2.1.4 データ可視化機能 <span class="status-pending">📋 設計中</span></h4>
-                    <div class="feature-description">ROICデータの視覚的分析</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill planned" style="width: 25%"></div>
-                    </div>
-                    <strong>機能詳細:</strong>
-                    <ul>
-                        <li>ROICトレンドチャート</li>
-                        <li>業界比較グラフ</li>
-                        <li>ヒートマップ表示</li>
-                        <li>散布図分析</li>
-                    </ul>
-                </div>
-            </div>
-
-            <h3>2.2 サポート機能</h3>
-            
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h4>2.2.1 データ管理機能 <span class="status-completed">✅ 実装完了</span></h4>
-                    <div class="feature-description">外部APIからのデータ取得・管理</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%"></div>
-                    </div>
-                    <ul>
-                        <li>EDINET APIからの財務データ取得</li>
-                        <li>データキャッシュ機能</li>
-                        <li>データ更新スケジューリング</li>
-                    </ul>
-                </div>
-
-                <div class="feature-card">
-                    <h4>2.2.2 エクスポート機能 <span class="status-pending">📋 計画中</span></h4>
-                    <div class="feature-description">多様な形式でのデータ出力</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill planned" style="width: 0%"></div>
-                    </div>
-                    <ul>
-                        <li>CSV形式でのデータエクスポート</li>
-                        <li>PDF形式でのレポート生成</li>
-                        <li>Excel形式での詳細分析データ</li>
-                    </ul>
-                </div>
-
-                <div class="feature-card">
-                    <h4>2.2.3 ユーザー管理機能 <span class="status-pending">📋 計画中</span></h4>
-                    <div class="feature-description">ユーザー認証・個人設定管理</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill planned" style="width: 0%"></div>
-                    </div>
-                    <ul>
-                        <li>ユーザー登録・認証</li>
-                        <li>お気に入り企業登録</li>
-                        <li>ウォッチリスト機能</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>3. 非機能要件</h2>
-            
-            <h3>3.1 パフォーマンス要件</h3>
-            <ul>
-                <li><strong>レスポンス時間</strong>: 画面表示 &lt; 2秒</li>
-                <li><strong>データ更新</strong>: 日次バッチ処理</li>
-                <li><strong>同時ユーザー数</strong>: 100ユーザー対応</li>
-            </ul>
-
-            <h3>3.2 セキュリティ要件</h3>
-            <ul>
-                <li><strong>データ暗号化</strong>: HTTPS通信</li>
-                <li><strong>アクセス制御</strong>: ロールベースアクセス</li>
-                <li><strong>監査ログ</strong>: 全操作の記録</li>
-            </ul>
-
-            <h3>3.3 可用性要件</h3>
-            <ul>
-                <li><strong>稼働率</strong>: 99.5%以上</li>
-                <li><strong>バックアップ</strong>: 日次自動バックアップ</li>
-                <li><strong>災害復旧</strong>: 24時間以内の復旧</li>
-            </ul>
-        </div>
-
-        <div class="section" id="technical">
-            <h2>4. 技術仕様</h2>
-            
-            <h3>4.1 フロントエンド</h3>
-            <div class="tech-stack">
-                <span class="tech-tag">Next.js 15</span>
-                <span class="tech-tag">TypeScript</span>
-                <span class="tech-tag">Tailwind CSS</span>
-                <span class="tech-tag">Zustand</span>
-            </div>
-
-            <h3>4.2 バックエンド</h3>
-            <div class="tech-stack">
-                <span class="tech-tag">Node.js</span>
-                <span class="tech-tag">Express.js</span>
-                <span class="tech-tag">PostgreSQL</span>
-                <span class="tech-tag">EDINET API</span>
-            </div>
-
-            <h3>4.3 インフラ</h3>
-            <div class="tech-stack">
-                <span class="tech-tag">GitHub Pages</span>
-                <span class="tech-tag">GitHub Actions</span>
-                <span class="tech-tag">Jenkins</span>
-                <span class="tech-tag">WebSocket</span>
-            </div>
-        </div>
-
-        <div class="section" id="progress">
-            <h2>5. 開発計画</h2>
-            
-            <div class="highlight">
-                <strong>全体進捗: 45%</strong>
-            </div>
-
-            <h3>Phase 1: 基盤構築 <span class="status-completed">✅ 100%</span></h3>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 100%"></div>
-            </div>
-            <ul>
-                <li>✅ Next.jsプロジェクトセットアップ</li>
-                <li>✅ 基本UI/UXデザイン</li>
-                <li>✅ ルーティング設定</li>
-                <li>✅ 状態管理実装</li>
-            </ul>
-
-            <h3>Phase 2: コア機能開発 <span class="status-progress">🚧 75%</span></h3>
-            <div class="progress-bar">
-                <div class="progress-fill in-progress" style="width: 75%"></div>
-            </div>
-            <ul>
-                <li>✅ ROIC計算エンジン</li>
-                <li>✅ 企業検索機能</li>
-                <li>🚧 業界比較機能</li>
-                <li>📋 データ可視化</li>
-            </ul>
-
-            <h3>Phase 3: データ統合 <span class="status-pending">📋 20%</span></h3>
-            <div class="progress-bar">
-                <div class="progress-fill planned" style="width: 20%"></div>
-            </div>
-            <ul>
-                <li>📋 EDINET API連携</li>
-                <li>📋 データベース設計</li>
-                <li>📋 バッチ処理実装</li>
-            </ul>
-
-            <h3>Phase 4: 高度機能 <span class="status-pending">📋 0%</span></h3>
-            <div class="progress-bar">
-                <div class="progress-fill planned" style="width: 0%"></div>
-            </div>
-            <ul>
-                <li>📋 レポート生成</li>
-                <li>📋 エクスポート機能</li>
-                <li>📋 ユーザー管理</li>
-            </ul>
-
-            <h3>Phase 5: 最適化・運用 <span class="status-pending">📋 0%</span></h3>
-            <div class="progress-bar">
-                <div class="progress-fill planned" style="width: 0%"></div>
-            </div>
-            <ul>
-                <li>📋 パフォーマンス最適化</li>
-                <li>📋 セキュリティ強化</li>
-                <li>📋 運用監視</li>
-            </ul>
-        </div>
-
-        <div class="section" id="quality">
-            <h2>6. 品質保証</h2>
-            
-            <h3>6.1 テスト戦略</h3>
-            <ul>
-                <li><strong>ユニットテスト</strong>: Jest + React Testing Library</li>
-                <li><strong>E2Eテスト</strong>: Playwright</li>
-                <li><strong>カバレッジ目標</strong>: 80%以上</li>
-            </ul>
-
-            <h3>6.2 品質メトリクス</h3>
-            <ul>
-                <li><strong>コード品質</strong>: ESLint + TypeScript</li>
-                <li><strong>パフォーマンス</strong>: Lighthouse Score &gt; 90</li>
-                <li><strong>アクセシビリティ</strong>: WCAG 2.1 AA準拠</li>
-            </ul>
-
-            <h3>6.3 自動化システム</h3>
-            <ul>
-                <li><strong>継続的統合</strong>: GitHub Actions</li>
-                <li><strong>自動デプロイ</strong>: GitHub Pages</li>
-                <li><strong>進捗監視</strong>: リアルタイム更新システム</li>
-            </ul>
-        </div>
-
+        <h1>ROIC分析アプリケーション 機能設計書</h1></p><p><h2>1. システム概要</h2></p><p><h3>1.1 目的</h3>
+<p>日系上場企業のROIC（投下資本利益率）を自動計算・分析・比較するWebアプリケーション</p><p><h3>1.2 開発方針</h3>
+<li><strong>MVP-First</strong>: 最小限の価値ある製品から開始</li>
+<li><strong>インクリメンタル開発</strong>: 段階的な機能追加</li>
+<li><strong>自動文書更新</strong>: 開発進捗に応じた自動更新</li></p><p><h2>2. 機能要件</h2></p><p><h3>2.1 実装済み機能</h3></p><p><h4>ROIC自動計算 <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: 4つの計算方式に対応したROIC自動計算</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: frontend/src/components/ROICCalculator.tsx, frontend/src/utils/roicCalculations.ts</li></p><p><h4>企業検索・フィルタリング <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: 効率的な企業検索とフィルタリング機能</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: frontend/src/app/companies/page.tsx, frontend/src/components/CompanySearch.tsx</li></p><p><h4>進捗ダッシュボード <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: リアルタイムで開発状況を監視・可視化</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: frontend/src/app/dashboard/page.tsx, frontend/src/app/page.tsx</li></p><p><h4>機能設計書 <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: システム要件・機能仕様・技術設計</li>
+<li><strong>優先度</strong>: medium</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: docs/functional-spec.md, frontend/src/app/functional-spec/page.tsx</li></p><p><h4>テスト仕様書 <span class="status-completed">✅</span></h4>
+<li><strong>ステータス</strong>: completed</li>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: ユニット・E2Eテストの実行状況</li>
+<li><strong>優先度</strong>: medium</li>
+<li><strong>フェーズ</strong>: Phase 1</li>
+<li><strong>ファイル</strong>: frontend/src/app/test-docs/test-spec/page.tsx</li></p><p></p><p><h3>2.2 計画中機能</h3></p><p><h4>業界比較・ランキング <span class="status-pending">📋</span></h4>
+<li><strong>ステータス</strong>: planned</li>
+<li><strong>進捗</strong>: 0%</li>
+<li><strong>説明</strong>: 同業界内でのROIC比較とランキング表示</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 2</li></p><p><h4>データ可視化 <span class="status-pending">📋</span></h4>
+<li><strong>ステータス</strong>: planned</li>
+<li><strong>進捗</strong>: 0%</li>
+<li><strong>説明</strong>: ROICトレンドチャート・グラフ表示</li>
+<li><strong>優先度</strong>: high</li>
+<li><strong>フェーズ</strong>: Phase 2</li></p><p><h4>EDINET API統合 <span class="status-pending">📋</span></h4>
+<li><strong>ステータス</strong>: planned</li>
+<li><strong>進捗</strong>: 0%</li>
+<li><strong>説明</strong>: 外部APIからの財務データ取得</li>
+<li><strong>優先度</strong>: medium</li>
+<li><strong>フェーズ</strong>: Phase 3</li></p><p></p><p><h2>3. 開発進捗</h2></p><p><h3>全体進捗: 63%</h3></p><p><h3>Phase 1: MVP基盤構築 <span class="status-completed">✅</span></h3>
+<li><strong>進捗</strong>: 100%</li>
+<li><strong>説明</strong>: 基本機能とインフラの構築</li>
+<li><strong>含む機能</strong>: 5個</li></p><p><h3>Phase 2: コア機能拡張 <span class="status-pending">📋</span></h3>
+<li><strong>進捗</strong>: 0%</li>
+<li><strong>説明</strong>: 業界比較・データ可視化機能の追加</li>
+<li><strong>含む機能</strong>: 2個</li></p><p><h3>Phase 3: データ統合 <span class="status-pending">📋</span></h3>
+<li><strong>進捗</strong>: 0%</li>
+<li><strong>説明</strong>: 外部API統合・データベース連携</li>
+<li><strong>含む機能</strong>: 1個</li></p><p></p><p><h2>4. テスト状況</h2></p><p><li><strong>ユニットテスト</strong>: 4件 (成功: 4, カバレッジ: 93%)</li>
+<li><strong>E2Eテスト</strong>: 0件 (成功: 0, カバレッジ: 70%)</li>
+<li><strong>統合テスト</strong>: 0件 (成功: 0, カバレッジ: 75%)</li></p><p>---</p>
+<p><em>最終更新: 2025/7/1 15:48:54</em>
+<p><em>この文書は開発進捗に応じて自動更新されます</em>
         <div class="update-time">
-            最終自動更新: <span id="updateTime">${new Date().toLocaleString('ja-JP')}</span><br>
-            <strong>🤖 この文書は開発進捗に応じて自動更新されます</strong>
+            最終自動更新: 2025/7/1 15:48:54<br>
+            🤖 この文書は自動的に更新されます
         </div>
     </div>
-
     <script>
         // Auto-refresh every 30 seconds
-        setTimeout(() => {
-            window.location.reload();
-        }, 30000);
-
-        // Update timestamp
-        document.getElementById('updateTime').textContent = new Date().toLocaleString('ja-JP');
+        setTimeout(() => window.location.reload(), 30000);
     </script>
 </body>
 </html>

@@ -100,11 +100,11 @@ export default function Home() {
           
           <div className="grid md:grid-cols-4 gap-6 mb-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">45%</div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">100%</div>
               <div className="text-gray-600">全体進捗</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">12</div>
+              <div className="text-3xl font-bold text-green-600 mb-2">5</div>
               <div className="text-gray-600">完了機能</div>
             </div>
             <div className="text-center">
@@ -112,7 +112,7 @@ export default function Home() {
               <div className="text-gray-600">開発中</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">25</div>
+              <div className="text-3xl font-bold text-purple-600 mb-2">4</div>
               <div className="text-gray-600">テスト実行</div>
             </div>
           </div>

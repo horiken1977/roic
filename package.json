@@ -15,11 +15,12 @@
     "test:e2e": "cd frontend && npm run test:e2e",
     "format": "cd frontend && npm run format",
     "deploy": "cd frontend && npm run build && npm run export",
+    "centralized-manager": "node scripts/centralized-manager.js",
     "auto-dashboard": "node scripts/auto-dashboard-updater.js",
     "auto-dev-cycle": "node scripts/incremental-dev-cycle.js",
     "test-docs": "node scripts/test-docs-generator.js",
     "test-progress": "node scripts/test-progress-updater.js",
-    "start-automation": "concurrently \"npm run auto-dashboard\" \"npm run auto-dev-cycle\" \"npm run test-progress\"",
+    "start-automation": "npm run centralized-manager",
     "setup": "cd frontend && npm install && cd .. && npm install"
   },
   "dependencies": {
