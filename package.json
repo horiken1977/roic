@@ -21,6 +21,8 @@
     "test-docs": "node scripts/test-docs-generator.js",
     "test-progress": "node scripts/test-progress-updater.js",
     "start-automation": "npm run centralized-manager",
+    "auto-commit": "node scripts/auto-commit-push.js",
+    "auto-all": "concurrently \"npm run centralized-manager\" \"npm run auto-commit\"",
     "setup": "cd frontend && npm install && cd .. && npm install"
   },
   "dependencies": {

@@ -30,6 +30,7 @@ export default function Home() {
 
       {/* Quick Navigation */}
       <div className="container mx-auto px-4 py-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">📚 ドキュメント一覧</h2>
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           {/* 開発進捗ダッシュボード */}
           <Link href="/dashboard" className="block">
@@ -89,6 +90,48 @@ export default function Home() {
                 ユニット・E2Eテストの実行状況
               </p>
               <div className="mt-4 flex items-center text-purple-600">
+                <span className="text-sm font-medium">詳細を見る →</span>
+              </div>
+            </div>
+          </Link>
+
+          {/* 環境設計書 */}
+          <Link href="/environment-design" className="block">
+            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border-l-4 border-orange-500">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                  <span className="text-2xl">🏗️</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900">環境設計書</h3>
+                  <p className="text-green-600 text-sm font-medium">自動更新</p>
+                </div>
+              </div>
+              <p className="text-gray-600 text-sm">
+                開発・本番環境の詳細設計とインフラ構成
+              </p>
+              <div className="mt-4 flex items-center text-orange-600">
+                <span className="text-sm font-medium">詳細を見る →</span>
+              </div>
+            </div>
+          </Link>
+
+          {/* 運用設計書 */}
+          <Link href="/operations-design" className="block">
+            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border-l-4 border-red-500">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                  <span className="text-2xl">⚙️</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900">運用設計書</h3>
+                  <p className="text-green-600 text-sm font-medium">新規追加</p>
+                </div>
+              </div>
+              <p className="text-gray-600 text-sm">
+                システム運用ルールと自動化設定
+              </p>
+              <div className="mt-4 flex items-center text-red-600">
                 <span className="text-sm font-medium">詳細を見る →</span>
               </div>
             </div>
