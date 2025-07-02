@@ -13,9 +13,14 @@ const corsHeaders = {
 };
 
 export default async function handler(req, res) {
+  // CORS ヘッダーを設定
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   // CORS プリフライト対応
   if (req.method === 'OPTIONS') {
-    return res.status(200).json({});
+    return res.status(200).end();
   }
 
   // GET リクエストのみ許可
@@ -43,15 +48,18 @@ export default async function handler(req, res) {
     const apiKey = process.env.EDINET_API_KEY;
     
     if (!apiKey) {
-      console.log('EDINET_API_KEY未設定 - サンプルデータを返します');
-      return res.status(200).json(await getSampleCompanies(query));
+      console.log('EDINET_API_KEY未設定');
+      return res.status(400).json({
+        success: false,
+        error: 'API_KEY_NOT_CONFIGURED',
+        message: 'EDINET APIキーが設定されていません。管理者にお問い合わせください。'
+      });
     }
 
     // EDINET APIから企業検索
     const companies = await searchCompaniesFromEDINET(query, apiKey);
 
-    // CORS ヘッダーを設定して返す
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    // キャッシュ設定
     res.setHeader('Cache-Control', 'public, max-age=300'); // 5分キャッシュ
     
     return res.status(200).json({
@@ -64,11 +72,11 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('企業検索エラー:', error);
     
-    // エラー時はサンプルデータを返す
-    const sampleResult = await getSampleCompanies(req.query.q || '');
-    
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    return res.status(200).json(sampleResult);
+    return res.status(500).json({
+      success: false,
+      error: 'SEARCH_ERROR',
+      message: `企業検索中にエラーが発生しました: ${error.message}`
+    });
   }
 }
 
@@ -110,7 +118,7 @@ async function searchCompaniesFromEDINET(query, apiKey) {
       }
       
       // 十分な結果が見つかったら終了
-      if (companies.size >= 10) {
+      if (companies.size >= 20) {
         break;
       }
       
@@ -208,66 +216,4 @@ function getRecentBusinessDates(days) {
   return dates;
 }
 
-/**
- * サンプル企業データ（フォールバック用）
- */
-async function getSampleCompanies(query) {
-  const sampleCompanies = [
-    {
-      edinetCode: 'E02144',
-      companyName: 'トヨタ自動車株式会社',
-      tickerSymbol: '7203',
-      industry: '輸送用機器',
-      hasRecentData: true
-    },
-    {
-      edinetCode: 'E02513',
-      companyName: 'ソニーグループ株式会社',
-      tickerSymbol: '6758',
-      industry: '電気機器',
-      hasRecentData: true
-    },
-    {
-      edinetCode: 'E03568',
-      companyName: '三菱UFJフィナンシャル・グループ',
-      tickerSymbol: '8306',
-      industry: '銀行業',
-      hasRecentData: true
-    },
-    {
-      edinetCode: 'E02166',
-      companyName: 'パナソニック ホールディングス株式会社',
-      tickerSymbol: '6752',
-      industry: '電気機器',
-      hasRecentData: true
-    },
-    {
-      edinetCode: 'E04430',
-      companyName: '野村ホールディングス株式会社',
-      tickerSymbol: '8604',
-      industry: '証券業',
-      hasRecentData: true
-    },
-    {
-      edinetCode: 'E03815',
-      companyName: '大和証券グループ本社',
-      tickerSymbol: '8601',
-      industry: '証券業',
-      hasRecentData: true
-    }
-  ];
-
-  // クエリでフィルタリング
-  const filtered = sampleCompanies.filter(company => 
-    company.companyName.toLowerCase().includes(query.toLowerCase()) ||
-    company.tickerSymbol?.includes(query) ||
-    company.edinetCode.includes(query)
-  );
-
-  return {
-    success: true,
-    data: filtered,
-    source: 'sample_data_vercel',
-    message: `${filtered.length}件の企業が見つかりました（サンプルデータ - Vercel Functions）`
-  };
-}
+// サンプルデータは廃止 - 実データのみ使用

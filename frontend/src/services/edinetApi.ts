@@ -180,96 +180,26 @@ class EDINETApiClient {
         const result = await response.json();
         return result;
       } else {
-        // 4. フォールバック: サンプルデータを使用
-        console.log('フォールバック - サンプルデータを使用');
-        return this.getSampleCompanies(query);
+        // 4. エラー: 利用可能なデータソースなし
+        return {
+          success: false,
+          error: 'NO_DATA_SOURCE_AVAILABLE',
+          message: 'EDINET APIへの接続ができません。ネットワーク接続を確認するか、管理者にお問い合わせください。'
+        };
       }
     } catch (error) {
       console.error('企業検索エラー:', error);
       
-      // エラーの場合はサンプルデータを返す
-      return this.getSampleCompanies(query);
+      // エラーの場合もエラーレスポンスを返す
+      return {
+        success: false,
+        error: 'SEARCH_ERROR',
+        message: `企業検索中にエラーが発生しました: ${error.message}`
+      };
     }
   }
 
-  /**
-   * サンプル企業データを返す（フォールバック用）
-   */
-  private async getSampleCompanies(query: string): Promise<EDINETApiResponse<EDINETCompany[]>> {
-    await this.delay(800); // API呼び出しをシミュレート
-
-    const sampleCompanies: EDINETCompany[] = [
-      {
-        edinetCode: 'E02144',
-        companyName: 'トヨタ自動車株式会社',
-        tickerSymbol: '7203',
-        industry: '輸送用機器',
-        listingDate: '1949-05-16'
-      },
-      {
-        edinetCode: 'E02513',
-        companyName: 'ソニーグループ株式会社',
-        tickerSymbol: '6758',
-        industry: '電気機器',
-        listingDate: '1958-12-01'
-      },
-      {
-        edinetCode: 'E03568',
-        companyName: '三菱UFJフィナンシャル・グループ',
-        tickerSymbol: '8306',
-        industry: '銀行業',
-        listingDate: '2001-10-01'
-      },
-      {
-        edinetCode: 'E03562',
-        companyName: '株式会社ファーストリテイリング',
-        tickerSymbol: '9983',
-        industry: '小売業',
-        listingDate: '1994-07-14'
-      },
-      {
-        edinetCode: 'E02282',
-        companyName: '株式会社キーエンス',
-        tickerSymbol: '6861',
-        industry: '電気機器',
-        listingDate: '1995-10-26'
-      },
-      {
-        edinetCode: 'E00990',
-        companyName: 'ソフトバンクグループ株式会社',
-        tickerSymbol: '9984',
-        industry: '情報・通信業',
-        listingDate: '1994-07-22'
-      },
-      {
-        edinetCode: 'E02166',
-        companyName: 'パナソニック ホールディングス株式会社',
-        tickerSymbol: '6752',
-        industry: '電気機器',
-        listingDate: '1961-05-11'
-      },
-      {
-        edinetCode: 'E01225',
-        companyName: '任天堂株式会社',
-        tickerSymbol: '7974',
-        industry: 'その他製品',
-        listingDate: '1962-01-16'
-      }
-    ];
-
-    // クエリでフィルタリング
-    const filtered = sampleCompanies.filter(company => 
-      company.companyName.toLowerCase().includes(query.toLowerCase()) ||
-      company.tickerSymbol?.includes(query) ||
-      company.edinetCode.includes(query)
-    );
-
-    return {
-      success: true,
-      data: filtered,
-      message: `${filtered.length}件の企業が見つかりました（サンプルデータ）`
-    };
-  }
+  // サンプルデータは廃止 - 実データのみ使用
 
   /**
    * 企業の書類一覧取得（デモ用）
@@ -364,166 +294,26 @@ class EDINETApiClient {
         const result = await response.json();
         return result;
       } else {
-        // 4. フォールバック: サンプルデータを使用
-        console.log('フォールバック - サンプルデータを使用');
-        return this.getSampleFinancialData(edinetCode, fiscalYear);
+        // 4. エラー: 利用可能なデータソースなし
+        return {
+          success: false,
+          error: 'NO_DATA_SOURCE_AVAILABLE',
+          message: 'EDINET APIへの接続ができません。ネットワーク接続を確認するか、管理者にお問い合わせください。'
+        };
       }
     } catch (error) {
       console.error('財務データ取得エラー:', error);
       
-      // エラーの場合はサンプルデータを返す
-      return this.getSampleFinancialData(edinetCode, fiscalYear);
+      // エラーの場合もエラーレスポンスを返す
+      return {
+        success: false,
+        error: 'FINANCIAL_DATA_ERROR',
+        message: `財務データ取得中にエラーが発生しました: ${error.message}`
+      };
     }
   }
 
-  /**
-   * サンプル財務データを返す（フォールバック用）
-   */
-  private async getSampleFinancialData(edinetCode: string, fiscalYear: number): Promise<EDINETApiResponse<FinancialDataFromEDINET>> {
-    await this.delay(1500); // XBRL解析をシミュレート
-
-    // 企業別のベースデータ（実際のおおよその値を参考）
-    const companyBaseData: Record<string, Partial<FinancialDataFromEDINET>> = {
-      'E02144': { // トヨタ自動車
-        companyName: 'トヨタ自動車株式会社',
-        netSales: 31379500000000,
-        grossProfit: 5980000000000,
-        operatingIncome: 2725000000000,
-        interestIncome: 95000000000,
-        sellingAdminExpenses: 3255000000000,
-        totalAssets: 53713000000000,
-        cashAndEquivalents: 4885000000000,
-        shareholdersEquity: 23913000000000,
-        interestBearingDebt: 8826000000000,
-        accountsPayable: 2800000000000,
-        accruedExpenses: 1200000000000,
-        leaseExpense: 180000000000,
-        leaseDebt: 1600000000000,
-        taxRate: 0.28
-      },
-      'E02513': { // ソニーグループ
-        companyName: 'ソニーグループ株式会社',
-        netSales: 12974000000000,
-        grossProfit: 4200000000000,
-        operatingIncome: 1308000000000,
-        interestIncome: 45000000000,
-        sellingAdminExpenses: 2892000000000,
-        totalAssets: 24166000000000,
-        cashAndEquivalents: 1820000000000,
-        shareholdersEquity: 6835000000000,
-        interestBearingDebt: 3244000000000,
-        accountsPayable: 1400000000000,
-        accruedExpenses: 800000000000,
-        leaseExpense: 120000000000,
-        leaseDebt: 950000000000,
-        taxRate: 0.27
-      },
-      'E03568': { // 三菱UFJ
-        companyName: '三菱UFJフィナンシャル・グループ',
-        netSales: 5645000000000, // 銀行業では経常収益
-        grossProfit: 3200000000000,
-        operatingIncome: 1245000000000,
-        interestIncome: 1850000000000,
-        sellingAdminExpenses: 1955000000000,
-        totalAssets: 362436000000000,
-        cashAndEquivalents: 48200000000000,
-        shareholdersEquity: 15485000000000,
-        interestBearingDebt: 12800000000000, // 銀行業では預金等
-        accountsPayable: 5600000000000,
-        accruedExpenses: 2400000000000,
-        leaseExpense: 85000000000,
-        leaseDebt: 740000000000,
-        taxRate: 0.25
-      },
-      'E03562': { // ファーストリテイリング
-        companyName: '株式会社ファーストリテイリング',
-        netSales: 2757000000000,
-        grossProfit: 1388000000000,
-        operatingIncome: 465000000000,
-        interestIncome: 12000000000,
-        sellingAdminExpenses: 923000000000,
-        totalAssets: 1849000000000,
-        cashAndEquivalents: 689000000000,
-        shareholdersEquity: 1063000000000,
-        interestBearingDebt: 245000000000,
-        accountsPayable: 280000000000,
-        accruedExpenses: 150000000000,
-        leaseExpense: 240000000000,
-        leaseDebt: 2100000000000,
-        taxRate: 0.31
-      },
-      'E02282': { // キーエンス
-        companyName: '株式会社キーエンス',
-        netSales: 845000000000,
-        grossProfit: 695000000000,
-        operatingIncome: 402000000000,
-        interestIncome: 8000000000,
-        sellingAdminExpenses: 293000000000,
-        totalAssets: 1205000000000,
-        cashAndEquivalents: 512000000000,
-        shareholdersEquity: 935000000000,
-        interestBearingDebt: 45000000000,
-        accountsPayable: 85000000000,
-        accruedExpenses: 45000000000,
-        leaseExpense: 25000000000,
-        leaseDebt: 220000000000,
-        taxRate: 0.30
-      },
-      'E02166': { // パナソニック
-        companyName: 'パナソニック ホールディングス株式会社',
-        netSales: 8378000000000,
-        grossProfit: 2513000000000,
-        operatingIncome: 487000000000,
-        interestIncome: 25000000000,
-        sellingAdminExpenses: 2026000000000,
-        totalAssets: 6234000000000,
-        cashAndEquivalents: 890000000000,
-        shareholdersEquity: 2845000000000,
-        interestBearingDebt: 734000000000,
-        accountsPayable: 578000000000,
-        accruedExpenses: 412000000000,
-        leaseExpense: 67000000000,
-        leaseDebt: 298000000000,
-        taxRate: 0.25
-      }
-    };
-
-    const baseData = companyBaseData[edinetCode];
-    if (!baseData) {
-      throw new Error('企業データが見つかりません');
-    }
-
-    // 年度による変動を加える（±10%程度のランダム変動）
-    const yearVariation = 1 + (Math.random() - 0.5) * 0.2;
-    const growthFactor = Math.pow(1.03, fiscalYear - 2022); // 年3%成長を仮定
-
-    const financialData: FinancialDataFromEDINET = {
-      ...baseData,
-      fiscalYear,
-      edinetCode,
-      companyName: baseData.companyName || '',
-      netSales: Math.round((baseData.netSales || 0) * yearVariation * growthFactor),
-      grossProfit: Math.round((baseData.grossProfit || 0) * yearVariation * growthFactor),
-      operatingIncome: Math.round((baseData.operatingIncome || 0) * yearVariation * growthFactor),
-      interestIncome: Math.round((baseData.interestIncome || 0) * yearVariation),
-      sellingAdminExpenses: Math.round((baseData.sellingAdminExpenses || 0) * yearVariation * growthFactor),
-      totalAssets: Math.round((baseData.totalAssets || 0) * yearVariation * growthFactor),
-      cashAndEquivalents: Math.round((baseData.cashAndEquivalents || 0) * yearVariation),
-      shareholdersEquity: Math.round((baseData.shareholdersEquity || 0) * yearVariation * growthFactor),
-      interestBearingDebt: Math.round((baseData.interestBearingDebt || 0) * yearVariation),
-      accountsPayable: Math.round((baseData.accountsPayable || 0) * yearVariation * growthFactor),
-      accruedExpenses: Math.round((baseData.accruedExpenses || 0) * yearVariation * growthFactor),
-      leaseExpense: Math.round((baseData.leaseExpense || 0) * yearVariation),
-      leaseDebt: Math.round((baseData.leaseDebt || 0) * yearVariation),
-      taxRate: baseData.taxRate || 0.30
-    } as FinancialDataFromEDINET;
-
-    return {
-      success: true,
-      data: financialData,
-      message: `${fiscalYear}年度の財務データを取得しました`
-    };
-  }
+  // サンプルデータは廃止 - 実データのみ使用
 
   /**
    * 複数年度の財務データを一括取得
@@ -620,34 +410,18 @@ class EDINETApiClient {
         
         return result;
       } else {
-        // 4. フォールバック: サンプルデータを使用
-        console.log('フォールバック - サンプルデータを使用');
-        
-        const results: FinancialDataFromEDINET[] = [];
-        
-        for (let i = 0; i < years.length; i++) {
-          const year = years[i];
-          onProgress?.(i + 1, years.length, year);
-          
-          const response = await this.getSampleFinancialData(edinetCode, year);
-          if (response.success && response.data) {
-            results.push(response.data);
-          } else {
-            console.warn(`${year}年度のサンプルデータ取得に失敗:`, response.error);
-          }
-        }
-
+        // 4. エラー: 利用可能なデータソースなし
         return {
-          success: true,
-          data: results,
-          message: `${results.length}年分の財務データを取得しました（サンプルデータ）`
+          success: false,
+          error: 'NO_DATA_SOURCE_AVAILABLE',
+          message: 'EDINET APIへの接続ができません。ネットワーク接続を確認するか、管理者にお問い合わせください。'
         };
       }
     } catch (error) {
       return {
         success: false,
-        error: '複数年度データ取得エラー',
-        message: error instanceof Error ? error.message : '不明なエラー'
+        error: 'MULTI_YEAR_DATA_ERROR',
+        message: `複数年度データ取得中にエラーが発生しました: ${error instanceof Error ? error.message : '不明なエラー'}`
       };
     }
   }

@@ -17,6 +17,7 @@ import {
 import ROICTrendChart from './ROICTrendChart'
 import ExportButtons from './ExportButtons'
 import DataSourceIndicator from './DataSourceIndicator'
+import ErrorDisplay from './ErrorDisplay'
 
 export default function EDINETCompanySearchSimple() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -29,7 +30,7 @@ export default function EDINETCompanySearchSimple() {
   
   const [isSearching, setIsSearching] = useState(false)
   const [isLoadingFinancialData, setIsLoadingFinancialData] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<{ code: string; message: string } | null>(null)
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return
@@ -46,11 +47,17 @@ export default function EDINETCompanySearchSimple() {
       if (response.success && response.data) {
         setSearchResults(response.data)
       } else {
-        setError(response.error || '検索に失敗しました')
+        setError({
+          code: response.error || 'SEARCH_ERROR',
+          message: response.message || '検索に失敗しました'
+        })
       }
     } catch (err) {
       console.error('Search error:', err) // デバッグ用
-      setError('検索エラーが発生しました')
+      setError({
+        code: 'SEARCH_ERROR',
+        message: '検索エラーが発生しました'
+      })
     } finally {
       setIsSearching(false)
     }
@@ -84,11 +91,17 @@ export default function EDINETCompanySearchSimple() {
         
         setRoicResults(results)
       } else {
-        setError(response.error || '財務データの取得に失敗しました')
+        setError({
+          code: response.error || 'FINANCIAL_DATA_ERROR',
+          message: response.message || '財務データの取得に失敗しました'
+        })
       }
     } catch (err) {
       console.error('Financial data error:', err) // デバッグ用
-      setError('財務データ取得エラーが発生しました')
+      setError({
+        code: 'FINANCIAL_DATA_ERROR',
+        message: '財務データ取得エラーが発生しました'
+      })
     } finally {
       setIsLoadingFinancialData(false)
     }
@@ -114,10 +127,16 @@ export default function EDINETCompanySearchSimple() {
         setMultiYearData(response.data)
         setShowTrendChart(true)
       } else {
-        setError(response.error || '複数年度データの取得に失敗しました')
+        setError({
+          code: response.error || 'MULTI_YEAR_DATA_ERROR',
+          message: response.message || '複数年度データの取得に失敗しました'
+        })
       }
     } catch (err) {
-      setError('トレンドデータ取得エラーが発生しました')
+      setError({
+        code: 'MULTI_YEAR_DATA_ERROR',
+        message: 'トレンドデータ取得エラーが発生しました'
+      })
     } finally {
       setIsLoadingFinancialData(false)
     }
@@ -166,11 +185,17 @@ export default function EDINETCompanySearchSimple() {
 
         {/* エラー表示 */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-            <div className="flex items-center gap-2">
-              <span className="text-red-600">⚠️</span>
-              <span className="text-sm text-red-800">{error}</span>
-            </div>
+          <div className="mb-4">
+            <ErrorDisplay
+              error={error.code}
+              message={error.message}
+              onRetry={() => {
+                setError(null)
+                if (error.code === 'SEARCH_ERROR') {
+                  handleSearch()
+                }
+              }}
+            />
           </div>
         )}
       </div>
