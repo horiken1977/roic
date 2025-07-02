@@ -32,6 +32,12 @@ export default function EDINETCompanySearchSimple() {
   const [isLoadingFinancialData, setIsLoadingFinancialData] = useState(false)
   const [error, setError] = useState<{ code: string; message: string } | null>(null)
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !isSearching && searchTerm.trim()) {
+      handleSearch()
+    }
+  }
+
   const handleSearch = async () => {
     if (!searchTerm.trim()) return
 
@@ -142,12 +148,6 @@ export default function EDINETCompanySearchSimple() {
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch()
-    }
-  }
-
   return (
     <div className="space-y-6">
       {/* データソース表示 */}
@@ -181,6 +181,7 @@ export default function EDINETCompanySearchSimple() {
         {/* デバッグ情報 */}
         <div className="text-xs text-gray-500 mb-4">
           デバッグ: 検索語句 = "{searchTerm}", 検索中 = {isSearching.toString()}, 結果数 = {searchResults.length}
+          {error && `, エラー = ${error.code}: ${error.message}`}
         </div>
 
         {/* エラー表示 */}

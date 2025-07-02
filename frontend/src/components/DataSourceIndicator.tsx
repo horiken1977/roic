@@ -128,10 +128,10 @@ export default function DataSourceIndicator() {
       case 'sample_data':
       default:
         return {
-          name: 'データ接続エラー',
-          icon: '⚠️',
-          color: 'bg-red-50 border-red-200 text-red-800',
-          description: 'EDINET APIへの接続ができません'
+          name: 'テストデータ',
+          icon: '🧪',
+          color: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+          description: 'デバッグ用のテストデータを使用中'
         };
     }
   };
@@ -209,9 +209,9 @@ export default function DataSourceIndicator() {
       )}
       
       {dataInfo.source === 'sample_data' && (
-        <div className="mt-2 pt-2 border-t border-red-300/30">
+        <div className="mt-2 pt-2 border-t border-yellow-300/30">
           <div className="text-xs">
-            EDINET APIへの接続に失敗しました。ネットワーク接続を確認するか、管理者にお問い合わせください。
+            現在はテストデータを使用しています。トヨタ、日産、野村ホールディングスが検索可能です。
           </div>
         </div>
       )}
