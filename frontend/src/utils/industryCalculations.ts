@@ -30,15 +30,103 @@ try {
             industry_code: '1100',
             industry_name: '自動車・輸送機器',
             parent_category: '製造業',
-            roic_adjustment: { coefficient: 0.95, reason: 'テスト調整' },
+            roic_adjustment: { coefficient: 0.95, reason: '設備集約型産業調整' },
             representative_companies: [
-              { name: 'テスト企業', code: 'TEST' }
+              { name: 'トヨタ自動車', code: '7203' },
+              { name: 'ホンダ', code: '7267' },
+              { name: '日産自動車', code: '7201' }
             ],
             characteristics: {
               capital_intensity: '高',
-              r_and_d_intensity: '中',
+              r_and_d_intensity: '高',
               working_capital_turnover: '中',
               typical_roic_range: '8-15%'
+            }
+          },
+          {
+            industry_code: '1200',
+            industry_name: '電気機器',
+            parent_category: '製造業',
+            roic_adjustment: { coefficient: 1.02, reason: '技術革新プレミアム' },
+            representative_companies: [
+              { name: 'ソニーグループ', code: '6758' },
+              { name: 'キーエンス', code: '6861' },
+              { name: 'パナソニック', code: '6752' }
+            ],
+            characteristics: {
+              capital_intensity: '中',
+              r_and_d_intensity: '高',
+              working_capital_turnover: '高',
+              typical_roic_range: '12-25%'
+            }
+          }
+        ]
+      },
+      {
+        industry_code: '2000',
+        industry_name: '金融業',
+        sub_categories: [
+          {
+            industry_code: '2100',
+            industry_name: '銀行業',
+            parent_category: '金融業',
+            roic_adjustment: { coefficient: 0.85, reason: '規制業種調整' },
+            representative_companies: [
+              { name: '三菱UFJフィナンシャル・グループ', code: '8306' },
+              { name: '三井住友フィナンシャルグループ', code: '8316' },
+              { name: 'みずほフィナンシャルグループ', code: '8411' }
+            ],
+            characteristics: {
+              capital_intensity: '低',
+              r_and_d_intensity: '低',
+              working_capital_turnover: '高',
+              typical_roic_range: '5-12%'
+            }
+          }
+        ]
+      },
+      {
+        industry_code: '3000',
+        industry_name: 'サービス業',
+        sub_categories: [
+          {
+            industry_code: '3100',
+            industry_name: '小売業',
+            parent_category: 'サービス業',
+            roic_adjustment: { coefficient: 1.05, reason: '運転資本効率性' },
+            representative_companies: [
+              { name: 'ファーストリテイリング', code: '9983' },
+              { name: 'セブン＆アイ・ホールディングス', code: '3382' },
+              { name: 'イオン', code: '8267' }
+            ],
+            characteristics: {
+              capital_intensity: '中',
+              r_and_d_intensity: '低',
+              working_capital_turnover: '高',
+              typical_roic_range: '15-30%'
+            }
+          }
+        ]
+      },
+      {
+        industry_code: '4000',
+        industry_name: '情報・通信業',
+        sub_categories: [
+          {
+            industry_code: '4100',
+            industry_name: '情報・通信業',
+            parent_category: '情報・通信業',
+            roic_adjustment: { coefficient: 1.10, reason: 'デジタル変革プレミアム' },
+            representative_companies: [
+              { name: 'ソフトバンクグループ', code: '9984' },
+              { name: 'NTT', code: '9432' },
+              { name: 'KDDI', code: '9433' }
+            ],
+            characteristics: {
+              capital_intensity: '中',
+              r_and_d_intensity: '高',
+              working_capital_turnover: '高',
+              typical_roic_range: '10-20%'
             }
           }
         ]

@@ -14,6 +14,7 @@ import {
   getROICEvaluationLevel,
   FinancialData
 } from '@/utils/roicCalculations'
+import IndustryComparison from './IndustryComparison'
 
 interface ProgressInfo {
   stage: 'searching' | 'fetching_documents' | 'fetching_financial_data' | 'calculating' | 'completed';
@@ -37,6 +38,19 @@ export default function EDINETCompanySearch() {
   const [error, setError] = useState<string | null>(null)
 
   const [selectedYears, setSelectedYears] = useState<number[]>([2023, 2022, 2021])
+  const [showIndustryComparison, setShowIndustryComparison] = useState(false)
+  
+  // 業界マッピング（EDINETの業界名を業界コードにマッピング）
+  const getIndustryCode = (industryName: string): string => {
+    const industryMapping: Record<string, string> = {
+      '輸送用機器': '1100',
+      '電気機器': '1200', 
+      '銀行業': '2100',
+      '小売業': '3100',
+      '情報・通信業': '4100'
+    }
+    return industryMapping[industryName] || '1100'
+  }
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return
@@ -393,6 +407,32 @@ export default function EDINETCompanySearch() {
 
       {/* ROIC計算結果 */}
       {renderROICResults()}
+
+      {/* 業界比較機能 */}
+      {selectedCompany && roicResults && (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">業界比較・ランキング分析</h3>
+            <button
+              onClick={() => setShowIndustryComparison(!showIndustryComparison)}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              {showIndustryComparison ? '業界比較を閉じる' : '業界比較を表示'}
+            </button>
+          </div>
+          
+          {showIndustryComparison && (
+            <IndustryComparison 
+              selectedCompany={{
+                code: selectedCompany.tickerSymbol || selectedCompany.edinetCode,
+                name: selectedCompany.companyName,
+                roic: roicResults.detailed.roic,
+                industryCode: getIndustryCode(selectedCompany.industry || '')
+              }}
+            />
+          )}
+        </div>
+      )}
 
       {/* 使用方法説明 */}
       <div className="bg-white rounded-lg shadow-md p-6">

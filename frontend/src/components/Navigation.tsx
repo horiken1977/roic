@@ -35,6 +35,9 @@ export default function Navigation() {
           <Link href="/companies" className="hover:text-blue-200 transition-colors font-medium">
             企業検索
           </Link>
+          <Link href="/industry-analysis" className="hover:text-blue-200 transition-colors font-medium">
+            業界分析
+          </Link>
         </div>
         
         {/* Mobile menu button */}
@@ -69,6 +72,9 @@ export default function Navigation() {
         </Link>
         <Link href="/companies" className="block py-2 px-4 hover:bg-blue-700 rounded transition-colors">
           企業検索
+        </Link>
+        <Link href="/industry-analysis" className="block py-2 px-4 hover:bg-blue-700 rounded transition-colors">
+          業界分析
         </Link>
       </div>
     </nav>
