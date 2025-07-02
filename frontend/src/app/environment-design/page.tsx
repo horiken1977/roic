@@ -86,9 +86,15 @@ export default function EnvironmentDesignPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-
-          <div className="prose max-w-none">
+        {/* Environment Tables */}
+        <EnvironmentTable />
+        
+        {/* Original Environment Design Document */}
+        <div className="mt-8 bg-white rounded-lg shadow-lg p-8 mb-8">
+          <div className="px-8 py-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900">📄 環境設計詳細仕様書</h2>
+          </div>
+          <div className="prose max-w-none p-6">
 
             {/* 環境概要カード */}
             <div className="grid md:grid-cols-2 gap-6 mb-8">

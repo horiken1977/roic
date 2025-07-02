@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import TestSpecTable from '@/components/TestSpecTable';
 
 interface TestSection {
   id: string;
@@ -267,8 +268,14 @@ export default function TestSpecPage() {
           </nav>
         </div>
 
-        {/* Content */}
-        <div className="bg-white rounded-b-lg shadow-md">
+        {/* Test Results Table */}
+        <TestSpecTable />
+        
+        {/* Original Test Specification Document */}
+        <div className="mt-8 bg-white rounded-lg shadow-md">
+          <div className="px-8 py-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900">📄 テスト詳細仕様書</h2>
+          </div>
           <div 
             className="prose prose-lg max-w-none p-6 test-spec-content"
             dangerouslySetInnerHTML={{ __html: htmlContent }}

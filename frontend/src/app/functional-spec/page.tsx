@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import FunctionalSpecTable from '@/components/FunctionalSpecTable';
 
 interface Section {
   id: string;
@@ -218,7 +219,14 @@ export default function FunctionalSpecPage() {
 
       {/* Content */}
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md">
+        {/* Phase and Feature Table */}
+        <FunctionalSpecTable />
+        
+        {/* Original Document Content */}
+        <div className="mt-8 bg-white rounded-lg shadow-md">
+          <div className="px-8 py-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900">📄 詳細仕様書</h2>
+          </div>
           <div 
             className="prose prose-lg max-w-none p-8 functional-spec-content"
             dangerouslySetInnerHTML={{ __html: content }}
