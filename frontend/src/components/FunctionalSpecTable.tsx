@@ -146,17 +146,45 @@ export default function FunctionalSpecTable() {
       },
       {
         name: 'Phase 3: データ統合',
-        status: 'planned',
-        progress: 0,
-        description: '外部API統合・データベース連携',
+        status: 'in_progress',
+        progress: 75,
+        description: '外部API統合・データベース連携・セキュリティ強化',
         features: [
           {
             name: 'EDINET API統合',
+            status: 'in_progress',
+            progress: 85,
+            description: 'EDINET APIプロキシサーバー・企業検索・財務データ取得',
+            priority: 'high',
+            phase: 'Phase 3',
+            files: [
+              'frontend/src/app/api/edinet/companies/route.ts',
+              'frontend/src/app/api/edinet/financial/route.ts',
+              'frontend/src/services/edinetApi.ts',
+              'frontend/src/components/EDINETCompanySearchSimple.tsx'
+            ]
+          },
+          {
+            name: 'APIキーセキュリティ管理',
+            status: 'completed',
+            progress: 100,
+            description: 'セキュアなAPIキー設定・検証・推奨事項表示',
+            priority: 'high',
+            phase: 'Phase 3',
+            files: [
+              'frontend/src/utils/apiKeyChecker.ts',
+              'frontend/src/components/ApiKeyStatus.tsx',
+              'frontend/.env.local'
+            ]
+          },
+          {
+            name: 'XBRL財務データ解析',
             status: 'planned',
-            progress: 0,
-            description: '外部APIからの財務データ取得',
+            progress: 30,
+            description: '実際のXBRLデータからの財務項目抽出（現在はサンプルデータ）',
             priority: 'medium',
-            phase: 'Phase 3'
+            phase: 'Phase 3',
+            issues: ['XBRL解析ライブラリの実装が必要', 'ZIPファイル解凍・XML解析処理']
           }
         ]
       }

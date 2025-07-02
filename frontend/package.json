@@ -17,15 +17,19 @@
     "test:minimal": "jest --config=jest.config.minimal.js --ci --watchAll=false"
   },
   "dependencies": {
+    "@types/jszip": "^3.4.0",
     "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
+    "jszip": "^3.10.1",
     "next": "15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^3.0.2",
     "xlsx": "^0.18.5",
+    "xml2js": "^0.6.2",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
