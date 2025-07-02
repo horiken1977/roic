@@ -30,11 +30,13 @@ describe('Companies Page', () => {
   test('renders filter dropdowns', () => {
     render(<CompaniesPage />)
     
-    const industrySelect = screen.getByDisplayValue('業界を選択')
-    const marketSelect = screen.getByDisplayValue('市場を選択')
+    // For select elements with default option selected, use getByRole
+    const selects = screen.getAllByRole('combobox')
+    expect(selects).toHaveLength(2)
     
-    expect(industrySelect).toBeInTheDocument()
-    expect(marketSelect).toBeInTheDocument()
+    // Check if the options exist
+    expect(screen.getByText('業界を選択')).toBeInTheDocument()
+    expect(screen.getByText('市場を選択')).toBeInTheDocument()
   })
 
   test('search input accepts user input', async () => {

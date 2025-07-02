@@ -20,6 +20,13 @@ jest.mock('next/navigation', () => ({
   },
 }))
 
+// Mock next/link to avoid issues with Next.js Link component in tests
+jest.mock('next/link', () => {
+  return ({ children, href }) => {
+    return <a href={href}>{children}</a>
+  }
+})
+
 // Mock environment variables
 process.env.NEXT_PUBLIC_API_URL = 'http://localhost:3001/api'
 process.env.NEXT_PUBLIC_APP_NAME = 'ROIC分析アプリケーション'

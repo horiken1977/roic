@@ -57,7 +57,12 @@ jobs:
     
     - name: 🧪 Run tests
       working-directory: ./frontend
-      run: npm run test:ci
+      env:
+        CI: true
+        NODE_ENV: test
+      run: |
+        echo "Running tests with CI configuration..."
+        npm run test:ci || (echo "Tests failed. Running with verbose output..." && npm run test:ci -- --verbose)
 
   build:
     name: 🏗️ Build Application

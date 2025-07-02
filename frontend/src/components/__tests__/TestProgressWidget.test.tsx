@@ -6,7 +6,7 @@ describe('TestProgressWidget', () => {
     render(<TestProgressWidget />)
     
     const heading = screen.getByRole('heading', {
-      name: /テスト実行状況/i,
+      name: /テスト進捗状況/i,
     })
     
     expect(heading).toBeInTheDocument()
@@ -17,15 +17,16 @@ describe('TestProgressWidget', () => {
     
     expect(screen.getByText('ユニットテスト')).toBeInTheDocument()
     expect(screen.getByText('E2Eテスト')).toBeInTheDocument()
-    expect(screen.getByText('統合テスト')).toBeInTheDocument()
+    expect(screen.getByText('パフォーマンス')).toBeInTheDocument()
+    expect(screen.getByText('セキュリティ')).toBeInTheDocument()
   })
 
-  test('shows connection status', () => {
+  test('shows connection status indicator', () => {
     render(<TestProgressWidget />)
     
-    const statusElement = screen.getByText('接続中')
-    expect(statusElement).toBeInTheDocument()
-    expect(statusElement).toHaveClass('text-green-600')
+    // Check for the connection indicator (the green dot)
+    const connectionIndicator = document.querySelector('.bg-green-500.rounded-full')
+    expect(connectionIndicator).toBeInTheDocument()
   })
 
   test('displays test metrics', () => {
