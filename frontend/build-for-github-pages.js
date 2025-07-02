@@ -11,7 +11,12 @@ const { execSync } = require('child_process');
 
 console.log('🚀 GitHub Pages用ビルドを開始...');
 
-// 1. next.config.tsを一時的に静的エクスポート用に変更
+// 1. API routesディレクトリを一時的にリネーム
+const apiRoutesPath = path.join(__dirname, 'src', 'app', 'api');
+const apiRoutesBackupPath = path.join(__dirname, 'src', 'app', 'api.backup');
+let apiRoutesExisted = false;
+
+// 2. next.config.tsを一時的に静的エクスポート用に変更
 const nextConfigPath = path.join(__dirname, 'next.config.ts');
 const nextConfigBackup = fs.readFileSync(nextConfigPath, 'utf8');
 
@@ -30,6 +35,9 @@ const nextConfig: NextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  env: {
+    NEXT_PUBLIC_STATIC_DEPLOY: 'true'
   }
 };
 
@@ -37,6 +45,13 @@ export default nextConfig;
 `;
 
 try {
+  // API routesディレクトリを一時的に移動
+  if (fs.existsSync(apiRoutesPath)) {
+    console.log('📁 API routesを一時的に無効化...');
+    fs.renameSync(apiRoutesPath, apiRoutesBackupPath);
+    apiRoutesExisted = true;
+  }
+
   console.log('📝 next.config.tsを静的エクスポート用に変更...');
   fs.writeFileSync(nextConfigPath, staticConfig);
 
@@ -52,4 +67,10 @@ try {
   // 設定ファイルを元に戻す
   console.log('🔄 next.config.tsを元に戻しています...');
   fs.writeFileSync(nextConfigPath, nextConfigBackup);
+  
+  // API routesディレクトリを元に戻す
+  if (apiRoutesExisted && fs.existsSync(apiRoutesBackupPath)) {
+    console.log('🔄 API routesを元に戻しています...');
+    fs.renameSync(apiRoutesBackupPath, apiRoutesPath);
+  }
 }

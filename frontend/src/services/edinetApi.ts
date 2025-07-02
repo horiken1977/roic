@@ -56,20 +56,53 @@ export interface EDINETApiResponse<T> {
 }
 
 /**
- * EDINET API クライアント
+ * ハイブリッドEDINET API クライアント
  * 
- * Next.js API Routesを通じて実際のEDINET APIにアクセスします。
- * CORSの問題を回避するためのプロキシサーバーを使用します。
+ * 1. GitHub Actions静的データ（優先）
+ * 2. バックエンドサーバー経由API
+ * 3. サンプルデータ（フォールバック）
  */
+
+import { staticDataService } from './staticDataService';
+
 class EDINETApiClient {
-  private proxyBaseUrl: string;
-  private useRealAPI: boolean;
+  private backendBaseUrl: string;
+  private fallbackToSample: boolean;
 
   constructor() {
-    // 環境変数またはローカルAPIプロキシを使用
-    this.proxyBaseUrl = '/api/edinet';
-    // 環境変数でAPIの使用を制御（開発時はサンプルデータを使用）
-    this.useRealAPI = process.env.NEXT_PUBLIC_USE_REAL_EDINET_API === 'true';
+    // バックエンドサーバーのURL
+    this.backendBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+    // GitHub Pagesなどの静的サイトではサンプルデータを使用
+    this.fallbackToSample = process.env.NEXT_PUBLIC_STATIC_DEPLOY === 'true';
+  }
+
+  /**
+   * バックエンドサーバーが利用可能かチェック
+   */
+  private async isBackendAvailable(): Promise<boolean> {
+    try {
+      // GitHub Pagesなどの静的デプロイ環境では常にfalse
+      if (this.fallbackToSample) {
+        return false;
+      }
+
+      // バックエンドサーバーの状態確認
+      const response = await fetch(`${this.backendBaseUrl}/edinet/status`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        return false;
+      }
+
+      const result = await response.json();
+      return result.success && result.data.apiConfigured;
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -77,18 +110,44 @@ class EDINETApiClient {
    */
   async searchCompanies(query: string): Promise<EDINETApiResponse<EDINETCompany[]>> {
     try {
-      if (this.useRealAPI) {
-        // Next.js API Routesを通じて実際のEDINET APIにアクセス
-        const response = await fetch(`${this.proxyBaseUrl}/companies?q=${encodeURIComponent(query)}`);
+      // 1. GitHub Actions静的データを最優先で確認
+      const staticDataAvailable = await staticDataService.isDataAvailable();
+      
+      if (staticDataAvailable) {
+        console.log('GitHub Actions静的データを使用');
+        const result = await staticDataService.searchCompanies(query);
+        
+        if (result.success && result.data) {
+          return {
+            success: true,
+            data: result.data,
+            message: result.message
+          };
+        }
+      }
+
+      // 2. バックエンドサーバーの利用可能性をチェック
+      const backendAvailable = await this.isBackendAvailable();
+      
+      if (backendAvailable) {
+        // バックエンドサーバー経由でEDINET APIにアクセス
+        console.log('バックエンドサーバー経由でEDINET APIにアクセス');
+        const response = await fetch(`${this.backendBaseUrl}/edinet/companies?q=${encodeURIComponent(query)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
         
         if (!response.ok) {
-          throw new Error(`API呼び出しエラー: ${response.status}`);
+          throw new Error(`バックエンドAPI呼び出しエラー: ${response.status}`);
         }
         
         const result = await response.json();
         return result;
       } else {
-        // フォールバック用サンプルデータ
+        // 3. フォールバック: サンプルデータを使用
+        console.log('フォールバック - サンプルデータを使用');
         return this.getSampleCompanies(query);
       }
     } catch (error) {
@@ -200,10 +259,35 @@ class EDINETApiClient {
    */
   async getFinancialData(edinetCode: string, fiscalYear: number): Promise<EDINETApiResponse<FinancialDataFromEDINET>> {
     try {
-      if (this.useRealAPI) {
-        // Next.js API Routesを通じて実際のEDINET APIにアクセス
+      // 1. GitHub Actions静的データを最優先で確認
+      const staticDataAvailable = await staticDataService.isDataAvailable();
+      
+      if (staticDataAvailable) {
+        console.log('GitHub Actions静的データを使用');
+        const result = await staticDataService.getCompanyFinancialData(edinetCode, fiscalYear);
+        
+        if (result.success && result.data) {
+          return {
+            success: true,
+            data: result.data,
+            message: result.message
+          };
+        }
+      }
+
+      // 2. バックエンドサーバーの利用可能性をチェック
+      const backendAvailable = await this.isBackendAvailable();
+      
+      if (backendAvailable) {
+        // バックエンドサーバー経由でEDINET APIにアクセス
+        console.log('バックエンドサーバー経由でEDINET APIにアクセス');
         const response = await fetch(
-          `${this.proxyBaseUrl}/financial?edinetCode=${encodeURIComponent(edinetCode)}&fiscalYear=${fiscalYear}`
+          `${this.backendBaseUrl}/edinet/financial?edinetCode=${encodeURIComponent(edinetCode)}&fiscalYear=${fiscalYear}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
         );
         
         if (!response.ok) {
@@ -213,7 +297,8 @@ class EDINETApiClient {
         const result = await response.json();
         return result;
       } else {
-        // フォールバック用サンプルデータ
+        // 3. フォールバック: サンプルデータを使用
+        console.log('フォールバック - サンプルデータを使用');
         return this.getSampleFinancialData(edinetCode, fiscalYear);
       }
     } catch (error) {
@@ -365,25 +450,80 @@ class EDINETApiClient {
     onProgress?: (current: number, total: number, year: number) => void
   ): Promise<EDINETApiResponse<FinancialDataFromEDINET[]>> {
     try {
-      const results: FinancialDataFromEDINET[] = [];
+      // 1. GitHub Actions静的データを最優先で確認
+      const staticDataAvailable = await staticDataService.isDataAvailable();
       
-      for (let i = 0; i < years.length; i++) {
-        const year = years[i];
-        onProgress?.(i + 1, years.length, year);
+      if (staticDataAvailable) {
+        console.log('GitHub Actions静的データを使用');
+        const result = await staticDataService.getMultipleYearFinancialData(edinetCode, years);
         
-        const response = await this.getFinancialData(edinetCode, year);
-        if (response.success && response.data) {
-          results.push(response.data);
-        } else {
-          console.warn(`${year}年度のデータ取得に失敗:`, response.error);
+        if (result.success && result.data) {
+          // プログレス更新をシミュレート
+          if (onProgress) {
+            onProgress(years.length, years.length, years[years.length - 1]);
+          }
+          
+          return {
+            success: true,
+            data: result.data,
+            message: result.message
+          };
         }
       }
 
-      return {
-        success: true,
-        data: results,
-        message: `${results.length}年分の財務データを取得しました`
-      };
+      // 2. バックエンドサーバーの利用可能性をチェック
+      const backendAvailable = await this.isBackendAvailable();
+      
+      if (backendAvailable) {
+        // バックエンドサーバー経由で一括取得（効率的）
+        console.log('バックエンドサーバー経由でEDINET APIにアクセス');
+        const response = await fetch(`${this.backendBaseUrl}/edinet/financial/multi-year`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            edinetCode,
+            years
+          }),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`複数年度データAPI呼び出しエラー: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        // プログレス更新をシミュレート
+        if (onProgress) {
+          onProgress(years.length, years.length, years[years.length - 1]);
+        }
+        
+        return result;
+      } else {
+        // 3. フォールバック: サンプルデータを使用
+        console.log('フォールバック - サンプルデータを使用');
+        
+        const results: FinancialDataFromEDINET[] = [];
+        
+        for (let i = 0; i < years.length; i++) {
+          const year = years[i];
+          onProgress?.(i + 1, years.length, year);
+          
+          const response = await this.getSampleFinancialData(edinetCode, year);
+          if (response.success && response.data) {
+            results.push(response.data);
+          } else {
+            console.warn(`${year}年度のサンプルデータ取得に失敗:`, response.error);
+          }
+        }
+
+        return {
+          success: true,
+          data: results,
+          message: `${results.length}年分の財務データを取得しました（サンプルデータ）`
+        };
+      }
     } catch (error) {
       return {
         success: false,

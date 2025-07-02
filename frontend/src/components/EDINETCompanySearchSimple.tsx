@@ -16,6 +16,7 @@ import {
 } from '@/utils/roicCalculations'
 import ROICTrendChart from './ROICTrendChart'
 import ExportButtons from './ExportButtons'
+import DataSourceIndicator from './DataSourceIndicator'
 
 export default function EDINETCompanySearchSimple() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -130,6 +131,9 @@ export default function EDINETCompanySearchSimple() {
 
   return (
     <div className="space-y-6">
+      {/* データソース表示 */}
+      <DataSourceIndicator />
+      
       {/* 検索フォーム */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">🔍 企業検索（EDINET API連携）</h2>

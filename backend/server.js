@@ -113,7 +113,10 @@ app.get('/api', (req, res) => {
 
 // API ルートの設定
 const apiRoutes = require('./routes/api');
+const edinetRoutes = require('./routes/edinet-api');
+
 app.use('/api', apiRoutes);
+app.use('/api/edinet', edinetRoutes);
 
 // データ同期ジョブの開始
 const DataSyncJob = require('./jobs/data-sync-job');
