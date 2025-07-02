@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Navigation from '../../components/Navigation';
 import Breadcrumb from '../../components/Breadcrumb';
+import EnvironmentTable from '@/components/EnvironmentTable';
 
 interface EnvironmentInfo {
   os: string;
