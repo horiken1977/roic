@@ -17,10 +17,18 @@
 #### ROIC自動計算 ✅
 - **ステータス**: completed
 - **進捗**: 100%
-- **説明**: 4つの計算方式に対応したROIC自動計算
+- **説明**: 4つの計算方式に対応したROIC自動計算（完全実装済み）
 - **優先度**: high
 - **フェーズ**: Phase 1
 - **ファイル**: frontend/src/components/ROICCalculator.tsx, frontend/src/utils/roicCalculations.ts
+
+#### 企業検索・ROIC表示 ✅
+- **ステータス**: completed
+- **進捗**: 100%
+- **説明**: 企業検索機能とROIC値表示、統合ROIC計算機能
+- **優先度**: high
+- **フェーズ**: Phase 1
+- **ファイル**: frontend/src/app/companies/page.tsx
 
 
 ##### 📊 技術詳細
