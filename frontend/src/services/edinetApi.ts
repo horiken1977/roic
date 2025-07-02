@@ -73,10 +73,45 @@ class EDINETApiClient {
   constructor() {
     // バックエンドサーバーのURL
     this.backendBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-    // Vercel Functions URL
+    // Vercel Functions URL（複数候補）
     this.vercelApiUrl = process.env.NEXT_PUBLIC_VERCEL_API_URL || 'https://roic-api.vercel.app/api';
     // GitHub Pagesなどの静的サイトではサンプルデータを使用
     this.fallbackToSample = process.env.NEXT_PUBLIC_STATIC_DEPLOY === 'true';
+  }
+
+  /**
+   * 複数のAPI URLを試行
+   */
+  private async tryMultipleApiUrls(path: string, query: string): Promise<any> {
+    const apiUrls = [
+      'https://roic-api.vercel.app/api',
+      'https://roic-analysis.netlify.app/.netlify/functions', 
+      'https://horiken1977-roic.vercel.app/api'
+    ];
+
+    for (const baseUrl of apiUrls) {
+      try {
+        console.log(`API試行: ${baseUrl}${path}`);
+        const response = await fetch(`${baseUrl}${path}?q=${encodeURIComponent(query)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log(`API成功: ${baseUrl} - ${result.source}`);
+          return result;
+        } else {
+          console.warn(`API HTTPエラー ${baseUrl}: ${response.status}`);
+        }
+      } catch (error) {
+        console.warn(`API接続エラー ${baseUrl}:`, error.message);
+      }
+    }
+    
+    return null;
   }
 
   /**
@@ -125,47 +160,15 @@ class EDINETApiClient {
    */
   async searchCompanies(query: string): Promise<EDINETApiResponse<EDINETCompany[]>> {
     try {
-      // 1. Vercel Functions（リアルタイムEDINET API）を最優先で使用
-      console.log('Vercel Functions経由でリアルタイム検索（最優先）');
-      try {
-        const response = await fetch(`${this.vercelApiUrl}/edinet/companies?q=${encodeURIComponent(query)}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        if (response.ok) {
-          const result = await response.json();
-          console.log('Vercel Functions成功:', result.source);
-          return result;
-        } else {
-          console.error('Vercel Functions HTTPエラー:', response.status, response.statusText);
-          
-          // 400番台エラーの場合は即座に返す（API設定エラーなど）
-          if (response.status >= 400 && response.status < 500) {
-            const errorResult = await response.json().catch(() => null);
-            return {
-              success: false,
-              error: errorResult?.error || 'VERCEL_API_ERROR',
-              message: errorResult?.message || `Vercel API エラー: ${response.status} ${response.statusText}`
-            };
-          }
-        }
-      } catch (vercelError) {
-        console.error('Vercel Functions エラー:', vercelError);
-        
-        // CORS エラーや ネットワークエラーの場合は即座に返す
-        if (vercelError.message.includes('Failed to fetch') || vercelError.message.includes('CORS')) {
-          return {
-            success: false,
-            error: 'CORS_ERROR',
-            message: 'EDINET APIサーバーへの接続に失敗しました。CORS設定またはAPIキー設定に問題があります。'
-          };
-        }
-        
-        // ネットワークエラーの場合は次のデータソースを試行
-        console.log('ネットワークエラーのため静的データを確認します');
+      // 1. 複数のAPI URLを試行（リアルタイムEDINET API）
+      console.log('複数API経由でリアルタイム検索（最優先）');
+      const apiResult = await this.tryMultipleApiUrls('/edinet/companies', query);
+      
+      if (apiResult) {
+        return apiResult;
+      } else {
+        // すべてのAPIが失敗した場合のエラーメッセージ
+        console.error('すべてのAPIエンドポイントが利用できません');
       }
 
       // 2. GitHub Actions静的データ（Vercel Functionsが失敗した場合のフォールバック）

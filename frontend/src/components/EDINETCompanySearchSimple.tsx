@@ -195,17 +195,30 @@ export default function EDINETCompanySearchSimple() {
           </div>
           <button
             onClick={async () => {
-              try {
-                const response = await fetch('https://roic-api.vercel.app/api/health');
-                const result = await response.json();
-                alert(`ヘルスチェック結果:\n${JSON.stringify(result, null, 2)}`);
-              } catch (error) {
-                alert(`接続エラー: ${error.message}`);
+              const apiUrls = [
+                'https://roic-api.vercel.app/api/health',
+                'https://roic-analysis.netlify.app/.netlify/functions/health',
+                'https://horiken1977-roic.vercel.app/api/health'
+              ];
+              
+              let results = [];
+              
+              for (const url of apiUrls) {
+                try {
+                  console.log(`Testing: ${url}`);
+                  const response = await fetch(url);
+                  const result = await response.json();
+                  results.push(`✅ ${url}: ${result.message || 'OK'}`);
+                } catch (error) {
+                  results.push(`❌ ${url}: ${error.message}`);
+                }
               }
+              
+              alert(`接続テスト結果:\n${results.join('\n')}`);
             }}
             className="mt-2 px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700"
           >
-            接続テスト
+            接続テスト（複数API）
           </button>
         </div>
 

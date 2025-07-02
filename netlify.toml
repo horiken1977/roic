@@ -1,0 +1,20 @@
+[build]
+  publish = "frontend/out"
+  command = "cd frontend && npm run build"
+
+[functions]
+  directory = "api"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With"
+    Access-Control-Allow-Credentials = "false"
+    Access-Control-Max-Age = "86400"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
