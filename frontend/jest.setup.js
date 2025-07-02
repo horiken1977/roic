@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import React from 'react'
 
 // Mock next/navigation
 jest.mock('next/navigation', () => ({
@@ -22,8 +23,11 @@ jest.mock('next/navigation', () => ({
 
 // Mock next/link to avoid issues with Next.js Link component in tests
 jest.mock('next/link', () => {
-  return ({ children, href }) => {
-    return <a href={href}>{children}</a>
+  return {
+    __esModule: true,
+    default: ({ children, href }) => {
+      return React.createElement('a', { href }, children)
+    }
   }
 })
 
