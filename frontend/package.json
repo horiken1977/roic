@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "build:github-pages": "node build-for-github-pages.js",
     "export": "next build",
     "deploy": "npm run export && cp -r out/* ../",
     "start": "next start",
