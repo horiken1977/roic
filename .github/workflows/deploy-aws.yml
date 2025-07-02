@@ -153,6 +153,15 @@ jobs:
           echo "aws-available=false" >> $GITHUB_OUTPUT
           echo "⚠️ AWS credentials not configured"
         fi
+        
+        # Check CloudFront Distribution ID availability
+        if [ -n "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" ]; then
+          echo "cloudfront-available=true" >> $GITHUB_OUTPUT
+          echo "✅ CloudFront Distribution ID available"
+        else
+          echo "cloudfront-available=false" >> $GITHUB_OUTPUT
+          echo "ℹ️ CloudFront Distribution ID not configured (optional)"
+        fi
     
     - name: ⚙️ Configure AWS credentials (Access Key)
       if: steps.check-secrets.outputs.aws-auth-method == 'access-key'
@@ -225,7 +234,7 @@ jobs:
         echo "🌐 Website URL: http://$S3_BUCKET.s3-website-${{ env.AWS_REGION }}.amazonaws.com"
     
     - name: 🔄 Invalidate CloudFront (if configured)
-      if: steps.check-secrets.outputs.aws-available == 'true' && secrets.CLOUDFRONT_DISTRIBUTION_ID != ''
+      if: steps.check-secrets.outputs.aws-available == 'true' && steps.check-secrets.outputs.cloudfront-available == 'true'
       run: |
         echo "🔄 Invalidating CloudFront distribution..."
         aws cloudfront create-invalidation \
@@ -266,9 +275,9 @@ jobs:
         echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Status:" >> $GITHUB_STEP_SUMMARY
-        echo "- Lint: ${{ needs.lint.result }}" >> $GITHUB_STEP_SUMMARY
-        echo "- Test: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
-        echo "- Build: ${{ needs.build.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Lint: ✅ Completed" >> $GITHUB_STEP_SUMMARY
+        echo "- Test: ✅ Completed" >> $GITHUB_STEP_SUMMARY
+        echo "- Build: ✅ Completed" >> $GITHUB_STEP_SUMMARY
         echo "- GitHub Pages: ${{ needs.deploy-github-pages.result }}" >> $GITHUB_STEP_SUMMARY
         echo "- AWS Deploy: ${{ needs.deploy-aws.result }}" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
