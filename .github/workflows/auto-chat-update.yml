@@ -1,16 +1,16 @@
-name: Auto Chat-based Updates
+name: Auto Chat-based Updates (DISABLED)
 
+# Temporarily disabled due to AWS credentials requirements
+# Enable when AWS secrets are properly configured
 on:
-  # Manual trigger for chat-based updates
-  repository_dispatch:
-    types: [chat-update]
-  
-  # Watch for config file changes
-  push:
-    paths:
-      - 'config/project-config.json'
-      - 'scripts/centralized-manager.js'
-    branches: [ main ]
+  workflow_dispatch:
+  # repository_dispatch:
+  #   types: [chat-update]
+  # push:
+  #   paths:
+  #     - 'config/project-config.json'
+  #     - 'scripts/centralized-manager.js'
+  #   branches: [ main ]
 
 env:
   AWS_REGION: ap-northeast-1
@@ -113,7 +113,7 @@ jobs:
   update-aws-schedule:
     name: ⏰ Update AWS Shutdown Schedule
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, 'aws_cost_optimization')
+    if: contains(github.event.head_commit.message, 'aws_cost_optimization') && vars.AWS_ENABLED == 'true'
     
     steps:
     - name: 📥 Checkout code

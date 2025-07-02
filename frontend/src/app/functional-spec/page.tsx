@@ -30,7 +30,7 @@ export default function FunctionalSpecPage() {
         setContent(htmlContent);
         
         // Extract sections and progress from content
-        extractSections(htmlContent);
+        extractSections();
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error occurred');
       } finally {
@@ -41,8 +41,9 @@ export default function FunctionalSpecPage() {
     loadFunctionalSpec();
   }, []);
 
-  const extractSections = (_htmlContent: string) => {
-    // Extract sections data from HTML content
+  const extractSections = () => {
+    // Extract sections data - currently using static data
+    // TODO: Parse HTML content dynamically in future iterations
     
     const sectionData: Section[] = [
       {
