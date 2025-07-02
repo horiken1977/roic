@@ -3,12 +3,22 @@
  * Industry-specific ROIC calculation and comparison utilities
  */
 
+// Industry master data type definition
+interface IndustryMasterData {
+  industries: Array<{
+    industry_code: string;
+    industry_name: string;
+    sub_categories: IndustryData[];
+  }>;
+}
+
 // Import industry master data with fallback for CI environments
-let industryMaster: any;
+let industryMaster: IndustryMasterData;
 
 try {
-  industryMaster = require('../../../data/industry-master.json');
-} catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  industryMaster = require('../../../data/industry-master.json') as IndustryMasterData;
+} catch {
   // Fallback data for CI environments
   industryMaster = {
     industries: [
