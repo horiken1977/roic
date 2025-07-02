@@ -183,6 +183,16 @@ export default function EDINETCompanySearchSimple() {
           デバッグ: 検索語句 = "{searchTerm}", 検索中 = {isSearching.toString()}, 結果数 = {searchResults.length}
           {error && `, エラー = ${error.code}: ${error.message}`}
         </div>
+        
+        {/* リアルタイム検索情報 */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+          <div className="text-sm text-blue-800">
+            <strong>🔄 リアルタイム検索機能:</strong><br/>
+            • EDINET APIから直接データを取得します<br/>
+            • 企業名（例: トヨタ、日産、講談社）で検索可能<br/>
+            • CORSエラーが発生する場合は管理者にお問い合わせください
+          </div>
+        </div>
 
         {/* エラー表示 */}
         {error && (

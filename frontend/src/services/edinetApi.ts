@@ -156,9 +156,33 @@ class EDINETApiClient {
           const result = await response.json();
           console.log('Vercel Functions成功:', result.source);
           return result;
+        } else {
+          console.error('Vercel Functions HTTPエラー:', response.status, response.statusText);
+          // HTTPエラーの場合はエラーレスポンスを返す
+          if (response.status >= 400) {
+            return {
+              success: false,
+              error: 'VERCEL_API_ERROR',
+              message: `Vercel API エラー: ${response.status} ${response.statusText}`
+            };
+          }
         }
       } catch (vercelError) {
-        console.warn('Vercel Functions エラー:', vercelError);
+        console.error('Vercel Functions エラー:', vercelError);
+        // CORS エラーや ネットワークエラーの場合
+        if (vercelError.message.includes('Failed to fetch') || vercelError.message.includes('CORS')) {
+          return {
+            success: false,
+            error: 'CORS_ERROR',
+            message: 'EDINET APIサーバーへの接続に失敗しました。CORS設定に問題があります。'
+          };
+        }
+        // その他のエラー
+        return {
+          success: false,
+          error: 'NETWORK_ERROR',
+          message: `ネットワークエラーが発生しました: ${vercelError.message}`
+        };
       }
 
       // 3. バックエンドサーバーの利用可能性をチェック（localhost開発環境）
@@ -180,15 +204,22 @@ class EDINETApiClient {
         const result = await response.json();
         return result;
       } else {
-        // 4. フォールバック: 最小限のサンプルデータ（デバッグ用）
-        console.log('フォールバック - 最小限のサンプルデータを使用');
-        return this.getMinimalSampleCompanies(query);
+        // 4. エラー: 全てのAPIデータソースが利用不可
+        return {
+          success: false,
+          error: 'ALL_DATA_SOURCES_UNAVAILABLE',
+          message: 'すべてのデータソース（GitHub Actions、Vercel Functions、バックエンドAPI）が利用できません。'
+        };
       }
     } catch (error) {
       console.error('企業検索エラー:', error);
       
-      // エラーの場合もサンプルデータでテスト
-      return this.getMinimalSampleCompanies(query);
+      // catchブロックでもエラーレスポンスを返す
+      return {
+        success: false,
+        error: 'SEARCH_SYSTEM_ERROR',
+        message: `検索システムエラー: ${error.message}`
+      };
     }
   }
 
