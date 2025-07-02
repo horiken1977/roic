@@ -14,6 +14,7 @@ import {
 } from 'recharts'
 import { FinancialDataFromEDINET } from '@/services/edinetApi'
 import { calculateAllROIC, formatROIC } from '@/utils/roicCalculations'
+import { ChartExportButton } from './ExportButtons'
 
 interface ROICTrendChartProps {
   financialDataList: FinancialDataFromEDINET[]
@@ -124,15 +125,25 @@ export default function ROICTrendChart({
     modified: latestData.modified
   }).reduce((a, b) => a[1] > b[1] ? a : b)[0] : 'detailed'
 
+  const chartId = `roic-trend-chart-${Date.now()}`
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          📈 ROICトレンド分析 - {companyName}
-        </h3>
-        <p className="text-sm text-gray-600">
-          過去{chartData.length}年間のROIC推移と計算方式別の比較
-        </p>
+        <div className="flex justify-between items-start mb-2">
+          <div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              📈 ROICトレンド分析 - {companyName}
+            </h3>
+            <p className="text-sm text-gray-600">
+              過去{chartData.length}年間のROIC推移と計算方式別の比較
+            </p>
+          </div>
+          <ChartExportButton 
+            chartElementId={chartId}
+            label="チャート保存"
+          />
+        </div>
       </div>
 
       {/* 計算方式の選択 */}
@@ -157,7 +168,7 @@ export default function ROICTrendChart({
       </div>
 
       {/* チャート */}
-      <div className="mb-6" style={{ height: '400px' }}>
+      <div id={chartId} className="mb-6" style={{ height: '400px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />

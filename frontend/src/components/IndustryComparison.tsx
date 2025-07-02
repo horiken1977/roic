@@ -12,6 +12,7 @@ import {
   type IndustryComparison,
   type CompanyROICData
 } from '@/utils/industryCalculations';
+import { exportIndustryComparisonToExcel } from '@/utils/exportUtils';
 
 interface IndustryComparisonProps {
   selectedCompany?: {
@@ -28,6 +29,22 @@ export default function IndustryComparison({ selectedCompany }: IndustryComparis
   const [comparisonData, setComparisonData] = useState<IndustryComparison | null>(null);
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
+
+  const handleExportToExcel = () => {
+    if (!comparisonData) return;
+    
+    const exportData = comparisonData.companies.map(company => ({
+      name: company.company_name,
+      code: company.company_code,
+      roic: company.roic,
+      quartile: getQuartileDescription(company.roic, comparisonData.statistics),
+      industry: comparisonData.industry_name,
+      revenue: 100000000 // サンプル値
+    }));
+    
+    const industryName = industries.find(ind => ind.industry_code === selectedIndustry)?.industry_name || '業界比較';
+    exportIndustryComparisonToExcel(exportData, `${industryName}比較`);
+  };
 
   useEffect(() => {
     loadIndustryComparison(selectedIndustry);
@@ -85,29 +102,41 @@ export default function IndustryComparison({ selectedCompany }: IndustryComparis
             </select>
           </div>
 
-          {/* 表示モード切替 */}
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium text-gray-700">表示:</span>
-            <button
-              onClick={() => setViewMode('table')}
-              className={`px-3 py-1 text-sm rounded ${
-                viewMode === 'table'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              テーブル
-            </button>
-            <button
-              onClick={() => setViewMode('chart')}
-              className={`px-3 py-1 text-sm rounded ${
-                viewMode === 'chart'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              チャート
-            </button>
+          {/* 表示モード切替とエクスポート */}
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-gray-700">表示:</span>
+              <button
+                onClick={() => setViewMode('table')}
+                className={`px-3 py-1 text-sm rounded ${
+                  viewMode === 'table'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                テーブル
+              </button>
+              <button
+                onClick={() => setViewMode('chart')}
+                className={`px-3 py-1 text-sm rounded ${
+                  viewMode === 'chart'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                チャート
+              </button>
+            </div>
+            
+            {comparisonData && (
+              <button
+                onClick={handleExportToExcel}
+                className="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+              >
+                <span className="mr-2">📊</span>
+                Excel出力
+              </button>
+            )}
           </div>
         </div>
 

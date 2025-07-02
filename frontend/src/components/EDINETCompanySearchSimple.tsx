@@ -15,6 +15,7 @@ import {
   FinancialData
 } from '@/utils/roicCalculations'
 import ROICTrendChart from './ROICTrendChart'
+import ExportButtons from './ExportButtons'
 
 export default function EDINETCompanySearchSimple() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -261,17 +262,30 @@ export default function EDINETCompanySearchSimple() {
       {/* ROIC計算結果 */}
       {roicResults && selectedCompany && (
         <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-start mb-4">
             <h3 className="text-lg font-semibold text-gray-900">
               🎯 {selectedCompany.companyName} - ROIC計算結果
             </h3>
-            <button
-              onClick={handleLoadTrendData}
-              disabled={isLoadingFinancialData}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400"
-            >
-              {isLoadingFinancialData ? 'データ取得中...' : '📈 トレンド分析を表示'}
-            </button>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={handleLoadTrendData}
+                disabled={isLoadingFinancialData}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400"
+              >
+                {isLoadingFinancialData ? 'データ取得中...' : '📈 トレンド分析を表示'}
+              </button>
+              <ExportButtons
+                reportData={{
+                  company: selectedCompany,
+                  financialData: financialData!,
+                  roicResults: roicResults,
+                  multiYearData: multiYearData
+                }}
+                showPDF={true}
+                showExcel={true}
+                showChart={false}
+              />
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.entries(roicResults).map(([method, result]) => {
