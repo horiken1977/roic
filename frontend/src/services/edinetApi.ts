@@ -67,11 +67,14 @@ import { staticDataService } from './staticDataService';
 
 class EDINETApiClient {
   private backendBaseUrl: string;
+  private vercelApiUrl: string;
   private fallbackToSample: boolean;
 
   constructor() {
     // バックエンドサーバーのURL
     this.backendBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+    // Vercel Functions URL
+    this.vercelApiUrl = process.env.NEXT_PUBLIC_VERCEL_API_URL || 'https://roic-api.vercel.app/api';
     // GitHub Pagesなどの静的サイトではサンプルデータを使用
     this.fallbackToSample = process.env.NEXT_PUBLIC_STATIC_DEPLOY === 'true';
   }
@@ -122,14 +125,15 @@ class EDINETApiClient {
    */
   async searchCompanies(query: string): Promise<EDINETApiResponse<EDINETCompany[]>> {
     try {
-      // 1. GitHub Actions静的データを最優先で確認
+      // 1. GitHub Actions静的データを最優先で確認（キャッシュされた企業のみ）
       const staticDataAvailable = await staticDataService.isDataAvailable();
       
       if (staticDataAvailable) {
-        console.log('GitHub Actions静的データを使用');
+        console.log('GitHub Actions静的データを確認');
         const result = await staticDataService.searchCompanies(query);
         
-        if (result.success && result.data) {
+        if (result.success && result.data && result.data.length > 0) {
+          console.log('静的データで見つかりました');
           return {
             success: true,
             data: result.data,
@@ -138,11 +142,29 @@ class EDINETApiClient {
         }
       }
 
-      // 2. バックエンドサーバーの利用可能性をチェック
+      // 2. Vercel Functions（リアルタイムEDINET API）でリアルタイム検索
+      console.log('Vercel Functions経由でリアルタイム検索');
+      try {
+        const response = await fetch(`${this.vercelApiUrl}/edinet/companies?q=${encodeURIComponent(query)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Vercel Functions成功:', result.source);
+          return result;
+        }
+      } catch (vercelError) {
+        console.warn('Vercel Functions エラー:', vercelError);
+      }
+
+      // 3. バックエンドサーバーの利用可能性をチェック（localhost開発環境）
       const backendAvailable = await this.isBackendAvailable();
       
       if (backendAvailable) {
-        // バックエンドサーバー経由でEDINET APIにアクセス
         console.log('バックエンドサーバー経由でEDINET APIにアクセス');
         const response = await fetch(`${this.backendBaseUrl}/edinet/companies?q=${encodeURIComponent(query)}`, {
           method: 'GET',
@@ -158,7 +180,7 @@ class EDINETApiClient {
         const result = await response.json();
         return result;
       } else {
-        // 3. フォールバック: サンプルデータを使用
+        // 4. フォールバック: サンプルデータを使用
         console.log('フォールバック - サンプルデータを使用');
         return this.getSampleCompanies(query);
       }
@@ -301,7 +323,26 @@ class EDINETApiClient {
         }
       }
 
-      // 2. バックエンドサーバーの利用可能性をチェック
+      // 2. Vercel Functions（リアルタイムEDINET API）でリアルタイム取得
+      console.log('Vercel Functions経由でリアルタイム財務データ取得');
+      try {
+        const response = await fetch(`${this.vercelApiUrl}/edinet/financial?edinetCode=${encodeURIComponent(edinetCode)}&fiscalYear=${fiscalYear}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Vercel Functions財務データ成功:', result.source);
+          return result;
+        }
+      } catch (vercelError) {
+        console.warn('Vercel Functions財務データエラー:', vercelError);
+      }
+
+      // 3. バックエンドサーバーの利用可能性をチェック
       const backendAvailable = await this.isBackendAvailable();
       
       if (backendAvailable) {
@@ -323,7 +364,7 @@ class EDINETApiClient {
         const result = await response.json();
         return result;
       } else {
-        // 3. フォールバック: サンプルデータを使用
+        // 4. フォールバック: サンプルデータを使用
         console.log('フォールバック - サンプルデータを使用');
         return this.getSampleFinancialData(edinetCode, fiscalYear);
       }
@@ -514,7 +555,42 @@ class EDINETApiClient {
         }
       }
 
-      // 2. バックエンドサーバーの利用可能性をチェック
+      // 2. Vercel Functions（リアルタイムEDINET API）で複数年データ取得
+      console.log('Vercel Functions経由で複数年度データ取得');
+      try {
+        const results: FinancialDataFromEDINET[] = [];
+        
+        for (let i = 0; i < years.length; i++) {
+          const year = years[i];
+          onProgress?.(i + 1, years.length, year);
+          
+          const response = await fetch(`${this.vercelApiUrl}/edinet/financial?edinetCode=${encodeURIComponent(edinetCode)}&fiscalYear=${year}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.data) {
+              results.push(result.data);
+            }
+          }
+        }
+        
+        if (results.length > 0) {
+          return {
+            success: true,
+            data: results,
+            message: `${results.length}年分の財務データを取得しました（Vercel Functions）`
+          };
+        }
+      } catch (vercelError) {
+        console.warn('Vercel Functions複数年度データエラー:', vercelError);
+      }
+
+      // 3. バックエンドサーバーの利用可能性をチェック
       const backendAvailable = await this.isBackendAvailable();
       
       if (backendAvailable) {
@@ -544,7 +620,7 @@ class EDINETApiClient {
         
         return result;
       } else {
-        // 3. フォールバック: サンプルデータを使用
+        // 4. フォールバック: サンプルデータを使用
         console.log('フォールバック - サンプルデータを使用');
         
         const results: FinancialDataFromEDINET[] = [];

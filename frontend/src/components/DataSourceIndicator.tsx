@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { staticDataService } from '@/services/staticDataService';
 
 interface DataSourceInfo {
-  source: 'github_actions' | 'backend_api' | 'sample_data';
+  source: 'github_actions' | 'vercel_functions' | 'backend_api' | 'sample_data';
   lastUpdated?: string;
   companiesCount?: number;
   isRealTime: boolean;
@@ -38,6 +38,30 @@ export default function DataSourceIndicator() {
           status: 'available'
         });
         return;
+      }
+
+      // Vercel Functions（リアルタイムAPI）をチェック
+      try {
+        const vercelApiUrl = process.env.NEXT_PUBLIC_VERCEL_API_URL || 'https://roic-api.vercel.app/api';
+        const response = await fetch(`${vercelApiUrl}/edinet/companies?q=test`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          
+          setDataInfo({
+            source: 'vercel_functions',
+            isRealTime: true,
+            status: result.source === 'edinet_api_vercel' ? 'available' : 'unavailable'
+          });
+          return;
+        }
+      } catch {
+        // Vercel Functionsエラー
       }
 
       // バックエンドAPIをチェック（localhost環境のみ）
@@ -87,9 +111,16 @@ export default function DataSourceIndicator() {
           color: 'bg-green-50 border-green-200 text-green-800',
           description: 'EDINET APIから定期取得された実データ'
         };
+      case 'vercel_functions':
+        return {
+          name: 'Vercel Functions（リアルタイム）',
+          icon: '⚡',
+          color: 'bg-purple-50 border-purple-200 text-purple-800',
+          description: 'Vercel Functions経由でEDINET APIにリアルタイムアクセス'
+        };
       case 'backend_api':
         return {
-          name: 'リアルタイムAPI',
+          name: 'バックエンドAPI',
           icon: '🔄',
           color: 'bg-blue-50 border-blue-200 text-blue-800',
           description: 'サーバー経由でEDINET APIにリアルタイムアクセス'
@@ -165,6 +196,14 @@ export default function DataSourceIndicator() {
               <span className="font-medium">企業数:</span>
               <div>{dataInfo.companiesCount || 0}社</div>
             </div>
+          </div>
+        </div>
+      )}
+      
+      {dataInfo.source === 'vercel_functions' && (
+        <div className="mt-2 pt-2 border-t border-purple-300/30">
+          <div className="text-xs">
+            Vercel Functions経由でEDINET APIからリアルタイムデータを取得中
           </div>
         </div>
       )}
