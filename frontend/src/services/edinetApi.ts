@@ -125,25 +125,8 @@ class EDINETApiClient {
    */
   async searchCompanies(query: string): Promise<EDINETApiResponse<EDINETCompany[]>> {
     try {
-      // 1. GitHub Actions静的データを最優先で確認（キャッシュされた企業のみ）
-      const staticDataAvailable = await staticDataService.isDataAvailable();
-      
-      if (staticDataAvailable) {
-        console.log('GitHub Actions静的データを確認');
-        const result = await staticDataService.searchCompanies(query);
-        
-        if (result.success && result.data && result.data.length > 0) {
-          console.log('静的データで見つかりました');
-          return {
-            success: true,
-            data: result.data,
-            message: result.message
-          };
-        }
-      }
-
-      // 2. Vercel Functions（リアルタイムEDINET API）でリアルタイム検索
-      console.log('Vercel Functions経由でリアルタイム検索');
+      // 1. Vercel Functions（リアルタイムEDINET API）を最優先で使用
+      console.log('Vercel Functions経由でリアルタイム検索（最優先）');
       try {
         const response = await fetch(`${this.vercelApiUrl}/edinet/companies?q=${encodeURIComponent(query)}`, {
           method: 'GET',
@@ -158,31 +141,48 @@ class EDINETApiClient {
           return result;
         } else {
           console.error('Vercel Functions HTTPエラー:', response.status, response.statusText);
-          // HTTPエラーの場合はエラーレスポンスを返す
-          if (response.status >= 400) {
+          
+          // 400番台エラーの場合は即座に返す（API設定エラーなど）
+          if (response.status >= 400 && response.status < 500) {
+            const errorResult = await response.json().catch(() => null);
             return {
               success: false,
-              error: 'VERCEL_API_ERROR',
-              message: `Vercel API エラー: ${response.status} ${response.statusText}`
+              error: errorResult?.error || 'VERCEL_API_ERROR',
+              message: errorResult?.message || `Vercel API エラー: ${response.status} ${response.statusText}`
             };
           }
         }
       } catch (vercelError) {
         console.error('Vercel Functions エラー:', vercelError);
-        // CORS エラーや ネットワークエラーの場合
+        
+        // CORS エラーや ネットワークエラーの場合は即座に返す
         if (vercelError.message.includes('Failed to fetch') || vercelError.message.includes('CORS')) {
           return {
             success: false,
             error: 'CORS_ERROR',
-            message: 'EDINET APIサーバーへの接続に失敗しました。CORS設定に問題があります。'
+            message: 'EDINET APIサーバーへの接続に失敗しました。CORS設定またはAPIキー設定に問題があります。'
           };
         }
-        // その他のエラー
-        return {
-          success: false,
-          error: 'NETWORK_ERROR',
-          message: `ネットワークエラーが発生しました: ${vercelError.message}`
-        };
+        
+        // ネットワークエラーの場合は次のデータソースを試行
+        console.log('ネットワークエラーのため静的データを確認します');
+      }
+
+      // 2. GitHub Actions静的データ（Vercel Functionsが失敗した場合のフォールバック）
+      const staticDataAvailable = await staticDataService.isDataAvailable();
+      
+      if (staticDataAvailable) {
+        console.log('GitHub Actions静的データを確認');
+        const result = await staticDataService.searchCompanies(query);
+        
+        if (result.success && result.data && result.data.length > 0) {
+          console.log('静的データで見つかりました');
+          return {
+            success: true,
+            data: result.data,
+            message: `${result.message}（Vercel APIエラーのため静的データ使用）`
+          };
+        }
       }
 
       // 3. バックエンドサーバーの利用可能性をチェック（localhost開発環境）
@@ -208,7 +208,7 @@ class EDINETApiClient {
         return {
           success: false,
           error: 'ALL_DATA_SOURCES_UNAVAILABLE',
-          message: 'すべてのデータソース（GitHub Actions、Vercel Functions、バックエンドAPI）が利用できません。'
+          message: 'すべてのデータソース（Vercel Functions、GitHub Actions、バックエンドAPI）が利用できません。ネットワーク接続またはAPI設定を確認してください。'
         };
       }
     } catch (error) {

@@ -185,12 +185,13 @@ export default function EDINETCompanySearchSimple() {
         </div>
         
         {/* リアルタイム検索情報 */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-          <div className="text-sm text-blue-800">
-            <strong>🔄 リアルタイム検索機能:</strong><br/>
-            • EDINET APIから直接データを取得します<br/>
-            • 企業名（例: トヨタ、日産、講談社）で検索可能<br/>
-            • CORSエラーが発生する場合は管理者にお問い合わせください
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+          <div className="text-sm text-green-800">
+            <strong>⚡ EDINET v2 リアルタイム検索:</strong><br/>
+            • 金融庁EDINET APIから最新の提出書類を検索<br/>
+            • 過去60営業日の有価証券報告書等をスキャン<br/>
+            • 上場企業名で検索可能（例: 講談社、野村證券、パナソニック等）<br/>
+            • APIキー設定済みでリアルタイム取得対応
           </div>
         </div>
 

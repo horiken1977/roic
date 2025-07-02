@@ -24,23 +24,7 @@ export default function DataSourceIndicator() {
 
   const checkDataSources = async () => {
     try {
-      // GitHub Actions静的データをチェック
-      const staticDataAvailable = await staticDataService.isDataAvailable();
-      
-      if (staticDataAvailable) {
-        const metadata = await staticDataService.getMetadata();
-        
-        setDataInfo({
-          source: 'github_actions',
-          lastUpdated: metadata?.lastUpdated,
-          companiesCount: metadata?.companiesCount,
-          isRealTime: false,
-          status: 'available'
-        });
-        return;
-      }
-
-      // Vercel Functions（リアルタイムAPI）をチェック
+      // Vercel Functions（リアルタイムAPI）を最優先でチェック
       try {
         const vercelApiUrl = process.env.NEXT_PUBLIC_VERCEL_API_URL || 'https://roic-api.vercel.app/api';
         const response = await fetch(`${vercelApiUrl}/edinet/companies?q=test`, {
@@ -56,12 +40,36 @@ export default function DataSourceIndicator() {
           setDataInfo({
             source: 'vercel_functions',
             isRealTime: true,
-            status: result.source === 'edinet_api_vercel' ? 'available' : 'unavailable'
+            status: 'available'
+          });
+          return;
+        } else if (response.status === 400) {
+          // APIキー未設定でも構造は正常
+          setDataInfo({
+            source: 'vercel_functions',
+            isRealTime: true,
+            status: 'unavailable'
           });
           return;
         }
       } catch {
-        // Vercel Functionsエラー
+        // Vercel Functionsエラー - 次のデータソースをチェック
+      }
+
+      // GitHub Actions静的データをチェック
+      const staticDataAvailable = await staticDataService.isDataAvailable();
+      
+      if (staticDataAvailable) {
+        const metadata = await staticDataService.getMetadata();
+        
+        setDataInfo({
+          source: 'github_actions',
+          lastUpdated: metadata?.lastUpdated,
+          companiesCount: metadata?.companiesCount,
+          isRealTime: false,
+          status: 'available'
+        });
+        return;
       }
 
       // バックエンドAPIをチェック（localhost環境のみ）
