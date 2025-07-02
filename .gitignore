@@ -90,3 +90,4 @@ temp/
 # OS files
 Thumbs.db
 desktop.ini
+.vercel
