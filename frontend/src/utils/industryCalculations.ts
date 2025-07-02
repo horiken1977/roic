@@ -12,7 +12,7 @@ export interface IndustryData {
   roic_adjustment: {
     coefficient: number;
     reason: string;
-    [key: string]: any;
+    [key: string]: string | number | boolean;
   };
   representative_companies: Array<{
     name: string;
@@ -184,7 +184,7 @@ export function generateIndustryComparison(industryCode: string): IndustryCompar
   if (!industryData) return null;
   
   // サンプル企業データ生成
-  const sampleCompanies: CompanyROICData[] = industryData.representative_companies.map((company, index) => {
+  const sampleCompanies: CompanyROICData[] = industryData.representative_companies.map((company) => {
     // 業界特性に基づいてサンプルROIC値を生成
     const baseROIC = generateSampleROIC(industryData.characteristics.typical_roic_range);
     

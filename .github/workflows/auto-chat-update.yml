@@ -125,6 +125,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
+      continue-on-error: true
     
     - name: 🏗️ Setup Node.js
       uses: actions/setup-node@v4
@@ -135,36 +136,44 @@ jobs:
       run: |
         echo "Updating AWS Lambda functions for shutdown schedule..."
         
-        # Read config and update Lambda functions
-        cat config/project-config.json | jq -r '.automation.chat_based_rules.aws_cost_optimization.schedule.shutdown_time' > /tmp/shutdown_time
-        cat config/project-config.json | jq -r '.automation.chat_based_rules.aws_cost_optimization.schedule.startup_time' > /tmp/startup_time
-        
-        SHUTDOWN_TIME=$(cat /tmp/shutdown_time)
-        STARTUP_TIME=$(cat /tmp/startup_time)
-        
-        echo "📅 Shutdown time: $SHUTDOWN_TIME"
-        echo "📅 Startup time: $STARTUP_TIME"
-        
-        # Update EventBridge rules (if they exist)
-        aws events list-rules --name-prefix "roic-shutdown" --query 'Rules[].Name' --output text | while read rule_name; do
-          if [ -n "$rule_name" ]; then
-            echo "Updating rule: $rule_name"
-            # Convert JST to UTC cron expression
-            SHUTDOWN_HOUR=$(echo $SHUTDOWN_TIME | cut -d':' -f1)
-            SHUTDOWN_MINUTE=$(echo $SHUTDOWN_TIME | cut -d':' -f2)
-            UTC_HOUR=$((SHUTDOWN_HOUR - 9))
-            if [ $UTC_HOUR -lt 0 ]; then
-              UTC_HOUR=$((UTC_HOUR + 24))
+        # Check if AWS credentials are available
+        if aws sts get-caller-identity >/dev/null 2>&1; then
+          echo "✅ AWS credentials available"
+          
+          # Read config and update Lambda functions
+          cat config/project-config.json | jq -r '.automation.chat_based_rules.aws_cost_optimization.schedule.shutdown_time' > /tmp/shutdown_time
+          cat config/project-config.json | jq -r '.automation.chat_based_rules.aws_cost_optimization.schedule.startup_time' > /tmp/startup_time
+          
+          SHUTDOWN_TIME=$(cat /tmp/shutdown_time)
+          STARTUP_TIME=$(cat /tmp/startup_time)
+          
+          echo "📅 Shutdown time: $SHUTDOWN_TIME"
+          echo "📅 Startup time: $STARTUP_TIME"
+          
+          # Update EventBridge rules (if they exist)
+          aws events list-rules --name-prefix "roic-shutdown" --query 'Rules[].Name' --output text | while read rule_name; do
+            if [ -n "$rule_name" ]; then
+              echo "Updating rule: $rule_name"
+              # Convert JST to UTC cron expression
+              SHUTDOWN_HOUR=$(echo $SHUTDOWN_TIME | cut -d':' -f1)
+              SHUTDOWN_MINUTE=$(echo $SHUTDOWN_TIME | cut -d':' -f2)
+              UTC_HOUR=$((SHUTDOWN_HOUR - 9))
+              if [ $UTC_HOUR -lt 0 ]; then
+                UTC_HOUR=$((UTC_HOUR + 24))
+              fi
+              
+              aws events put-rule \
+                --name "$rule_name" \
+                --schedule-expression "cron($SHUTDOWN_MINUTE $UTC_HOUR * * ? *)" \
+                --state ENABLED
             fi
-            
-            aws events put-rule \
-              --name "$rule_name" \
-              --schedule-expression "cron($SHUTDOWN_MINUTE $UTC_HOUR * * ? *)" \
-              --state ENABLED
-          fi
-        done
-        
-        echo "✅ AWS schedules updated successfully"
+          done
+          
+          echo "✅ AWS schedules updated successfully"
+        else
+          echo "⚠️ AWS credentials not available, skipping schedule update"
+          echo "This is expected for public repositories or when AWS secrets are not configured"
+        fi
 
   # Notify completion
   notify:

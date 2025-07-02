@@ -41,8 +41,8 @@ export default function FunctionalSpecPage() {
     loadFunctionalSpec();
   }, []);
 
-  const extractSections = (htmlContent: string) => {
-    // Remove unused variables
+  const extractSections = (_htmlContent: string) => {
+    // Extract sections data from HTML content
     
     const sectionData: Section[] = [
       {
