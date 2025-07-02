@@ -138,6 +138,35 @@ export default function Home() {
           </Link>
         </div>
 
+        {/* Main Features Section */}
+        <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-lg shadow-md p-8 mb-8">
+          <h2 className="text-2xl font-bold mb-6">🎯 ROIC分析を今すぐ始める</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <Link href="/companies" className="block">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all border border-white/20">
+                <h3 className="text-xl font-semibold mb-3">📊 企業検索・ROIC分析</h3>
+                <p className="text-purple-100 mb-4">
+                  EDINET APIと連携して企業の財務データを自動取得し、4つの計算方式でROICを分析します。
+                </p>
+                <div className="flex items-center text-white font-medium">
+                  <span>分析を開始 →</span>
+                </div>
+              </div>
+            </Link>
+            <Link href="/industry-analysis" className="block">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all border border-white/20">
+                <h3 className="text-xl font-semibold mb-3">🏆 業界比較・ランキング</h3>
+                <p className="text-purple-100 mb-4">
+                  業界内でのROICランキングや、複数業界間でのROIC水準比較分析を行います。
+                </p>
+                <div className="flex items-center text-white font-medium">
+                  <span>業界分析へ →</span>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+
         {/* Progress Overview */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">プロジェクト進捗概要</h2>
@@ -252,9 +281,14 @@ export default function Home() {
                 <span className="ml-auto text-green-600 text-sm">✅</span>
               </div>
               <div className="flex items-center">
-                <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                <span className="text-gray-700">EDINET API連携・財務データ取得</span>
+                <span className="ml-auto text-green-600 text-sm">✅</span>
+              </div>
+              <div className="flex items-center">
+                <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
                 <span className="text-gray-700">業界内比較・ランキング表示</span>
-                <span className="ml-auto text-orange-600 text-sm">🚧</span>
+                <span className="ml-auto text-green-600 text-sm">✅</span>
               </div>
               <div className="flex items-center">
                 <span className="w-2 h-2 bg-gray-400 rounded-full mr-3"></span>
