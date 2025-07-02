@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import ROICCalculator from '@/components/ROICCalculator'
-import EDINETCompanySearch from '@/components/EDINETCompanySearch'
+import EDINETCompanySearchSimple from '@/components/EDINETCompanySearchSimple'
 
 interface Company {
   id: string
@@ -147,7 +147,7 @@ export default function CompaniesPage() {
 
       {/* EDINET API検索 */}
       {useEDINET ? (
-        <EDINETCompanySearch />
+        <EDINETCompanySearchSimple />
       ) : (
         <>
           {/* 従来のサンプルデータ検索 */}
