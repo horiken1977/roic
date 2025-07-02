@@ -1,16 +1,9 @@
 import jsPDF from 'jspdf'
-import 'jspdf-autotable'
+import autoTable from 'jspdf-autotable'
 import html2canvas from 'html2canvas'
 import * as XLSX from 'xlsx'
 import { FinancialDataFromEDINET, EDINETCompany } from '@/services/edinetApi'
 import { calculateAllROIC, formatROIC, formatCurrency } from './roicCalculations'
-
-// jsPDFの型拡張
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
-  }
-}
 
 // PDF エクスポート用のインターface
 export interface ROICReportData {
@@ -25,6 +18,8 @@ export interface ROICReportData {
  */
 export async function exportROICToPDF(data: ROICReportData): Promise<void> {
   try {
+    console.log('Starting PDF export with data:', data)
+    
     const pdf = new jsPDF('p', 'mm', 'a4')
     const pageWidth = pdf.internal.pageSize.getWidth()
     const pageHeight = pdf.internal.pageSize.getHeight()
@@ -45,7 +40,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
       ['Fiscal Year', data.financialData.fiscalYear.toString()]
     ]
 
-    pdf.autoTable({
+    autoTable(pdf, {
       startY: yPosition,
       head: [['Item', 'Value']],
       body: companyInfo,
@@ -55,7 +50,9 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
       columnStyles: { 0: { fontStyle: 'bold', cellWidth: 40 } }
     })
 
-    yPosition = (pdf as any).lastAutoTable.finalY + 10
+    // autoTableの最終Y位置を取得
+    const lastTable = (pdf as any).lastAutoTable
+    yPosition = lastTable ? lastTable.finalY + 10 : yPosition + 50
 
     // 財務データテーブル（百万円単位）
     const financialData = [
@@ -72,7 +69,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
       ['Tax Rate', (data.financialData.taxRate * 100).toFixed(1) + '%']
     ]
 
-    pdf.autoTable({
+    autoTable(pdf, {
       startY: yPosition,
       head: [['Financial Data', 'Amount']],
       body: financialData,
@@ -82,7 +79,9 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
       columnStyles: { 0: { fontStyle: 'bold', cellWidth: 60 } }
     })
 
-    yPosition = (pdf as any).lastAutoTable.finalY + 10
+    // autoTableの最終Y位置を取得
+    const lastTable = (pdf as any).lastAutoTable
+    yPosition = lastTable ? lastTable.finalY + 10 : yPosition + 50
 
     // ROIC計算結果テーブル
     const roicData = [
@@ -112,7 +111,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
       ]
     ]
 
-    pdf.autoTable({
+    autoTable(pdf, {
       startY: yPosition,
       head: [['Calculation Method', 'ROIC (%)', 'NOPAT (M JPY)', 'Invested Capital (M JPY)']],
       body: roicData,
@@ -127,7 +126,9 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
       }
     })
 
-    yPosition = (pdf as any).lastAutoTable.finalY + 10
+    // autoTableの最終Y位置を取得
+    const lastTable = (pdf as any).lastAutoTable
+    yPosition = lastTable ? lastTable.finalY + 10 : yPosition + 50
 
     // 複数年度データがある場合
     if (data.multiYearData && data.multiYearData.length > 1) {
@@ -157,7 +158,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
           ]
         })
 
-      pdf.autoTable({
+      autoTable(pdf, {
         startY: yPosition,
         head: [['Year', 'Basic ROIC', 'Detailed ROIC', 'Asset ROIC', 'Modified ROIC']],
         body: trendData,
@@ -180,7 +181,12 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
 
   } catch (error) {
     console.error('PDF export error:', error)
-    throw new Error('PDFエクスポートに失敗しました')
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      data: data
+    })
+    throw new Error(`PDFエクスポートに失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`)
   }
 }
 
