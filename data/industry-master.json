@@ -1,0 +1,240 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "last_updated": "2025-07-02",
+    "source": "日本標準産業分類（JSIC）準拠",
+    "description": "ROIC分析用業界分類マスターデータ"
+  },
+  "industries": [
+    {
+      "industry_code": "1000",
+      "industry_name": "製造業",
+      "parent_category": "実体経済",
+      "sub_categories": [
+        {
+          "industry_code": "1100",
+          "industry_name": "自動車・輸送機器",
+          "roic_adjustment": {
+            "coefficient": 0.95,
+            "reason": "設備投資集約度調整",
+            "working_capital_adjustment": 1.1
+          },
+          "representative_companies": [
+            {"name": "トヨタ自動車", "code": "7203"},
+            {"name": "本田技研工業", "code": "7267"},
+            {"name": "日産自動車", "code": "7201"}
+          ],
+          "characteristics": {
+            "capital_intensity": "高",
+            "r_and_d_intensity": "中",
+            "working_capital_turnover": "中",
+            "typical_roic_range": "8-15%"
+          }
+        },
+        {
+          "industry_code": "1200", 
+          "industry_name": "電気機器・電子部品",
+          "roic_adjustment": {
+            "coefficient": 1.05,
+            "reason": "R&D投資調整",
+            "rd_capitalization_rate": 0.7
+          },
+          "representative_companies": [
+            {"name": "ソニーグループ", "code": "6758"},
+            {"name": "パナソニック", "code": "6752"},
+            {"name": "三菱電機", "code": "6503"}
+          ],
+          "characteristics": {
+            "capital_intensity": "中",
+            "r_and_d_intensity": "高",
+            "working_capital_turnover": "高",
+            "typical_roic_range": "10-20%"
+          }
+        },
+        {
+          "industry_code": "1300",
+          "industry_name": "化学・素材",
+          "roic_adjustment": {
+            "coefficient": 0.9,
+            "reason": "設備投資集約度調整",
+            "environmental_cost_adjustment": 1.05
+          },
+          "representative_companies": [
+            {"name": "信越化学工業", "code": "4063"},
+            {"name": "三菱ケミカル", "code": "4188"},
+            {"name": "住友化学", "code": "4005"}
+          ],
+          "characteristics": {
+            "capital_intensity": "高",
+            "r_and_d_intensity": "中",
+            "working_capital_turnover": "低",
+            "typical_roic_range": "6-12%"
+          }
+        }
+      ]
+    },
+    {
+      "industry_code": "2000",
+      "industry_name": "小売・サービス業",
+      "parent_category": "サービス経済",
+      "sub_categories": [
+        {
+          "industry_code": "2100",
+          "industry_name": "小売業",
+          "roic_adjustment": {
+            "coefficient": 1.15,
+            "reason": "運転資本調整",
+            "inventory_turnover_adjustment": 1.2
+          },
+          "representative_companies": [
+            {"name": "ファーストリテイリング", "code": "9983"},
+            {"name": "セブン&アイ", "code": "3382"},
+            {"name": "イオン", "code": "8267"}
+          ],
+          "characteristics": {
+            "capital_intensity": "低",
+            "r_and_d_intensity": "低",
+            "working_capital_turnover": "高",
+            "typical_roic_range": "15-25%"
+          }
+        },
+        {
+          "industry_code": "2200",
+          "industry_name": "情報・通信サービス",
+          "roic_adjustment": {
+            "coefficient": 1.1,
+            "reason": "無形資産調整",
+            "intangible_capitalization_rate": 0.8
+          },
+          "representative_companies": [
+            {"name": "ソフトバンクグループ", "code": "9984"},
+            {"name": "KDDI", "code": "9433"},
+            {"name": "NTT", "code": "9432"}
+          ],
+          "characteristics": {
+            "capital_intensity": "中",
+            "r_and_d_intensity": "高",
+            "working_capital_turnover": "高",
+            "typical_roic_range": "12-22%"
+          }
+        }
+      ]
+    },
+    {
+      "industry_code": "3000",
+      "industry_name": "医薬品・ヘルスケア",
+      "parent_category": "ディフェンシブ",
+      "sub_categories": [
+        {
+          "industry_code": "3100",
+          "industry_name": "医薬品",
+          "roic_adjustment": {
+            "coefficient": 1.2,
+            "reason": "R&D投資調整・特許価値調整",
+            "rd_capitalization_rate": 0.9,
+            "patent_value_adjustment": 1.3
+          },
+          "representative_companies": [
+            {"name": "武田薬品工業", "code": "4502"},
+            {"name": "第一三共", "code": "4568"},
+            {"name": "アステラス製薬", "code": "4503"}
+          ],
+          "characteristics": {
+            "capital_intensity": "中",
+            "r_and_d_intensity": "極高",
+            "working_capital_turnover": "中",
+            "typical_roic_range": "15-30%"
+          }
+        }
+      ]
+    },
+    {
+      "industry_code": "4000",
+      "industry_name": "金融業",
+      "parent_category": "金融",
+      "sub_categories": [
+        {
+          "industry_code": "4100",
+          "industry_name": "銀行業",
+          "roic_adjustment": {
+            "coefficient": 0.0,
+            "reason": "ROIC計算対象外",
+            "alternative_metrics": ["ROE", "ROA", "効率性比率"]
+          },
+          "representative_companies": [
+            {"name": "三菱UFJフィナンシャル・グループ", "code": "8306"},
+            {"name": "三井住友フィナンシャルグループ", "code": "8316"},
+            {"name": "みずほフィナンシャルグループ", "code": "8411"}
+          ],
+          "characteristics": {
+            "capital_intensity": "特殊",
+            "r_and_d_intensity": "低",
+            "working_capital_turnover": "特殊",
+            "typical_roic_range": "対象外"
+          }
+        }
+      ]
+    },
+    {
+      "industry_code": "5000",
+      "industry_name": "不動産業",
+      "parent_category": "景気敏感",
+      "sub_categories": [
+        {
+          "industry_code": "5100",
+          "industry_name": "不動産業",
+          "roic_adjustment": {
+            "coefficient": 0.85,
+            "reason": "簿価調整オプション",
+            "fair_value_adjustment": true,
+            "depreciation_adjustment": 1.15
+          },
+          "representative_companies": [
+            {"name": "三井不動産", "code": "8801"},
+            {"name": "三菱地所", "code": "8802"},
+            {"name": "住友不動産", "code": "8830"}
+          ],
+          "characteristics": {
+            "capital_intensity": "極高",
+            "r_and_d_intensity": "低",
+            "working_capital_turnover": "低",
+            "typical_roic_range": "4-8%"
+          }
+        }
+      ]
+    }
+  ],
+  "roic_calculation_guidelines": {
+    "standard_adjustments": {
+      "effective_tax_rate_cap": 0.5,
+      "roic_outlier_upper": 1.0,
+      "roic_outlier_lower": -0.5,
+      "warning_thresholds": {
+        "extremely_high": 0.5,
+        "extremely_low": -0.2
+      }
+    },
+    "industry_specific_notes": {
+      "manufacturing": "設備投資集約度が高いため、投下資本の算定に注意が必要",
+      "retail": "運転資本回転率が重要な指標となる",
+      "technology": "R&D投資の資本化処理がROIC値に大きく影響",
+      "pharmaceuticals": "特許価値と長期R&D投資の評価が重要",
+      "real_estate": "時価評価と簿価評価の選択がROIC値を大きく左右",
+      "finance": "ROIC計算の適用が困難なため、ROEやROAでの評価を推奨"
+    }
+  },
+  "comparison_benchmarks": {
+    "quartile_definitions": {
+      "top_quartile": "業界上位25%",
+      "upper_middle": "業界25-50%",
+      "lower_middle": "業界50-75%", 
+      "bottom_quartile": "業界下位25%"
+    },
+    "peer_comparison_criteria": {
+      "same_industry_code": true,
+      "similar_market_cap": "±50%",
+      "similar_business_model": true,
+      "geographic_focus": "日本中心"
+    }
+  }
+}

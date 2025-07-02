@@ -32,20 +32,40 @@
 <li><strong>ステータス</strong>: <span class="status-completed">✅</span> 実行済み</li></p><p></p><p><h2>E2Eテスト</h2></p><p><h3>実行済みテスト: 0件</h3>
 <li><strong>成功</strong>: 0件</li>
 <li><strong>失敗</strong>: 0件</li>
-<li><strong>カバレッジ</strong>: 70%</li></p><p></p><p><h2>統合テスト</h2></p><p><h3>実行済みテスト: 0件</h3>
-<li><strong>成功</strong>: 0件</li>
-<li><strong>失敗</strong>: 0件</li>
-<li><strong>カバレッジ</strong>: 75%</li></p><p></p><p><h2>推奨追加テスト</h2></p><p><h3>MVPフェーズ</h3>
-<li>ROIC計算の精度テスト</li>
-<li>UI/UXのユーザビリティテスト</li>
-<li>レスポンシブデザインテスト</li></p><p><h3>次期フェーズ</h3>
-<li>大量データ処理のパフォーマンステスト</li>
-<li>セキュリティテスト</li>
-<li>ブラウザ互換性テスト</li></p><p>---</p>
-<p><em>最終更新: 2025/7/1 15:48:54</em>
-<p><em>この文書はテスト実行状況に応じて自動更新されます</em>
+<li><strong>カバレッジ</strong>: 70%</li></p><p></p><p><h2>統合テスト</h2></p><p><h3>実行済みテスト: 0件</h3></p><p><h2><span class="status-pending">📋</span> 詳細テスト仕様</h2></p><p><h3><span class="status-completed">✅</span> 実装済みテスト</h3></p><p><h4>frontend/src/__tests__/page.test.tsx</h4></p><p><strong>目的</strong>: ホームページの表示要素検証</p><p><strong>テストケース</strong>:</p>
+<li>メインヘッディング「ROIC分析アプリケーション」の表示確認</li>
+<li>機能カード（企業検索・分析、業界比較）の表示確認</li>
+<li>主要機能リストの表示確認</li>
+<li>アプリケーション説明文の表示確認</li></p><p><strong>カバレッジ</strong>: UIコンポーネントの表示テスト（基本要素）</p><p><h4>frontend/src/__tests__/companies.test.tsx</h4></p><p><strong>目的</strong>: 企業検索画面のUI要素と基本動作検証</p><p><strong>テストケース</strong>:</p>
+<li>「企業検索」ヘッディングの表示確認</li>
+<li>検索入力フィールドの存在確認</li>
+<li>検索ボタンの表示確認</li>
+<li>業界・市場フィルタードロップダウンの表示確認</li>
+<li>検索入力フィールドへのテキスト入力動作確認</li>
+<li>検索結果プレースホルダーの表示確認</li></p><p><strong>カバレッジ</strong>: 検索UIコンポーネントの表示と基本操作</p><p><h4>frontend/src/__tests__/dashboard.test.tsx</h4></p><p><strong>目的</strong>: ダッシュボード画面の表示要素検証</p><p><strong>テストケース</strong>:</p>
+<li>「ROICダッシュボード」ヘッディングの表示確認</li>
+<li>統計カード（総企業数、平均ROIC、更新日）の表示確認</li>
+<li>ROIC上位企業テーブルの表示確認</li>
+<li>サンプル企業データの表示確認</li>
+<li>チャートプレースホルダーの表示確認</li></p><p><strong>カバレッジ</strong>: ダッシュボードUIコンポーネント</p><p>⚠️ <strong>課題</strong>: 現在の実装（リダイレクト）と一致していない</p><p><h4>frontend/src/lib/__tests__/store.test.ts</h4></p><p><strong>目的</strong>: Zustand状態管理の動作検証</p><p><strong>テストケース</strong>:</p>
+<li>Company Store: 初期値確認、検索クエリ更新、フィルタークリア</li>
+<li>ROIC Store: 初期値確認、計算方法変更、会計年度選択</li>
+<li>UI Store: 初期値確認、サイドバー開閉、テーマ変更</li></p><p><strong>カバレッジ</strong>: 状態管理ロジック</p><p><h3>⚠️ 不足しているテスト</h3></p><p><h4>ROIC計算ロジックのユニットテスト</h4></p><p><strong>優先度</strong>: 高</p><p><strong>必要なテスト</strong>:</p>
+<li>4つの計算方式の正確性テスト</li>
+<li>エッジケース（ゼロ値、null値）のテスト</li>
+<li>異常値処理のテスト</li>
+<li>実効税率計算の妥当性テスト</li></p><p><h4>バックエンドAPIとの連携テスト</h4></p><p><strong>優先度</strong>: 高</p><p><strong>必要なテスト</strong>:</p>
+<li>ROIC計算API呼び出しテスト</li>
+<li>企業検索API連携テスト</li>
+<li>エラーレスポンス処理テスト</li></p><p><h4>エンドツーエンドテスト</h4></p><p><strong>優先度</strong>: 中</p><p><strong>必要なテスト</strong>:</p>
+<li>企業検索からROIC表示までの完全フロー</li>
+<li>計算方式変更による結果変化の確認</li>
+<li>エラーハンドリングの動作確認</li></p><p><h3>📊 テストメトリクス</h3></p><p><li><strong>現在のカバレッジ</strong>: 93%</li>
+<li><strong>テスト数</strong>: 4件</li>
+<li><strong>成功</strong>: 4件</li>
+<li><strong>失敗</strong>: 0件</li></p><p>
         <div class="update-time">
-            最終自動更新: 2025/7/1 15:48:54<br>
+            最終自動更新: 2025/7/2 9:18:13<br>
             🤖 この文書は自動的に更新されます
         </div>
     </div>
