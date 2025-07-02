@@ -191,8 +191,22 @@ export default function EDINETCompanySearchSimple() {
             • 金融庁EDINET APIから最新の提出書類を検索<br/>
             • 過去60営業日の有価証券報告書等をスキャン<br/>
             • 上場企業名で検索可能（例: 講談社、野村證券、パナソニック等）<br/>
-            • APIキー設定済みでリアルタイム取得対応
+            • Vercel Functions経由でAPIキー管理
           </div>
+          <button
+            onClick={async () => {
+              try {
+                const response = await fetch('https://roic-api.vercel.app/api/health');
+                const result = await response.json();
+                alert(`ヘルスチェック結果:\n${JSON.stringify(result, null, 2)}`);
+              } catch (error) {
+                alert(`接続エラー: ${error.message}`);
+              }
+            }}
+            className="mt-2 px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            接続テスト
+          </button>
         </div>
 
         {/* エラー表示 */}

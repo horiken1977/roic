@@ -2,7 +2,7 @@
 
 ## 1. Vercel アカウント設定
 1. [Vercel](https://vercel.com) にアカウント登録
-2. GitHubリポジトリと連携
+2. GitHubリポジトリと連携（https://github.com/horiken1977/roic）
 
 ## 2. Vercel CLI インストール・設定
 ```bash
@@ -12,20 +12,34 @@ vercel login
 
 ## 3. プロジェクト初期化
 ```bash
+# リポジトリルートで実行
 vercel
-# プロジェクト設定に従って回答
+# プロジェクト名: roic-api
+# Framework: Other
+# Build Command: [空欄]
+# Output Directory: .
+# Dev Command: [空欄]
 ```
 
 ## 4. 環境変数設定
 Vercel ダッシュボードまたはCLIで設定:
 ```bash
-vercel env add EDINET_API_KEY
-# APIキーを入力
+vercel env add EDINET_API_KEY production
+# EDINETのAPIキーを入力
 ```
 
 ## 5. デプロイ
 ```bash
 vercel --prod
+```
+
+## 6. CORS確認
+デプロイ後、以下をテスト:
+```bash
+curl -X OPTIONS https://your-project.vercel.app/api/health \
+  -H "Origin: https://horiken1977.github.io" \
+  -H "Access-Control-Request-Method: GET" \
+  -v
 ```
 
 ## 6. フロントエンド環境変数設定
