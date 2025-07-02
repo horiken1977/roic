@@ -10,6 +10,7 @@ interface Feature {
   priority: 'high' | 'medium' | 'low'
   phase: string
   files?: string[]
+  issues?: string[]
 }
 
 interface Phase {
@@ -109,9 +110,9 @@ export default function FunctionalSpecTable() {
       },
       {
         name: 'Phase 2: コア機能拡張',
-        status: 'completed',
-        progress: 100,
-        description: '業界比較・データ可視化機能の追加',
+        status: 'in_progress',
+        progress: 95,
+        description: '業界比較・データ可視化・エクスポート機能の追加',
         features: [
           {
             name: '業界比較・ランキング',
@@ -130,6 +131,16 @@ export default function FunctionalSpecTable() {
             priority: 'high',
             phase: 'Phase 2',
             files: ['frontend/src/components/ROICTrendChart.tsx']
+          },
+          {
+            name: 'エクスポート機能',
+            status: 'in_progress',
+            progress: 85,
+            description: 'PDF・Excel・チャート画像エクスポート（PDF日本語文字化け対応中）',
+            priority: 'high',
+            phase: 'Phase 2',
+            files: ['frontend/src/utils/exportUtils.ts', 'frontend/src/components/ExportButtons.tsx'],
+            issues: ['PDFエクスポートで企業名・業界の日本語文字化け', '日本語フォントサポート未実装']
           }
         ]
       },
@@ -316,6 +327,18 @@ export default function FunctionalSpecTable() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900">{feature.description}</div>
+                      {feature.issues && feature.issues.length > 0 && (
+                        <div className="mt-2">
+                          <div className="text-xs bg-yellow-50 border border-yellow-200 rounded p-2">
+                            <div className="text-yellow-800 font-medium mb-1">⚠️ 未解決課題:</div>
+                            <ul className="text-yellow-700 space-y-0.5">
+                              {feature.issues.map((issue, idx) => (
+                                <li key={idx} className="pl-2">• {issue}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
                       {feature.files && feature.files.length > 0 && (
                         <div className="mt-1">
                           <details className="text-xs">
