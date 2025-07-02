@@ -51,8 +51,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
     })
 
     // autoTableの最終Y位置を取得
-    const lastTable = (pdf as any).lastAutoTable
-    yPosition = lastTable ? lastTable.finalY + 10 : yPosition + 50
+    yPosition = (pdf as any).lastAutoTable ? (pdf as any).lastAutoTable.finalY + 10 : yPosition + 50
 
     // 財務データテーブル（百万円単位）
     const financialData = [
@@ -80,8 +79,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
     })
 
     // autoTableの最終Y位置を取得
-    const lastTable = (pdf as any).lastAutoTable
-    yPosition = lastTable ? lastTable.finalY + 10 : yPosition + 50
+    yPosition = (pdf as any).lastAutoTable ? (pdf as any).lastAutoTable.finalY + 10 : yPosition + 50
 
     // ROIC計算結果テーブル
     const roicData = [
@@ -127,8 +125,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
     })
 
     // autoTableの最終Y位置を取得
-    const lastTable = (pdf as any).lastAutoTable
-    yPosition = lastTable ? lastTable.finalY + 10 : yPosition + 50
+    yPosition = (pdf as any).lastAutoTable ? (pdf as any).lastAutoTable.finalY + 10 : yPosition + 50
 
     // 複数年度データがある場合
     if (data.multiYearData && data.multiYearData.length > 1) {
