@@ -14,6 +14,7 @@ import {
   getROICEvaluationLevel,
   FinancialData
 } from '@/utils/roicCalculations'
+import ROICTrendChart from './ROICTrendChart'
 
 export default function EDINETCompanySearchSimple() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -21,6 +22,8 @@ export default function EDINETCompanySearchSimple() {
   const [selectedCompany, setSelectedCompany] = useState<EDINETCompany | null>(null)
   const [financialData, setFinancialData] = useState<FinancialDataFromEDINET | null>(null)
   const [roicResults, setRoicResults] = useState<ReturnType<typeof calculateAllROIC> | null>(null)
+  const [multiYearData, setMultiYearData] = useState<FinancialDataFromEDINET[]>([])
+  const [showTrendChart, setShowTrendChart] = useState(false)
   
   const [isSearching, setIsSearching] = useState(false)
   const [isLoadingFinancialData, setIsLoadingFinancialData] = useState(false)
@@ -57,6 +60,8 @@ export default function EDINETCompanySearchSimple() {
     setError(null)
     setFinancialData(null)
     setRoicResults(null)
+    setMultiYearData([])
+    setShowTrendChart(false)
 
     try {
       console.log('Fetching financial data for:', company.companyName) // デバッグ用
@@ -82,6 +87,35 @@ export default function EDINETCompanySearchSimple() {
     } catch (err) {
       console.error('Financial data error:', err) // デバッグ用
       setError('財務データ取得エラーが発生しました')
+    } finally {
+      setIsLoadingFinancialData(false)
+    }
+  }
+
+  const handleLoadTrendData = async () => {
+    if (!selectedCompany) return
+    
+    setIsLoadingFinancialData(true)
+    setError(null)
+    
+    try {
+      const years = [2023, 2022, 2021, 2020, 2019]
+      const response = await edinetApiClient.getMultipleYearFinancialData(
+        selectedCompany.edinetCode,
+        years,
+        (current, total, year) => {
+          console.log(`Loading ${year} data... (${current}/${total})`)
+        }
+      )
+      
+      if (response.success && response.data) {
+        setMultiYearData(response.data)
+        setShowTrendChart(true)
+      } else {
+        setError(response.error || '複数年度データの取得に失敗しました')
+      }
+    } catch (err) {
+      setError('トレンドデータ取得エラーが発生しました')
     } finally {
       setIsLoadingFinancialData(false)
     }
@@ -227,9 +261,18 @@ export default function EDINETCompanySearchSimple() {
       {/* ROIC計算結果 */}
       {roicResults && selectedCompany && (
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            🎯 {selectedCompany.companyName} - ROIC計算結果
-          </h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              🎯 {selectedCompany.companyName} - ROIC計算結果
+            </h3>
+            <button
+              onClick={handleLoadTrendData}
+              disabled={isLoadingFinancialData}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400"
+            >
+              {isLoadingFinancialData ? 'データ取得中...' : '📈 トレンド分析を表示'}
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.entries(roicResults).map(([method, result]) => {
               const evaluation = getROICEvaluationLevel(result.roic)
@@ -264,6 +307,15 @@ export default function EDINETCompanySearchSimple() {
         </div>
       )}
 
+      {/* ROICトレンドチャート */}
+      {showTrendChart && multiYearData.length > 0 && selectedCompany && (
+        <ROICTrendChart 
+          financialDataList={multiYearData}
+          companyName={selectedCompany.companyName}
+          industryAverage={0.12} // 業界平均のサンプル値
+        />
+      )}
+
       {/* 使用方法説明 */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">✨ テスト手順</h3>
@@ -279,6 +331,10 @@ export default function EDINETCompanySearchSimple() {
           <div className="p-3 bg-purple-50 rounded-lg">
             <div className="font-medium text-purple-900">3. 結果確認</div>
             <div>財務データと4つの計算方式によるROIC結果を確認</div>
+          </div>
+          <div className="p-3 bg-orange-50 rounded-lg">
+            <div className="font-medium text-orange-900">4. トレンド分析</div>
+            <div>「トレンド分析を表示」ボタンで過去5年間の推移を確認</div>
           </div>
         </div>
       </div>
