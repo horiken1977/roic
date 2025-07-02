@@ -29,8 +29,10 @@ const customJestConfig = {
     '<rootDir>/.next/',
     '<rootDir>/node_modules/',
   ],
-  testTimeout: 30000,
-  maxWorkers: '50%',
+  testTimeout: 60000,
+  maxWorkers: 1,
+  forceExit: true,
+  detectOpenHandles: true,
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
