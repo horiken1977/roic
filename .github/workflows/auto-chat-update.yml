@@ -1,16 +1,19 @@
-name: Auto Chat-based Updates (DISABLED)
+name: Auto Chat-based Updates & AWS Deploy
 
-# Temporarily disabled due to AWS credentials requirements
-# Enable when AWS secrets are properly configured
 on:
+  # Manual trigger for chat-based updates
+  repository_dispatch:
+    types: [chat-update]
+  
+  # Watch for config file changes
+  push:
+    paths:
+      - 'config/project-config.json'
+      - 'scripts/centralized-manager.js'
+    branches: [ main ]
+  
+  # Manual trigger for testing
   workflow_dispatch:
-  # repository_dispatch:
-  #   types: [chat-update]
-  # push:
-  #   paths:
-  #     - 'config/project-config.json'
-  #     - 'scripts/centralized-manager.js'
-  #   branches: [ main ]
 
 env:
   AWS_REGION: ap-northeast-1
@@ -113,19 +116,47 @@ jobs:
   update-aws-schedule:
     name: ⏰ Update AWS Shutdown Schedule
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, 'aws_cost_optimization') && vars.AWS_ENABLED == 'true'
+    if: contains(github.event.head_commit.message, 'aws_cost_optimization')
+    
+    permissions:
+      id-token: write
+      contents: read
     
     steps:
     - name: 📥 Checkout code
       uses: actions/checkout@v4
     
-    - name: ⚙️ Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
+    - name: 🔍 Check AWS Secrets Availability
+      id: check-secrets
+      run: |
+        if [ -n "${{ secrets.AWS_ACCESS_KEY_ID }}" ] && [ -n "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+          echo "aws-secrets-available=true" >> $GITHUB_OUTPUT
+          echo "✅ AWS Access Key credentials available"
+        elif [ -n "${{ secrets.AWS_ROLE_TO_ASSUME }}" ]; then
+          echo "aws-secrets-available=true" >> $GITHUB_OUTPUT
+          echo "✅ AWS OIDC role available"
+        else
+          echo "aws-secrets-available=false" >> $GITHUB_OUTPUT
+          echo "⚠️ AWS credentials not configured"
+          echo "Please configure either:"
+          echo "  1. AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY secrets, or"
+          echo "  2. AWS_ROLE_TO_ASSUME secret for OIDC authentication"
+        fi
+    
+    - name: ⚙️ Configure AWS credentials (Access Key)
+      if: steps.check-secrets.outputs.aws-secrets-available == 'true' && secrets.AWS_ACCESS_KEY_ID != ''
+      uses: aws-actions/configure-aws-credentials@v3
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
-      continue-on-error: true
+    
+    - name: ⚙️ Configure AWS credentials (OIDC)
+      if: steps.check-secrets.outputs.aws-secrets-available == 'true' && secrets.AWS_ROLE_TO_ASSUME != ''
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        aws-region: ${{ env.AWS_REGION }}
     
     - name: 🏗️ Setup Node.js
       uses: actions/setup-node@v4
@@ -133,12 +164,15 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
     
     - name: ⏰ Update shutdown schedules
+      if: steps.check-secrets.outputs.aws-secrets-available == 'true'
       run: |
         echo "Updating AWS Lambda functions for shutdown schedule..."
         
-        # Check if AWS credentials are available
+        # Verify AWS credentials are working
         if aws sts get-caller-identity >/dev/null 2>&1; then
-          echo "✅ AWS credentials available"
+          echo "✅ AWS credentials verified"
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          echo "🏢 AWS Account: $ACCOUNT_ID"
           
           # Read config and update Lambda functions
           cat config/project-config.json | jq -r '.automation.chat_based_rules.aws_cost_optimization.schedule.shutdown_time' > /tmp/shutdown_time
@@ -151,12 +185,13 @@ jobs:
           echo "📅 Startup time: $STARTUP_TIME"
           
           # Update EventBridge rules (if they exist)
-          aws events list-rules --name-prefix "roic-shutdown" --query 'Rules[].Name' --output text | while read rule_name; do
+          echo "🔍 Checking for existing EventBridge rules..."
+          aws events list-rules --name-prefix "roic-shutdown" --query 'Rules[].Name' --output text | while read -r rule_name; do
             if [ -n "$rule_name" ]; then
-              echo "Updating rule: $rule_name"
+              echo "📝 Updating rule: $rule_name"
               # Convert JST to UTC cron expression
-              SHUTDOWN_HOUR=$(echo $SHUTDOWN_TIME | cut -d':' -f1)
-              SHUTDOWN_MINUTE=$(echo $SHUTDOWN_TIME | cut -d':' -f2)
+              SHUTDOWN_HOUR=$(echo "$SHUTDOWN_TIME" | cut -d':' -f1)
+              SHUTDOWN_MINUTE=$(echo "$SHUTDOWN_TIME" | cut -d':' -f2)
               UTC_HOUR=$((SHUTDOWN_HOUR - 9))
               if [ $UTC_HOUR -lt 0 ]; then
                 UTC_HOUR=$((UTC_HOUR + 24))
@@ -166,14 +201,32 @@ jobs:
                 --name "$rule_name" \
                 --schedule-expression "cron($SHUTDOWN_MINUTE $UTC_HOUR * * ? *)" \
                 --state ENABLED
+              
+              echo "✅ Rule $rule_name updated successfully"
             fi
           done
           
           echo "✅ AWS schedules updated successfully"
         else
-          echo "⚠️ AWS credentials not available, skipping schedule update"
-          echo "This is expected for public repositories or when AWS secrets are not configured"
+          echo "❌ AWS credentials verification failed"
+          exit 1
         fi
+    
+    - name: 🚫 Skip AWS Updates
+      if: steps.check-secrets.outputs.aws-secrets-available == 'false'
+      run: |
+        echo "⚠️ Skipping AWS updates due to missing credentials"
+        echo ""
+        echo "To enable AWS functionality, please configure GitHub Secrets:"
+        echo ""
+        echo "Option 1 - Access Key Authentication:"
+        echo "  - AWS_ACCESS_KEY_ID"
+        echo "  - AWS_SECRET_ACCESS_KEY"
+        echo ""
+        echo "Option 2 - OIDC Authentication (Recommended):"
+        echo "  - AWS_ROLE_TO_ASSUME (e.g., arn:aws:iam::123456789012:role/GitHubActionsRole)"
+        echo ""
+        echo "For OIDC setup, see: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services"
 
   # Notify completion
   notify:

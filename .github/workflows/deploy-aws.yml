@@ -1,0 +1,283 @@
+name: Deploy to AWS & GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-northeast-1
+  NODE_VERSION: 18
+
+jobs:
+  lint:
+    name: 🔍 Lint Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 🏗️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: 📦 Install dependencies
+      working-directory: ./frontend
+      run: npm ci
+    
+    - name: 🔍 Run ESLint
+      working-directory: ./frontend
+      run: npm run lint
+
+  test:
+    name: 🧪 Test Suite
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 🏗️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: 📦 Install dependencies
+      working-directory: ./frontend
+      run: npm ci
+    
+    - name: 🧪 Run tests
+      working-directory: ./frontend
+      run: npm test -- --coverage --watchAll=false
+
+  build:
+    name: 🏗️ Build Application
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 🏗️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: 📦 Install dependencies
+      working-directory: ./frontend
+      run: npm ci
+    
+    - name: 🏗️ Build for production
+      working-directory: ./frontend
+      run: npm run build
+      env:
+        NEXT_PUBLIC_BASE_PATH: /roic
+    
+    - name: 📤 Upload build artifacts for GitHub Pages
+      uses: actions/upload-pages-artifact@v2
+      with:
+        name: github-pages
+        path: ./frontend/out
+    
+    - name: 📤 Upload build artifacts for AWS
+      uses: actions/upload-artifact@v3
+      with:
+        name: aws-build
+        path: ./frontend/out
+
+  deploy-github-pages:
+    name: 🚀 Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    
+    permissions:
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: 🚀 Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
+      with:
+        artifact_name: github-pages
+
+  deploy-aws:
+    name: ☁️ Deploy to AWS
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    
+    permissions:
+      id-token: write
+      contents: read
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 📥 Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: aws-build
+        path: ./dist
+    
+    - name: 🔍 Check AWS Secrets Availability
+      id: check-secrets
+      run: |
+        if [ -n "${{ secrets.AWS_ACCESS_KEY_ID }}" ] && [ -n "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+          echo "aws-auth-method=access-key" >> $GITHUB_OUTPUT
+          echo "aws-available=true" >> $GITHUB_OUTPUT
+          echo "✅ AWS Access Key credentials available"
+        elif [ -n "${{ secrets.AWS_ROLE_TO_ASSUME }}" ]; then
+          echo "aws-auth-method=oidc" >> $GITHUB_OUTPUT
+          echo "aws-available=true" >> $GITHUB_OUTPUT
+          echo "✅ AWS OIDC role available"
+        else
+          echo "aws-available=false" >> $GITHUB_OUTPUT
+          echo "⚠️ AWS credentials not configured"
+        fi
+    
+    - name: ⚙️ Configure AWS credentials (Access Key)
+      if: steps.check-secrets.outputs.aws-auth-method == 'access-key'
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: ⚙️ Configure AWS credentials (OIDC)
+      if: steps.check-secrets.outputs.aws-auth-method == 'oidc'
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: 🚀 Deploy to S3
+      if: steps.check-secrets.outputs.aws-available == 'true'
+      run: |
+        echo "🚀 Deploying to AWS S3..."
+        
+        # Verify AWS credentials
+        aws sts get-caller-identity
+        ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+        echo "🏢 AWS Account: $ACCOUNT_ID"
+        
+        # Define S3 bucket name (customize as needed)
+        S3_BUCKET="${{ secrets.S3_BUCKET_NAME }}"
+        if [ -z "$S3_BUCKET" ]; then
+          S3_BUCKET="roic-app-${ACCOUNT_ID}"
+          echo "📦 Using default bucket name: $S3_BUCKET"
+        else
+          echo "📦 Using configured bucket: $S3_BUCKET"
+        fi
+        
+        # Check if bucket exists, create if not
+        if ! aws s3 ls "s3://$S3_BUCKET" >/dev/null 2>&1; then
+          echo "📦 Creating S3 bucket: $S3_BUCKET"
+          aws s3 mb "s3://$S3_BUCKET" --region ${{ env.AWS_REGION }}
+          
+          # Configure bucket for static website hosting
+          aws s3 website "s3://$S3_BUCKET" \
+            --index-document index.html \
+            --error-document 404.html
+          
+          # Set bucket policy for public read access
+          cat > bucket-policy.json << EOF
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "PublicReadGetObject",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": "s3:GetObject",
+              "Resource": "arn:aws:s3:::$S3_BUCKET/*"
+            }
+          ]
+        }
+        EOF
+          aws s3api put-bucket-policy --bucket "$S3_BUCKET" --policy file://bucket-policy.json
+        fi
+        
+        # Sync files to S3
+        echo "📤 Syncing files to S3..."
+        aws s3 sync ./dist "s3://$S3_BUCKET" --delete
+        
+        # Output website URL
+        echo "✅ Deployment complete!"
+        echo "🌐 Website URL: http://$S3_BUCKET.s3-website-${{ env.AWS_REGION }}.amazonaws.com"
+    
+    - name: 🔄 Invalidate CloudFront (if configured)
+      if: steps.check-secrets.outputs.aws-available == 'true' && secrets.CLOUDFRONT_DISTRIBUTION_ID != ''
+      run: |
+        echo "🔄 Invalidating CloudFront distribution..."
+        aws cloudfront create-invalidation \
+          --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+          --paths "/*"
+        echo "✅ CloudFront invalidation initiated"
+    
+    - name: 🚫 Skip AWS Deployment
+      if: steps.check-secrets.outputs.aws-available == 'false'
+      run: |
+        echo "⚠️ Skipping AWS deployment due to missing credentials"
+        echo ""
+        echo "To enable AWS deployment, please configure GitHub Secrets:"
+        echo ""
+        echo "Required Secrets:"
+        echo "  Option 1 - Access Key Authentication:"
+        echo "    - AWS_ACCESS_KEY_ID"
+        echo "    - AWS_SECRET_ACCESS_KEY"
+        echo ""
+        echo "  Option 2 - OIDC Authentication (Recommended):"
+        echo "    - AWS_ROLE_TO_ASSUME"
+        echo ""
+        echo "Optional Secrets:"
+        echo "    - S3_BUCKET_NAME (default: roic-app-{account-id})"
+        echo "    - CLOUDFRONT_DISTRIBUTION_ID (for CDN invalidation)"
+        echo ""
+        echo "📚 Setup Guide: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services"
+
+  notify:
+    name: 📢 Deployment Complete
+    runs-on: ubuntu-latest
+    needs: [deploy-github-pages, deploy-aws]
+    if: always() && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📢 Summary
+      run: |
+        echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Status:" >> $GITHUB_STEP_SUMMARY
+        echo "- Lint: ${{ needs.lint.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Test: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Build: ${{ needs.build.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- GitHub Pages: ${{ needs.deploy-github-pages.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- AWS Deploy: ${{ needs.deploy-aws.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Deployment URLs:" >> $GITHUB_STEP_SUMMARY
+        echo "- GitHub Pages: https://horiken1977.github.io/roic/" >> $GITHUB_STEP_SUMMARY
+        echo "- AWS S3: Check deployment logs for URL" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Phase 2 Features:" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 業界分類マスターデータ" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 業界別ROIC計算ロジック" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 業界比較・ランキングUI" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ 自動更新システム" >> $GITHUB_STEP_SUMMARY
