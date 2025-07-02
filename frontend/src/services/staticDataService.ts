@@ -53,11 +53,25 @@ export class StaticDataService {
   private cache: Map<string, any> = new Map();
 
   constructor() {
-    // GitHub Pages環境では /roic/ prefixが必要
-    const isGitHubPages = typeof window !== 'undefined' && 
-                         window.location.hostname.includes('github.io');
+    // 実行環境に応じてパスを設定
+    if (typeof window !== 'undefined') {
+      const isGitHubPages = window.location.hostname.includes('github.io');
+      const isLocalhost = window.location.hostname === 'localhost';
+      
+      if (isGitHubPages) {
+        this.baseUrl = '/roic/data/edinet';
+      } else if (isLocalhost) {
+        this.baseUrl = '/data/edinet';
+      } else {
+        // その他の環境（開発サーバーなど）
+        this.baseUrl = '/data/edinet';
+      }
+    } else {
+      // サーバーサイドレンダリング時
+      this.baseUrl = '/data/edinet';
+    }
     
-    this.baseUrl = isGitHubPages ? '/roic/data/edinet' : '/data/edinet';
+    console.log('StaticDataService initialized with baseUrl:', this.baseUrl);
   }
 
   /**

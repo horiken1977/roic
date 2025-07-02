@@ -40,23 +40,25 @@ export default function DataSourceIndicator() {
         return;
       }
 
-      // バックエンドAPIをチェック
-      try {
-        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-        const response = await fetch(`${backendUrl}/edinet/status`);
-        
-        if (response.ok) {
-          const result = await response.json();
+      // バックエンドAPIをチェック（localhost環境のみ）
+      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        try {
+          const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+          const response = await fetch(`${backendUrl}/edinet/status`);
           
-          setDataInfo({
-            source: 'backend_api',
-            isRealTime: true,
-            status: result.data?.apiConfigured ? 'available' : 'unavailable'
-          });
-          return;
+          if (response.ok) {
+            const result = await response.json();
+            
+            setDataInfo({
+              source: 'backend_api',
+              isRealTime: true,
+              status: result.data?.apiConfigured ? 'available' : 'unavailable'
+            });
+            return;
+          }
+        } catch {
+          // バックエンドAPIエラー
         }
-      } catch {
-        // バックエンドAPIエラー
       }
 
       // フォールバック: サンプルデータ

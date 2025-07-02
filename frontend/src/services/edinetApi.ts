@@ -81,8 +81,20 @@ class EDINETApiClient {
    */
   private async isBackendAvailable(): Promise<boolean> {
     try {
-      // GitHub Pagesなどの静的デプロイ環境では常にfalse
+      // GitHub Pagesや静的デプロイ環境では常にfalse
       if (this.fallbackToSample) {
+        return false;
+      }
+
+      // GitHub Pages環境の判定
+      if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+        console.log('GitHub Pages環境のためバックエンドAPI無効');
+        return false;
+      }
+
+      // localhostでの開発環境のみバックエンドAPIを試行
+      if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+        console.log('非localhost環境のためバックエンドAPI無効');
         return false;
       }
 
@@ -206,6 +218,20 @@ class EDINETApiClient {
         tickerSymbol: '9984',
         industry: '情報・通信業',
         listingDate: '1994-07-22'
+      },
+      {
+        edinetCode: 'E02166',
+        companyName: 'パナソニック ホールディングス株式会社',
+        tickerSymbol: '6752',
+        industry: '電気機器',
+        listingDate: '1961-05-11'
+      },
+      {
+        edinetCode: 'E01225',
+        companyName: '任天堂株式会社',
+        tickerSymbol: '7974',
+        industry: 'その他製品',
+        listingDate: '1962-01-16'
       }
     ];
 
@@ -401,6 +427,23 @@ class EDINETApiClient {
         leaseExpense: 25000000000,
         leaseDebt: 220000000000,
         taxRate: 0.30
+      },
+      'E02166': { // パナソニック
+        companyName: 'パナソニック ホールディングス株式会社',
+        netSales: 8378000000000,
+        grossProfit: 2513000000000,
+        operatingIncome: 487000000000,
+        interestIncome: 25000000000,
+        sellingAdminExpenses: 2026000000000,
+        totalAssets: 6234000000000,
+        cashAndEquivalents: 890000000000,
+        shareholdersEquity: 2845000000000,
+        interestBearingDebt: 734000000000,
+        accountsPayable: 578000000000,
+        accruedExpenses: 412000000000,
+        leaseExpense: 67000000000,
+        leaseDebt: 298000000000,
+        taxRate: 0.25
       }
     };
 

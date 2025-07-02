@@ -1,0 +1,9 @@
+{
+  "lastUpdated": "2025-01-02T12:00:00.000Z",
+  "dataSource": "initial_sample",
+  "companiesCount": 6,
+  "yearsRange": [2019, 2020, 2021, 2022, 2023],
+  "generatedBy": "initial_setup",
+  "version": "1.0.0",
+  "note": "初期サンプルデータ。GitHub Actionsで実データに更新されます。"
+}

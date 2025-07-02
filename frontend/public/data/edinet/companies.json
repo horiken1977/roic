@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "lastUpdated": "2025-01-02T12:00:00.000Z",
+    "dataSource": "initial_sample",
+    "companiesCount": 8,
+    "yearsRange": [2019, 2020, 2021, 2022, 2023],
+    "generatedBy": "initial_setup"
+  },
+  "companies": [
+    {
+      "edinetCode": "E02144",
+      "companyName": "トヨタ自動車株式会社",
+      "tickerSymbol": "7203",
+      "industry": "輸送用機器",
+      "hasRecentData": true
+    },
+    {
+      "edinetCode": "E02513",
+      "companyName": "ソニーグループ株式会社",
+      "tickerSymbol": "6758",
+      "industry": "電気機器",
+      "hasRecentData": true
+    },
+    {
+      "edinetCode": "E03568",
+      "companyName": "三菱UFJフィナンシャル・グループ",
+      "tickerSymbol": "8306",
+      "industry": "銀行業",
+      "hasRecentData": true
+    },
+    {
+      "edinetCode": "E03562",
+      "companyName": "株式会社ファーストリテイリング",
+      "tickerSymbol": "9983",
+      "industry": "小売業",
+      "hasRecentData": true
+    },
+    {
+      "edinetCode": "E02282",
+      "companyName": "株式会社キーエンス",
+      "tickerSymbol": "6861",
+      "industry": "電気機器",
+      "hasRecentData": true
+    },
+    {
+      "edinetCode": "E00990",
+      "companyName": "ソフトバンクグループ株式会社",
+      "tickerSymbol": "9984",
+      "industry": "情報・通信業",
+      "hasRecentData": true
+    },
+    {
+      "edinetCode": "E02166",
+      "companyName": "パナソニック ホールディングス株式会社",
+      "tickerSymbol": "6752",
+      "industry": "電気機器",
+      "hasRecentData": true
+    },
+    {
+      "edinetCode": "E01225",
+      "companyName": "任天堂株式会社",
+      "tickerSymbol": "7974",
+      "industry": "その他製品",
+      "hasRecentData": true
+    }
+  ]
+}

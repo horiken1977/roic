@@ -1,0 +1,122 @@
+{
+  "metadata": {
+    "lastUpdated": "2025-01-02T12:00:00.000Z",
+    "dataSource": "initial_sample",
+    "companiesCount": 8,
+    "yearsRange": [2019, 2020, 2021, 2022, 2023],
+    "generatedBy": "initial_setup"
+  },
+  "data": {
+    "E02144": {
+      "2023": {
+        "fiscalYear": 2023,
+        "edinetCode": "E02144",
+        "companyName": "トヨタ自動車株式会社",
+        "netSales": 31379500000000,
+        "grossProfit": 5980000000000,
+        "operatingIncome": 2725000000000,
+        "interestIncome": 95000000000,
+        "sellingAdminExpenses": 3255000000000,
+        "totalAssets": 53713000000000,
+        "cashAndEquivalents": 4885000000000,
+        "shareholdersEquity": 23913000000000,
+        "interestBearingDebt": 8826000000000,
+        "accountsPayable": 2800000000000,
+        "accruedExpenses": 1200000000000,
+        "leaseExpense": 180000000000,
+        "leaseDebt": 1600000000000,
+        "taxRate": 0.28,
+        "dataSource": "initial_sample",
+        "lastUpdated": "2025-01-02T12:00:00.000Z"
+      },
+      "2022": {
+        "fiscalYear": 2022,
+        "edinetCode": "E02144",
+        "companyName": "トヨタ自動車株式会社",
+        "netSales": 30474000000000,
+        "grossProfit": 5811000000000,
+        "operatingIncome": 2646000000000,
+        "interestIncome": 92000000000,
+        "sellingAdminExpenses": 3165000000000,
+        "totalAssets": 52151000000000,
+        "cashAndEquivalents": 4745000000000,
+        "shareholdersEquity": 23226000000000,
+        "interestBearingDebt": 8572000000000,
+        "accountsPayable": 2720000000000,
+        "accruedExpenses": 1166000000000,
+        "leaseExpense": 175000000000,
+        "leaseDebt": 1553000000000,
+        "taxRate": 0.28,
+        "dataSource": "initial_sample",
+        "lastUpdated": "2025-01-02T12:00:00.000Z"
+      }
+    },
+    "E02166": {
+      "2023": {
+        "fiscalYear": 2023,
+        "edinetCode": "E02166",
+        "companyName": "パナソニック ホールディングス株式会社",
+        "netSales": 8378000000000,
+        "grossProfit": 2513000000000,
+        "operatingIncome": 487000000000,
+        "interestIncome": 25000000000,
+        "sellingAdminExpenses": 2026000000000,
+        "totalAssets": 6234000000000,
+        "cashAndEquivalents": 890000000000,
+        "shareholdersEquity": 2845000000000,
+        "interestBearingDebt": 734000000000,
+        "accountsPayable": 578000000000,
+        "accruedExpenses": 412000000000,
+        "leaseExpense": 67000000000,
+        "leaseDebt": 298000000000,
+        "taxRate": 0.25,
+        "dataSource": "initial_sample",
+        "lastUpdated": "2025-01-02T12:00:00.000Z"
+      },
+      "2022": {
+        "fiscalYear": 2022,
+        "edinetCode": "E02166",
+        "companyName": "パナソニック ホールディングス株式会社",
+        "netSales": 8130000000000,
+        "grossProfit": 2440000000000,
+        "operatingIncome": 473000000000,
+        "interestIncome": 24000000000,
+        "sellingAdminExpenses": 1967000000000,
+        "totalAssets": 6054000000000,
+        "cashAndEquivalents": 864000000000,
+        "shareholdersEquity": 2763000000000,
+        "interestBearingDebt": 713000000000,
+        "accountsPayable": 561000000000,
+        "accruedExpenses": 400000000000,
+        "leaseExpense": 65000000000,
+        "leaseDebt": 289000000000,
+        "taxRate": 0.25,
+        "dataSource": "initial_sample",
+        "lastUpdated": "2025-01-02T12:00:00.000Z"
+      }
+    },
+    "E02513": {
+      "2023": {
+        "fiscalYear": 2023,
+        "edinetCode": "E02513",
+        "companyName": "ソニーグループ株式会社",
+        "netSales": 12974000000000,
+        "grossProfit": 4200000000000,
+        "operatingIncome": 1308000000000,
+        "interestIncome": 45000000000,
+        "sellingAdminExpenses": 2892000000000,
+        "totalAssets": 24166000000000,
+        "cashAndEquivalents": 1820000000000,
+        "shareholdersEquity": 6835000000000,
+        "interestBearingDebt": 3244000000000,
+        "accountsPayable": 1400000000000,
+        "accruedExpenses": 800000000000,
+        "leaseExpense": 120000000000,
+        "leaseDebt": 950000000000,
+        "taxRate": 0.27,
+        "dataSource": "initial_sample",
+        "lastUpdated": "2025-01-02T12:00:00.000Z"
+      }
+    }
+  }
+}
