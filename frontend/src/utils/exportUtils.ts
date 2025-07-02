@@ -25,24 +25,24 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
     const pageHeight = pdf.internal.pageSize.getHeight()
     let yPosition = 20
 
-    // 英語版ヘッダー（文字化け対策）
+    // 日本語ヘッダー
     pdf.setFontSize(20)
     pdf.setTextColor(31, 41, 55)
-    pdf.text('ROIC Analysis Report', pageWidth / 2, yPosition, { align: 'center' })
+    pdf.text('ROIC分析レポート', pageWidth / 2, yPosition, { align: 'center' })
     yPosition += 15
 
     // 企業情報テーブル
     const companyInfo = [
-      ['Company Name', data.company.companyName],
-      ['Ticker Symbol', data.company.tickerSymbol || '-'],
-      ['EDINET Code', data.company.edinetCode],
-      ['Industry', data.company.industry || '-'],
-      ['Fiscal Year', data.financialData.fiscalYear.toString()]
+      ['企業名', data.company.companyName],
+      ['証券コード', data.company.tickerSymbol || '-'],
+      ['EDINETコード', data.company.edinetCode],
+      ['業界', data.company.industry || '-'],
+      ['分析年度', data.financialData.fiscalYear.toString()]
     ]
 
     autoTable(pdf, {
       startY: yPosition,
-      head: [['Item', 'Value']],
+      head: [['項目', '値']],
       body: companyInfo,
       theme: 'striped',
       headStyles: { fillColor: [59, 130, 246] },
@@ -55,22 +55,22 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
 
     // 財務データテーブル（百万円単位）
     const financialData = [
-      ['Net Sales', (data.financialData.netSales / 1000000).toFixed(0) + ' M JPY'],
-      ['Gross Profit', (data.financialData.grossProfit / 1000000).toFixed(0) + ' M JPY'],
-      ['Operating Income', (data.financialData.operatingIncome / 1000000).toFixed(0) + ' M JPY'],
-      ['Interest Income', (data.financialData.interestIncome / 1000000).toFixed(0) + ' M JPY'],
-      ['Total Assets', (data.financialData.totalAssets / 1000000).toFixed(0) + ' M JPY'],
-      ['Cash & Equivalents', (data.financialData.cashAndEquivalents / 1000000).toFixed(0) + ' M JPY'],
-      ['Shareholders Equity', (data.financialData.shareholdersEquity / 1000000).toFixed(0) + ' M JPY'],
-      ['Interest Bearing Debt', (data.financialData.interestBearingDebt / 1000000).toFixed(0) + ' M JPY'],
-      ['Accounts Payable', (data.financialData.accountsPayable / 1000000).toFixed(0) + ' M JPY'],
-      ['Accrued Expenses', (data.financialData.accruedExpenses / 1000000).toFixed(0) + ' M JPY'],
-      ['Tax Rate', (data.financialData.taxRate * 100).toFixed(1) + '%']
+      ['売上高', (data.financialData.netSales / 1000000).toFixed(0) + '百万円'],
+      ['売上総利益', (data.financialData.grossProfit / 1000000).toFixed(0) + '百万円'],
+      ['営業利益', (data.financialData.operatingIncome / 1000000).toFixed(0) + '百万円'],
+      ['受取利息', (data.financialData.interestIncome / 1000000).toFixed(0) + '百万円'],
+      ['総資産', (data.financialData.totalAssets / 1000000).toFixed(0) + '百万円'],
+      ['現金及び現金同等物', (data.financialData.cashAndEquivalents / 1000000).toFixed(0) + '百万円'],
+      ['株主資本', (data.financialData.shareholdersEquity / 1000000).toFixed(0) + '百万円'],
+      ['有利子負債', (data.financialData.interestBearingDebt / 1000000).toFixed(0) + '百万円'],
+      ['買掛金', (data.financialData.accountsPayable / 1000000).toFixed(0) + '百万円'],
+      ['未払金', (data.financialData.accruedExpenses / 1000000).toFixed(0) + '百万円'],
+      ['実効税率', (data.financialData.taxRate * 100).toFixed(1) + '%']
     ]
 
     autoTable(pdf, {
       startY: yPosition,
-      head: [['Financial Data', 'Amount']],
+      head: [['財務項目', '金額']],
       body: financialData,
       theme: 'striped',
       headStyles: { fillColor: [34, 197, 94] },
@@ -84,34 +84,34 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
     // ROIC計算結果テーブル
     const roicData = [
       [
-        'Basic Method',
+        '基本方式',
         (data.roicResults.basic.roic * 100).toFixed(2) + '%',
-        (data.roicResults.basic.nopat / 1000000).toFixed(0) + ' M',
-        (data.roicResults.basic.investedCapital / 1000000).toFixed(0) + ' M'
+        (data.roicResults.basic.nopat / 1000000).toFixed(0) + '百万円',
+        (data.roicResults.basic.investedCapital / 1000000).toFixed(0) + '百万円'
       ],
       [
-        'Detailed Method',
+        '詳細方式',
         (data.roicResults.detailed.roic * 100).toFixed(2) + '%',
-        (data.roicResults.detailed.nopat / 1000000).toFixed(0) + ' M',
-        (data.roicResults.detailed.investedCapital / 1000000).toFixed(0) + ' M'
+        (data.roicResults.detailed.nopat / 1000000).toFixed(0) + '百万円',
+        (data.roicResults.detailed.investedCapital / 1000000).toFixed(0) + '百万円'
       ],
       [
-        'Asset Method',
+        'アセット方式',
         (data.roicResults.asset.roic * 100).toFixed(2) + '%',
-        (data.roicResults.asset.nopat / 1000000).toFixed(0) + ' M',
-        (data.roicResults.asset.investedCapital / 1000000).toFixed(0) + ' M'
+        (data.roicResults.asset.nopat / 1000000).toFixed(0) + '百万円',
+        (data.roicResults.asset.investedCapital / 1000000).toFixed(0) + '百万円'
       ],
       [
-        'Modified Method',
+        '修正方式',
         (data.roicResults.modified.roic * 100).toFixed(2) + '%',
-        (data.roicResults.modified.nopat / 1000000).toFixed(0) + ' M',
-        (data.roicResults.modified.investedCapital / 1000000).toFixed(0) + ' M'
+        (data.roicResults.modified.nopat / 1000000).toFixed(0) + '百万円',
+        (data.roicResults.modified.investedCapital / 1000000).toFixed(0) + '百万円'
       ]
     ]
 
     autoTable(pdf, {
       startY: yPosition,
-      head: [['Calculation Method', 'ROIC (%)', 'NOPAT (M JPY)', 'Invested Capital (M JPY)']],
+      head: [['計算方式', 'ROIC (%)', 'NOPAT (百万円)', '投下資本 (百万円)']],
       body: roicData,
       theme: 'striped',
       headStyles: { fillColor: [147, 51, 234] },
@@ -157,7 +157,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
 
       autoTable(pdf, {
         startY: yPosition,
-        head: [['Year', 'Basic ROIC', 'Detailed ROIC', 'Asset ROIC', 'Modified ROIC']],
+        head: [['年度', '基本方式ROIC', '詳細方式ROIC', 'アセット方式ROIC', '修正方式ROIC']],
         body: trendData,
         theme: 'striped',
         headStyles: { fillColor: [239, 68, 68] },
@@ -166,14 +166,14 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
     }
 
     // フッター
-    const currentDate = new Date().toLocaleDateString('en-US')
+    const currentDate = new Date().toLocaleDateString('ja-JP')
     pdf.setFontSize(8)
     pdf.setTextColor(156, 163, 175)
-    pdf.text(`Generated: ${currentDate}`, 20, pageHeight - 15)
-    pdf.text('Claude Code ROIC Analysis System', pageWidth - 20, pageHeight - 15, { align: 'right' })
+    pdf.text(`作成日: ${currentDate}`, 20, pageHeight - 15)
+    pdf.text('Claude Code ROIC分析システム', pageWidth - 20, pageHeight - 15, { align: 'right' })
 
-    // ダウンロード（ファイル名も英語）
-    const fileName = `ROIC_Analysis_${data.company.companyName.replace(/[^\w\s]/gi, '')}_${currentDate.replace(/\//g, '-')}.pdf`
+    // ダウンロード（ファイル名も日本語）
+    const fileName = `ROIC分析レポート_${data.company.companyName.replace(/[^\w\s]/gi, '')}_${currentDate.replace(/\//g, '-')}.pdf`
     pdf.save(fileName)
 
   } catch (error) {
