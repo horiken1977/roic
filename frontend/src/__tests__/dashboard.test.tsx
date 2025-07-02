@@ -1,65 +1,43 @@
 import { render, screen } from '@testing-library/react'
+import { useRouter } from 'next/navigation'
 import DashboardPage from '@/app/dashboard/page'
 
+// Mock useRouter
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(),
+}))
+
 describe('Dashboard Page', () => {
-  test('renders dashboard heading', () => {
-    render(<DashboardPage />)
-    
-    const heading = screen.getByRole('heading', {
-      name: /ROICダッシュボード/i,
+  const mockPush = jest.fn()
+  const mockReplace = jest.fn()
+
+  beforeEach(() => {
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+      replace: mockReplace,
     })
-    
-    expect(heading).toBeInTheDocument()
   })
 
-  test('renders statistics cards', () => {
-    render(<DashboardPage />)
-    
-    expect(screen.getByText('総企業数')).toBeInTheDocument()
-    expect(screen.getByText('平均ROIC')).toBeInTheDocument()
-    expect(screen.getByText('更新日')).toBeInTheDocument()
-    
-    expect(screen.getByText('3,847')).toBeInTheDocument()
-    expect(screen.getByText('8.5%')).toBeInTheDocument()
-    expect(screen.getByText('2025/07/01')).toBeInTheDocument()
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
-  test('renders top companies table', () => {
+  test('renders loading state during redirect', () => {
     render(<DashboardPage />)
     
-    const tableHeading = screen.getByRole('heading', {
-      name: /ROIC上位企業/i,
-    })
-    
-    expect(tableHeading).toBeInTheDocument()
-    
-    // Check table headers
-    expect(screen.getByText('順位')).toBeInTheDocument()
-    expect(screen.getByText('企業名')).toBeInTheDocument()
-    expect(screen.getByText('業界')).toBeInTheDocument()
-    expect(screen.getByText('ROIC')).toBeInTheDocument()
+    expect(screen.getByText('ホームページにリダイレクトしています...')).toBeInTheDocument()
   })
 
-  test('renders sample company data', () => {
+  test('calls router.replace to redirect to home', () => {
     render(<DashboardPage />)
     
-    expect(screen.getByText('サンプル企業A')).toBeInTheDocument()
-    expect(screen.getByText('サンプル企業B')).toBeInTheDocument()
-    expect(screen.getByText('サンプル企業C')).toBeInTheDocument()
-    
-    expect(screen.getByText('25.3%')).toBeInTheDocument()
-    expect(screen.getByText('22.1%')).toBeInTheDocument()
-    expect(screen.getByText('19.8%')).toBeInTheDocument()
+    expect(mockReplace).toHaveBeenCalledWith('/')
   })
 
-  test('renders chart placeholder', () => {
+  test('renders loading spinner', () => {
     render(<DashboardPage />)
     
-    const chartHeading = screen.getByRole('heading', {
-      name: /業界別ROIC平均/i,
-    })
-    
-    expect(chartHeading).toBeInTheDocument()
-    expect(screen.getByText('チャートを表示予定（Recharts実装後）')).toBeInTheDocument()
+    const spinner = document.querySelector('.animate-spin')
+    expect(spinner).toBeInTheDocument()
   })
 })

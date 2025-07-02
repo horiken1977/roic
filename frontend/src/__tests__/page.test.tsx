@@ -16,7 +16,7 @@ describe('Home Page', () => {
     render(<Home />)
     
     expect(screen.getByText('企業検索・分析')).toBeInTheDocument()
-    expect(screen.getByText('業界比較')).toBeInTheDocument()
+    expect(screen.getByText('開発進捗ダッシュボード')).toBeInTheDocument()
   })
 
   test('renders main features list', () => {
@@ -25,14 +25,14 @@ describe('Home Page', () => {
     expect(screen.getByText('ROIC自動計算（4つの計算方式対応）')).toBeInTheDocument()
     expect(screen.getByText('企業検索・フィルタリング機能')).toBeInTheDocument()
     expect(screen.getByText('業界内比較・ランキング表示')).toBeInTheDocument()
-    expect(screen.getByText('トレンドチャート・可視化')).toBeInTheDocument()
+    expect(screen.getByText('自動テスト・デプロイシステム')).toBeInTheDocument()
   })
 
   test('has proper description', () => {
     render(<Home />)
     
     const description = screen.getByText(
-      '日系上場企業のROIC（投下資本利益率）を計算・分析・比較できるツールです。'
+      '日系上場企業のROIC（投下資本利益率）を自動計算・分析・比較'
     )
     
     expect(description).toBeInTheDocument()
