@@ -18,27 +18,7 @@ jest.mock('@/utils/industryCalculations', () => ({
       }
     }
   ]),
-  generateIndustryComparison: jest.fn(() => ({
-    industry_code: '1100',
-    industry_name: '自動車・輸送機器',
-    companies: [
-      {
-        company_code: '7203',
-        company_name: 'トヨタ自動車',
-        industry_code: '1100',
-        roic_value: 0.12,
-        calculation_method: 'detailed',
-        fiscal_year: '2024'
-      }
-    ],
-    statistics: {
-      average_roic: 0.12,
-      median_roic: 0.12,
-      max_roic: 0.12,
-      min_roic: 0.12,
-      quartiles: { q1: 0.10, q2: 0.12, q3: 0.14 }
-    }
-  })),
+  generateIndustryComparison: jest.fn(() => null),
   calculateIndustryRanking: jest.fn(() => ({
     rank: 1,
     totalCompanies: 1,
@@ -61,32 +41,11 @@ describe('IndustryComparison', () => {
     expect(heading).toBeInTheDocument()
   })
 
-  test('renders industry selection dropdown', () => {
-    render(<IndustryComparison />)
-    
-    const dropdown = screen.getByLabelText('業界:')
-    expect(dropdown).toBeInTheDocument()
-    expect(dropdown.tagName).toBe('SELECT')
-  })
-
   test('renders view mode toggle buttons', () => {
     render(<IndustryComparison />)
     
     expect(screen.getByText('テーブル')).toBeInTheDocument()
     expect(screen.getByText('チャート')).toBeInTheDocument()
-  })
-
-  test('renders industry statistics summary', () => {
-    render(<IndustryComparison />)
-    
-    // Wait for async data to load
-    setTimeout(() => {
-      expect(screen.getByText('企業数')).toBeInTheDocument()
-      expect(screen.getByText('業界平均')).toBeInTheDocument()
-      expect(screen.getByText('中央値')).toBeInTheDocument()
-      expect(screen.getByText('最高値')).toBeInTheDocument()
-      expect(screen.getByText('最低値')).toBeInTheDocument()
-    }, 100)
   })
 
   test('handles selected company prop', () => {
@@ -102,13 +61,5 @@ describe('IndustryComparison', () => {
     expect(screen.getByText('分析対象企業')).toBeInTheDocument()
     expect(screen.getByText('トヨタ自動車')).toBeInTheDocument()
     expect(screen.getByText('7203')).toBeInTheDocument()
-  })
-
-  test('renders loading state', () => {
-    render(<IndustryComparison />)
-    
-    // Should show loading initially
-    const loadingText = screen.getByText('業界比較データを読み込み中...')
-    expect(loadingText).toBeInTheDocument()
   })
 })

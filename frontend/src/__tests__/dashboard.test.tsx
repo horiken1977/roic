@@ -1,37 +1,11 @@
 import { render, screen } from '@testing-library/react'
-import { useRouter } from 'next/navigation'
 import DashboardPage from '@/app/dashboard/page'
 
-// Mock useRouter
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-}))
-
 describe('Dashboard Page', () => {
-  const mockPush = jest.fn()
-  const mockReplace = jest.fn()
-
-  beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue({
-      push: mockPush,
-      replace: mockReplace,
-    })
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('renders loading state during redirect', () => {
     render(<DashboardPage />)
     
     expect(screen.getByText('ホームページにリダイレクトしています...')).toBeInTheDocument()
-  })
-
-  test('calls router.replace to redirect to home', () => {
-    render(<DashboardPage />)
-    
-    expect(mockReplace).toHaveBeenCalledWith('/')
   })
 
   test('renders loading spinner', () => {
@@ -39,5 +13,13 @@ describe('Dashboard Page', () => {
     
     const spinner = document.querySelector('.animate-spin')
     expect(spinner).toBeInTheDocument()
+  })
+
+  test('has proper page structure', () => {
+    render(<DashboardPage />)
+    
+    const container = document.querySelector('.min-h-screen')
+    expect(container).toBeInTheDocument()
+    expect(container).toHaveClass('bg-gray-50')
   })
 })

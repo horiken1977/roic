@@ -57,7 +57,7 @@ jobs:
     
     - name: 🧪 Run tests
       working-directory: ./frontend
-      run: npm test -- --coverage --watchAll=false
+      run: npm run test:ci
 
   build:
     name: 🏗️ Build Application
