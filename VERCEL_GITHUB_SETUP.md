@@ -52,7 +52,12 @@ Environment: Production
 ## 期待されるVercel URL
 プロジェクト名に応じて以下のようなURLが生成されます:
 - `https://roic-[ランダム文字].vercel.app`
-- `https://horikens-projects-roic.vercel.app`
+- `https://roic-horikens-projects.vercel.app`
+
+## 現在の状況
+- ✅ Vercelプロジェクト「roic」が作成済み
+- ❌ GitHub連携デプロイは未完了
+- ❌ 実際のデプロイURLは未確定
 
 ## トラブルシューティング
 
