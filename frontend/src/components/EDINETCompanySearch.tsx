@@ -78,7 +78,7 @@ export default function EDINETCompanySearch() {
       } else {
         setError(response.error || '検索に失敗しました')
       }
-    } catch (err) {
+    } catch {
       setError('検索エラーが発生しました')
     } finally {
       setIsSearching(false)
@@ -157,7 +157,7 @@ export default function EDINETCompanySearch() {
       } else {
         setError(response.error || '財務データの取得に失敗しました')
       }
-    } catch (err) {
+    } catch {
       setError('財務データ取得エラーが発生しました')
     } finally {
       setIsLoadingFinancialData(false)

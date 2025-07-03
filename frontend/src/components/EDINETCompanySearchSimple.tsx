@@ -9,10 +9,7 @@ import {
 } from '@/services/edinetApi'
 import { 
   calculateAllROIC, 
-  formatROIC, 
-  formatCurrency,
-  getROICEvaluationLevel,
-  FinancialData
+  getROICEvaluationLevel
 } from '@/utils/roicCalculations'
 import ROICTrendChart from './ROICTrendChart'
 import ExportButtons from './ExportButtons'
@@ -165,7 +162,7 @@ export default function EDINETCompanySearchSimple() {
           message: response.message || '複数年度データの取得に失敗しました'
         })
       }
-    } catch (err) {
+    } catch {
       setError({
         code: 'MULTI_YEAR_DATA_ERROR',
         message: 'トレンドデータ取得エラーが発生しました'
@@ -207,7 +204,7 @@ export default function EDINETCompanySearchSimple() {
 
         {/* デバッグ情報 */}
         <div className="text-xs text-gray-500 mb-4">
-          デバッグ: 検索語句 = "{searchTerm}", 検索中 = {isSearching.toString()}, 結果数 = {searchResults.length}
+          デバッグ: 検索語句 = &quot;{searchTerm}&quot;, 検索中 = {isSearching.toString()}, 結果数 = {searchResults.length}
           {error && `, エラー = ${error.code}: ${error.message}`}
         </div>
         
@@ -226,7 +223,7 @@ export default function EDINETCompanySearchSimple() {
                 'https://roic-horikens-projects.vercel.app/api/health'
               ];
               
-              let results = [];
+              const results = [];
               
               for (const url of apiUrls) {
                 try {

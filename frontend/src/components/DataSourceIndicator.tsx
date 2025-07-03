@@ -35,7 +35,7 @@ export default function DataSourceIndicator() {
         });
         
         if (response.ok) {
-          const result = await response.json();
+          await response.json();
           
           setDataInfo({
             source: 'vercel_functions',

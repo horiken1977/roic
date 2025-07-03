@@ -85,11 +85,13 @@ export default function ROICTrendChart({
     }))
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
           <p className="font-semibold text-gray-900 mb-2">{label}年度</p>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {formatROIC(entry.value / 100)}

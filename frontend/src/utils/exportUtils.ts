@@ -3,7 +3,7 @@ import autoTable from 'jspdf-autotable'
 import html2canvas from 'html2canvas'
 import * as XLSX from 'xlsx'
 import { FinancialDataFromEDINET, EDINETCompany } from '@/services/edinetApi'
-import { calculateAllROIC, formatROIC, formatCurrency } from './roicCalculations'
+import { calculateAllROIC } from './roicCalculations'
 
 // PDF エクスポート用のインターface
 export interface ROICReportData {
@@ -54,6 +54,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
     })
 
     // autoTableの最終Y位置を取得
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     yPosition = (pdf as any).lastAutoTable ? (pdf as any).lastAutoTable.finalY + 10 : yPosition + 50
 
     // 財務データテーブル（百万円単位）
@@ -82,6 +83,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
     })
 
     // autoTableの最終Y位置を取得
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     yPosition = (pdf as any).lastAutoTable ? (pdf as any).lastAutoTable.finalY + 10 : yPosition + 50
 
     // ROIC計算結果テーブル
@@ -128,6 +130,7 @@ export async function exportROICToPDF(data: ROICReportData): Promise<void> {
     })
 
     // autoTableの最終Y位置を取得
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     yPosition = (pdf as any).lastAutoTable ? (pdf as any).lastAutoTable.finalY + 10 : yPosition + 50
 
     // 複数年度データがある場合
@@ -382,6 +385,7 @@ export async function exportChartAsImage(elementId: string, fileName: string): P
 /**
  * 業界比較データをExcelエクスポート用に整形
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function exportIndustryComparisonToExcel(industryData: any[], fileName: string): void {
   try {
     const workbook = XLSX.utils.book_new()
@@ -430,6 +434,7 @@ export function exportIndustryComparisonToExcel(industryData: any[], fileName: s
 /**
  * 業界統計を計算
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function calculateIndustryStats(data: any[]) {
   const roicValues = data.map(d => d.roic).sort((a, b) => a - b)
   const n = roicValues.length

@@ -50,6 +50,7 @@ export interface StaticFinancialData {
 
 export class StaticDataService {
   private baseUrl: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private cache: Map<string, any> = new Map();
 
   constructor() {
@@ -209,6 +210,7 @@ export class StaticDataService {
    */
   async getCompanyFinancialData(edinetCode: string, fiscalYear: number): Promise<{
     success: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data?: any;
     source?: string;
     message?: string;
@@ -255,6 +257,7 @@ export class StaticDataService {
     years: number[]
   ): Promise<{
     success: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data?: any[];
     source?: string;
     message?: string;

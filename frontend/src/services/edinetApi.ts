@@ -88,6 +88,7 @@ class EDINETApiClient {
   /**
    * 複数のAPI URLを試行
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async tryMultipleApiUrls(path: string, query: string): Promise<any> {
     const apiUrls = [
       'https://roic-horikens-projects.vercel.app/api'

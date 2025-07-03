@@ -73,7 +73,7 @@ export default function CompaniesPage() {
   const [useEDINET, setUseEDINET] = useState(true)
 
   const handleSearch = () => {
-    let filtered = sampleCompanies.filter(company => {
+    const filtered = sampleCompanies.filter(company => {
       const matchesName = searchTerm === '' || 
         company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         company.code.includes(searchTerm)

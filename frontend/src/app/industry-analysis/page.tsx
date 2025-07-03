@@ -5,7 +5,6 @@ import IndustryComparison from '@/components/IndustryComparison'
 import { 
   getAllIndustries, 
   generateIndustryComparison,
-  type IndustryData,
   type IndustryComparison as IndustryComparisonType
 } from '@/utils/industryCalculations'
 
@@ -126,7 +125,7 @@ export default function IndustryAnalysisPage() {
         </div>
 
         {/* 業界別詳細分析 */}
-        {industries.map(([industryCode, data]) => {
+        {industries.map(([industryCode]) => {
           const industryInfo = getAllIndustries().find(i => i.industry_code === industryCode)
           
           return (
