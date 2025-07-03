@@ -1125,9 +1125,21 @@ class SimpleXbrlParser {
             
             console.log(`ファイル発見: ${fileName} (圧縮方式: ${compressionMethod}, 展開後: ${uncompressedSize} bytes)`);
             
-            // CSVファイルかチェック（財務データ用のCSVを優先）
-            if (fileName.toLowerCase().includes('.csv') && 
-                (fileName.includes('jpcrp') || fileName.includes('asr') || fileName.includes('financial'))) {
+            // CSVファイルかチェック（すべてのCSVを対象、優先順位付き）
+            if (fileName.toLowerCase().includes('.csv')) {
+              console.log(`📄 CSVファイル候補: ${fileName}`);
+              
+              // 優先度計算
+              let priority = 0;
+              if (fileName.includes('jpcrp')) priority += 100;
+              if (fileName.includes('asr')) priority += 90;
+              if (fileName.includes('E01739')) priority += 80; // 三菱電機のEDINETコード
+              if (fileName.toLowerCase().includes('xbrl_to_csv')) priority += 70;
+              if (fileName.includes('financial')) priority += 60;
+              
+              console.log(`CSVファイル優先度: ${priority} (${fileName})`);
+              
+              // 優先度が0でも処理対象とする（すべてのCSVを試す）
               
               const dataStart = fileNameStart + fileNameLength + extraFieldLength;
               
@@ -1181,11 +1193,28 @@ class SimpleXbrlParser {
         return null;
       }
       
-      // 最初の数行をサンプル表示
-      console.log('CSV最初の5行:');
-      lines.slice(0, 5).forEach((line, i) => {
-        console.log(`  ${i+1}: ${line.substring(0, 100)}...`);
+      // CSVの詳細構造分析
+      console.log('=== CSV詳細構造分析 ===');
+      console.log('CSV最初の10行:');
+      lines.slice(0, 10).forEach((line, i) => {
+        const fields = this.parseCSVLine(line);
+        console.log(`  ${i+1}: [${fields.length}フィールド] ${line.substring(0, 150)}...`);
+        if (i < 3) {
+          console.log(`      フィールド詳細: ${JSON.stringify(fields.slice(0, 8))}`);
+        }
       });
+
+      // ヘッダー行の特定（もしある場合）
+      const potentialHeader = lines[0];
+      const headerFields = this.parseCSVLine(potentialHeader);
+      console.log(`ヘッダー候補 (${headerFields.length}フィールド):`, headerFields.slice(0, 10));
+
+      // サンプルデータ行の分析
+      if (lines.length > 1) {
+        const sampleData = lines[1];
+        const sampleFields = this.parseCSVLine(sampleData);
+        console.log(`サンプルデータ (${sampleFields.length}フィールド):`, sampleFields.slice(0, 10));
+      }
       
       // EDINETのCSV構造を解析（コンテキスト、要素名、値の順）
       const financialData = {};
@@ -1203,27 +1232,65 @@ class SimpleXbrlParser {
       
       // データの重複管理（より良い値を採用）
       const dataWithContext = {};
+      let totalLinesProcessed = 0;
+      let linesWithNumericValues = 0;
+      let mappedFieldsFound = 0;
+      
+      // 実際のCSV形式を動的に検出
+      let csvFormat = this.detectCSVFormat(lines.slice(0, 10));
+      console.log(`検出されたCSV形式:`, csvFormat);
       
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
-        if (!line || line.startsWith('#')) continue;
+        if (!line || line.startsWith('#') || line.startsWith('コンテキスト')) continue; // ヘッダー行もスキップ
+        
+        totalLinesProcessed++;
         
         // CSVパース（カンマ区切り、クォート対応）
         const fields = this.parseCSVLine(line);
         if (fields.length < 3) continue;
         
-        // EDINET CSV形式: [コンテキスト, 要素名, 値, ...]
-        const context = fields[0];
-        const elementName = fields[1];
-        const value = fields[2];
+        // 動的にフィールドを抽出
+        let context, elementName, value;
+        
+        if (csvFormat.type === 'edinet_standard') {
+          // 標準EDINET形式: [コンテキスト, 要素名, 値, ...]
+          context = fields[0];
+          elementName = fields[1];
+          value = fields[2];
+        } else if (csvFormat.type === 'edinet_extended') {
+          // 拡張形式: [コンテキスト, 要素名, 単位, 精度, 値, ...]
+          context = fields[0];
+          elementName = fields[1];
+          value = fields[4] || fields[3] || fields[2]; // 値フィールドの位置が異なる場合
+        } else {
+          // フォールバック: 最後のフィールドを値として使用
+          context = fields[0];
+          elementName = fields[1];
+          value = fields[fields.length - 1];
+        }
+        
+        // デバッグ：最初の10行の詳細出力
+        if (i < 10) {
+          console.log(`行${i+1}: context="${context}", element="${elementName}", value="${value}"`);
+        }
         
         // 財務データに関連する要素のみ抽出
         const numericValue = this.parseNumber(value);
         if (numericValue !== null && Math.abs(numericValue) > 0) {
+          linesWithNumericValues++;
+          
           const mappedField = this.mapFinancialElement(elementName);
           if (mappedField) {
-            // コンテキストの優先度を計算
+            mappedFieldsFound++;
+            
+            // コンテキストの優先度を計算（より柔軟に）
             let priority = this.calculateContextPriority(context, contextPriority);
+            
+            // コンテキストが空でも一定の優先度を与える
+            if (!context || context.trim() === '') {
+              priority += 30; // 空コンテキストにもチャンスを与える
+            }
             
             // 既存データと比較
             const key = mappedField;
@@ -1238,11 +1305,22 @@ class SimpleXbrlParser {
                 priority: priority
               };
               
-              console.log(`✓ ${mappedField}: ${numericValue.toLocaleString()} (${elementName}, context: ${context}, priority: ${priority})`);
+              console.log(`✓ ${mappedField}: ${numericValue.toLocaleString()} (${elementName}, context: "${context}", priority: ${priority})`);
+            }
+          } else {
+            // マッピングされなかった要素をログ出力（最初の20個まで）
+            if (mappedFieldsFound < 20) {
+              console.log(`未マッピング要素: "${elementName}" (値: ${numericValue})`);
             }
           }
         }
       }
+      
+      console.log(`=== CSV解析統計 ===`);
+      console.log(`処理行数: ${totalLinesProcessed}`);
+      console.log(`数値を含む行: ${linesWithNumericValues}`);
+      console.log(`マッピング成功: ${mappedFieldsFound}`);
+      console.log(`抽出されたフィールド数: ${Object.keys(dataWithContext).length}`);
       
       // 最終的な財務データを構築
       Object.entries(dataWithContext).forEach(([key, data]) => {
@@ -1441,6 +1519,56 @@ class SimpleXbrlParser {
     }
     
     return null;
+  }
+
+  /**
+   * CSV形式を動的に検出
+   */
+  detectCSVFormat(sampleLines) {
+    console.log('=== CSV形式検出開始 ===');
+    
+    if (sampleLines.length < 2) {
+      return { type: 'unknown', confidence: 0 };
+    }
+    
+    // サンプル行を解析
+    const fieldCounts = sampleLines.map(line => this.parseCSVLine(line).length);
+    const avgFieldCount = fieldCounts.reduce((a, b) => a + b, 0) / fieldCounts.length;
+    
+    console.log(`フィールド数分布: ${fieldCounts.join(', ')}, 平均: ${avgFieldCount.toFixed(1)}`);
+    
+    // サンプルデータを詳細分析
+    const sampleFields = this.parseCSVLine(sampleLines[1] || sampleLines[0]);
+    console.log(`サンプルフィールド (${sampleFields.length}個):`, sampleFields.slice(0, 8));
+    
+    // EDINET標準形式の検出
+    if (avgFieldCount >= 3 && avgFieldCount <= 6) {
+      // 第2フィールドが要素名っぽいかチェック
+      const secondField = sampleFields[1];
+      if (secondField && (
+        secondField.includes('Sales') || 
+        secondField.includes('Assets') || 
+        secondField.includes('Income') ||
+        secondField.includes('売上') ||
+        secondField.includes('資産') ||
+        secondField.includes('利益') ||
+        secondField.includes('jpcrp') ||
+        secondField.includes('jppfs')
+      )) {
+        console.log('✓ EDINET標準形式を検出');
+        return { type: 'edinet_standard', confidence: 0.8, fieldCount: avgFieldCount };
+      }
+    }
+    
+    // EDINET拡張形式の検出（単位、精度フィールドあり）
+    if (avgFieldCount >= 5 && avgFieldCount <= 8) {
+      console.log('✓ EDINET拡張形式を検出');
+      return { type: 'edinet_extended', confidence: 0.6, fieldCount: avgFieldCount };
+    }
+    
+    // フォールバック
+    console.log('⚠️ 不明な形式、フォールバック使用');
+    return { type: 'fallback', confidence: 0.3, fieldCount: avgFieldCount };
   }
 
   /**
