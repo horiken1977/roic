@@ -27,7 +27,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { edinetCode, fiscalYear } = req.query;
+    const { edinetCode, fiscalYear, docId } = req.query;
 
     if (!edinetCode || !fiscalYear) {
       return res.status(400).json({
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     }
 
     const year = parseInt(fiscalYear);
-    if (isNaN(year) || year < 2000 || year > new Date().getFullYear()) {
+    if (isNaN(year) || year < 2000 || year > new Date().getFullYear() + 2) {
       return res.status(400).json({
         success: false,
         error: '無効な年度です',
@@ -63,6 +63,42 @@ export default async function handler(req, res) {
     try {
       // 1. EDINET APIから企業の最新書類を検索
       console.log(`書類検索開始: ${edinetCode} ${year}年度`);
+      
+      // 特定の書類ID指定がある場合（クエリパラメータから）
+      if (docId) {
+        console.log(`指定されたdocIDを使用: ${docId}`);
+        const document = {
+          docId: docId,
+          docTypeCode: '120', // 仮定
+          docTypeName: '有価証券報告書',
+          xbrlFlag: '1'
+        };
+        
+        // 直接XBRL取得へ
+        const xbrlParser = new SimpleXbrlParser();
+        const financialData = await xbrlParser.fetchAndParseXbrl(docId, apiKey);
+        
+        if (financialData) {
+          financialData.edinetCode = edinetCode;
+          financialData.fiscalYear = year;
+          financialData.dataSource = 'edinet_xbrl_realtime';
+          financialData.lastUpdated = new Date().toISOString();
+          
+          const extractedValues = Object.entries(financialData)
+            .filter(([key, value]) => typeof value === 'number' && value !== 0)
+            .length;
+          
+          console.log(`指定docIDでの財務データ抽出完了: ${extractedValues}個の非ゼロ値を取得`);
+          
+          return res.status(200).json({
+            success: true,
+            data: financialData,
+            source: 'edinet_xbrl_realtime',
+            message: `${year}年度の財務データ（指定docID: ${docId}、${extractedValues}項目抽出）`
+          });
+        }
+      }
+      
       const document = await findLatestFinancialDocument(edinetCode, year, apiKey);
       
       if (!document) {

@@ -81,8 +81,20 @@ export default function EDINETCompanySearchSimple() {
     try {
       console.log('Fetching financial data for:', company.companyName) // デバッグ用
       
-      // 最新年度の財務データを取得
-      const response = await edinetApiClient.getFinancialData(company.edinetCode, 2023)
+      // 実際に存在する年度の財務データを取得
+      let targetYear = 2023;
+      let docId = null;
+      
+      // 企業検索結果に最新書類情報がある場合はそれを使用
+      if (company.lastDocument && company.lastDocument.periodEnd) {
+        const periodEnd = new Date(company.lastDocument.periodEnd);
+        targetYear = periodEnd.getFullYear();
+        docId = company.lastDocument.docId;
+        console.log(`最新書類の年度を使用: ${targetYear}年度 (期間終了: ${company.lastDocument.periodEnd})`);
+        console.log(`書類ID: ${docId}`);
+      }
+      
+      const response = await edinetApiClient.getFinancialData(company.edinetCode, targetYear, docId)
       console.log('Financial data response:', response) // デバッグ用
       console.log('Response data keys:', Object.keys(response.data || {})) // デバッグ用
 

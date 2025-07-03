@@ -9,6 +9,12 @@ export interface EDINETCompany {
   tickerSymbol?: string;
   industry?: string;
   listingDate?: string;
+  lastDocument?: {
+    docId: string;
+    docTypeCode: string;
+    periodEnd: string;
+    submitDateTime: string;
+  };
 }
 
 export interface EDINETDocument {
@@ -299,7 +305,7 @@ class EDINETApiClient {
   /**
    * 財務データ取得（実際のEDINET APIまたはサンプルデータ）
    */
-  async getFinancialData(edinetCode: string, fiscalYear: number): Promise<EDINETApiResponse<FinancialDataFromEDINET>> {
+  async getFinancialData(edinetCode: string, fiscalYear: number, docId?: string): Promise<EDINETApiResponse<FinancialDataFromEDINET>> {
     try {
       // 1. GitHub Actions静的データを最優先で確認
       const staticDataAvailable = await staticDataService.isDataAvailable();
@@ -320,7 +326,16 @@ class EDINETApiClient {
       // 2. Vercel Functions（リアルタイムEDINET API）でリアルタイム取得
       console.log('Vercel Functions経由でリアルタイム財務データ取得');
       try {
-        const response = await fetch(`${this.vercelApiUrl}/edinet/financial?edinetCode=${encodeURIComponent(edinetCode)}&fiscalYear=${fiscalYear}`, {
+        // DocIDが利用可能な場合はそれを使用
+        let apiUrl = `${this.vercelApiUrl}/edinet/financial?edinetCode=${encodeURIComponent(edinetCode)}&fiscalYear=${fiscalYear}`;
+        
+        // 特定のdocIDがある場合はパラメータに追加
+        if (docId) {
+          apiUrl += `&docId=${encodeURIComponent(docId)}`;
+          console.log(`指定docIDを使用: ${docId}`);
+        }
+        
+        const response = await fetch(apiUrl, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -342,8 +357,11 @@ class EDINETApiClient {
       if (backendAvailable) {
         // バックエンドサーバー経由でEDINET APIにアクセス
         console.log('バックエンドサーバー経由でEDINET APIにアクセス');
-        const response = await fetch(
-          `${this.backendBaseUrl}/edinet/financial?edinetCode=${encodeURIComponent(edinetCode)}&fiscalYear=${fiscalYear}`, {
+        let backendUrl = `${this.backendBaseUrl}/edinet/financial?edinetCode=${encodeURIComponent(edinetCode)}&fiscalYear=${fiscalYear}`;
+        if (docId) {
+          backendUrl += `&docId=${encodeURIComponent(docId)}`;
+        }
+        const response = await fetch(backendUrl, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
