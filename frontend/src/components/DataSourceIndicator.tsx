@@ -26,7 +26,7 @@ export default function DataSourceIndicator() {
     try {
       // Vercel Functions（リアルタイムAPI）を最優先でチェック
       try {
-        const vercelApiUrl = process.env.NEXT_PUBLIC_VERCEL_API_URL || 'https://roic-api.vercel.app/api';
+        const vercelApiUrl = process.env.NEXT_PUBLIC_VERCEL_API_URL || 'https://roic-horikens-projects.vercel.app/api';
         const response = await fetch(`${vercelApiUrl}/edinet/companies?q=test`, {
           method: 'GET',
           headers: {

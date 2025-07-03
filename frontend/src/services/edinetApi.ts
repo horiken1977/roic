@@ -608,21 +608,24 @@ export const edinetApiClient = new EDINETApiClient();
  */
 export function convertEDINETDataToFinancialData(edinetData: FinancialDataFromEDINET) {
   return {
-    // 損益計算書項目
-    operatingIncome: edinetData.operatingIncome,
-    interestIncome: edinetData.interestIncome,
-    taxRate: edinetData.taxRate,
+    // 損益計算書項目（必須項目）
+    netSales: edinetData.netSales || 0, // 売上高
+    operatingIncome: edinetData.operatingIncome || 0, // 営業利益
+    grossProfit: edinetData.grossProfit || (edinetData.netSales * 0.2) || 0, // 売上総利益（推定20%）
+    sellingAdminExpenses: edinetData.sellingAdminExpenses || (edinetData.netSales * 0.1) || 0, // 販管費（推定10%）
+    interestIncome: edinetData.interestIncome || 0,
+    taxRate: edinetData.taxRate || 0.30, // 実効税率
     
-    // 貸借対照表項目
-    totalAssets: edinetData.totalAssets,
-    cashAndEquivalents: edinetData.cashAndEquivalents,
-    shareholdersEquity: edinetData.shareholdersEquity,
-    interestBearingDebt: edinetData.interestBearingDebt,
-    accountsPayable: edinetData.accountsPayable,
-    accruedExpenses: edinetData.accruedExpenses,
+    // 貸借対照表項目（必須項目）
+    totalAssets: edinetData.totalAssets || 0,
+    cashAndEquivalents: edinetData.cashAndEquivalents || 0,
+    shareholdersEquity: edinetData.shareholdersEquity || 0,
+    interestBearingDebt: edinetData.interestBearingDebt || 0,
+    accountsPayable: edinetData.accountsPayable || 0,
+    accruedExpenses: edinetData.accruedExpenses || 0,
     
     // IFRS16対応項目
-    leaseExpense: edinetData.leaseExpense,
-    leaseDebt: edinetData.leaseDebt
+    leaseExpense: edinetData.leaseExpense || (edinetData.netSales * 0.006) || 0, // 推定0.6%
+    leaseDebt: edinetData.leaseDebt || (edinetData.totalAssets * 0.03) || 0 // 推定3%
   };
 }
