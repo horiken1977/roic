@@ -229,6 +229,9 @@ class SimpleXbrlParser {
             console.log(`データサイズ: ${data.length} bytes`);
             
             if (res.statusCode !== 200) {
+              console.error(`XBRL取得HTTPエラー: ${res.statusCode} ${res.statusMessage}`);
+              console.error(`URL: ${url.replace(apiKey, '***')}`);
+              console.error(`Response body: ${data.toString('utf8').substring(0, 500)}`);
               reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
               return;
             }

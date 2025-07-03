@@ -62,18 +62,39 @@ export default async function handler(req, res) {
 
     try {
       // 1. EDINET APIから企業の最新書類を検索
+      console.log(`書類検索開始: ${edinetCode} ${year}年度`);
       const document = await findLatestFinancialDocument(edinetCode, year, apiKey);
       
       if (!document) {
         console.log(`書類検索失敗: ${edinetCode} ${year}年度 - 結果なし`);
-        return res.status(404).json({
-          success: false,
-          error: 'DOCUMENT_NOT_FOUND',
-          message: `${year}年度の有価証券報告書が見つかりませんでした (${edinetCode})`
-        });
+        
+        // より広範囲の年度で再試行
+        console.log('より広範囲で再検索を試行');
+        const alternativeYears = [year - 1, year + 1, year - 2];
+        let alternativeDoc = null;
+        
+        for (const altYear of alternativeYears) {
+          console.log(`代替年度で検索: ${altYear}年度`);
+          alternativeDoc = await findLatestFinancialDocument(edinetCode, altYear, apiKey);
+          if (alternativeDoc) {
+            console.log(`代替書類発見: ${alternativeDoc.docId} (${altYear}年度)`);
+            break;
+          }
+        }
+        
+        if (!alternativeDoc) {
+          return res.status(404).json({
+            success: false,
+            error: 'DOCUMENT_NOT_FOUND',
+            message: `${year}年度およびその前後の有価証券報告書が見つかりませんでした (${edinetCode})`
+          });
+        }
+        
+        document = alternativeDoc;
       }
       
-      console.log(`書類検索成功: ${document.docId} (${edinetCode} ${year}年度)`);
+      console.log(`書類検索成功: ${document.docId} (${document.periodEnd || '期間不明'})`);
+      console.log(`書類詳細: ${document.docTypeName} - XBRL: ${document.xbrlFlag}`);
 
       // 2. XBRLデータを取得・解析
       const xbrlParser = new SimpleXbrlParser();
@@ -146,7 +167,7 @@ async function findLatestFinancialDocument(edinetCode, fiscalYear, apiKey) {
     
     console.log(`書類検索: ${edinetCode} ${fiscalYear}年度 (${searchDates.length}日分)`);
     
-    for (const date of searchDates.slice(0, 20)) { // 最初の20日分のみ検索してパフォーマンス向上
+    for (const date of searchDates.slice(0, 50)) { // 最初の50日分を検索して確率向上
       try {
         const documents = await fetchDocumentsForDate(date, apiKey);
         console.log(`${date}: ${documents.length}件の書類をチェック中...`);
