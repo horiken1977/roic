@@ -9,7 +9,8 @@ import {
 } from '@/services/edinetApi'
 import { 
   calculateAllROIC, 
-  getROICEvaluationLevel
+  getROICEvaluationLevel,
+  formatCurrency
 } from '@/utils/roicCalculations'
 import ROICTrendChart from './ROICTrendChart'
 import ExportButtons from './ExportButtons'
