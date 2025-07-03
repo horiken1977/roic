@@ -11,29 +11,35 @@ class SimpleXbrlParser {
     this.financialMappings = {
       // 損益計算書項目
       netSales: [
-        // 基本パターン
-        'NetSales', 'Sales', 'Revenue', 'OperatingRevenue',
-        // 日本の勘定科目
-        '売上高', 'OperatingRevenues', 'NetSalesOfCompletedConstructionContracts',
-        // EDINET標準タグ
+        // EDINET標準タグ（完全名）
         'jpcrp_cor:NetSales', 'jppfs_cor:NetSales', 'jpcrp_cor:OperatingRevenues',
-        // 名前空間なし
-        'netsales', 'sales', 'revenue',
-        // その他のパターン
-        'SalesRevenue', 'TotalRevenue', 'GrossRevenue'
+        'jpcrp_cor:SalesJPCRP', 'jppfs_cor:SalesJPPFS', 'jpcrp_cor:RevenuesJPCRP',
+        'jpcei_cor:NetSales', 'jpdei_cor:NetSales', 'jp_cor:NetSales',
+        // 日本語タグ
+        '売上高', '営業収益', '純売上高', '売上収益', '総売上高',
+        // 英語タグ
+        'NetSales', 'Sales', 'Revenue', 'OperatingRevenue', 'OperatingRevenues',
+        'SalesRevenue', 'TotalRevenue', 'GrossRevenue', 'NetSalesOfCompletedConstructionContracts',
+        // 小文字・変形
+        'netsales', 'sales', 'revenue', 'operatingrevenue',
+        // 名前空間付きの様々なパターン
+        'jpfr:NetSales', 'us:NetSales', 'ifrs:Revenue', 'gaap:Revenue'
       ],
       operatingIncome: [
-        // 基本パターン
-        'OperatingIncome', 'OperatingProfit', 'OperatingEarnings',
-        // 日本語
-        '営業利益', 'OperatingProfitLoss',
-        // EDINET標準
+        // EDINET標準タグ（完全名）
         'jpcrp_cor:OperatingIncome', 'jppfs_cor:OperatingIncome',
         'jpcrp_cor:OperatingProfitLoss', 'jppfs_cor:OperatingProfitLoss',
-        // 小文字
-        'operatingincome', 'operatingprofit',
-        // その他
-        'EarningsFromOperations', 'IncomeFromOperations'
+        'jpcrp_cor:OperatingIncomeJPCRP', 'jppfs_cor:OperatingIncomeJPPFS',
+        'jpcei_cor:OperatingIncome', 'jpdei_cor:OperatingIncome',
+        // 日本語タグ
+        '営業利益', '営業損益', '事業利益', '営業収益',
+        // 英語タグ
+        'OperatingIncome', 'OperatingProfit', 'OperatingEarnings', 'OperatingProfitLoss',
+        'EarningsFromOperations', 'IncomeFromOperations', 'OperatingGain',
+        // 小文字・変形
+        'operatingincome', 'operatingprofit', 'operatingearnings',
+        // 名前空間付きの様々なパターン
+        'jpfr:OperatingIncome', 'us:OperatingIncome', 'ifrs:OperatingIncome'
       ],
       ordinaryIncome: [
         'OrdinaryIncome', 'IncomeBeforeIncomeTaxes', 'ProfitBeforeTax',
@@ -51,12 +57,20 @@ class SimpleXbrlParser {
       
       // 貸借対照表項目
       totalAssets: [
-        // 資産合計の様々な表現
-        'Assets', 'TotalAssets', 'AssetsTotal', 'GrossAssets',
-        '資産合計', '総資産', 'AssetsSum',
+        // EDINET標準タグ（完全名）
         'jpcrp_cor:Assets', 'jppfs_cor:Assets', 'jpcrp_cor:TotalAssets',
-        'jppfs_cor:TotalAssets', 'jpcrp_cor:AssetsTotal',
-        'assets', 'totalassets', 'assetstotal'
+        'jppfs_cor:TotalAssets', 'jpcrp_cor:AssetsTotal', 'jppfs_cor:AssetsTotal',
+        'jpcrp_cor:AssetsTotalJPCRP', 'jppfs_cor:AssetsTotalJPPFS',
+        'jpcei_cor:Assets', 'jpdei_cor:Assets', 'jp_cor:Assets',
+        // 日本語タグ
+        '資産合計', '総資産', '資産の部合計', '資産総額', '全資産',
+        // 英語タグ
+        'Assets', 'TotalAssets', 'AssetsTotal', 'GrossAssets', 'AssetSum',
+        'AssetsSum', 'TotalAssetAmount', 'AssetsTotalAmount',
+        // 小文字・変形
+        'assets', 'totalassets', 'assetstotal', 'assetsum',
+        // 名前空間付きの様々なパターン
+        'jpfr:Assets', 'us:Assets', 'ifrs:Assets', 'gaap:Assets'
       ],
       cashAndEquivalents: [
         'CashAndCashEquivalents', 'CashAndDeposits', 'Cash',
@@ -126,6 +140,60 @@ class SimpleXbrlParser {
   /**
    * EDINET APIからXBRLドキュメントを取得
    */
+  /**
+   * XML形式でXBRLを直接取得（ZIP展開のフォールバック）
+   */
+  async fetchXbrlAsXml(docId, apiKey) {
+    return new Promise((resolve, reject) => {
+      const url = `https://disclosure.edinet-fsa.go.jp/api/v2/documents/${docId}?type=5&Subscription-Key=${apiKey}`;
+      
+      console.log(`XBRL XML直接取得: ${url.replace(apiKey, '***')}`);
+
+      const req = https.get(url, {
+        headers: {
+          'User-Agent': 'ROIC-Analysis-App/1.0',
+          'Accept': 'application/xml, text/xml'
+        },
+        timeout: 30000
+      }, (res) => {
+        let data = Buffer.alloc(0);
+        
+        res.on('data', (chunk) => {
+          data = Buffer.concat([data, chunk]);
+        });
+        
+        res.on('end', () => {
+          try {
+            console.log(`XML直接取得完了: ${res.statusCode} ${res.statusMessage}`);
+            console.log(`Content-Type: ${res.headers['content-type']}`);
+            console.log(`データサイズ: ${data.length} bytes`);
+            
+            if (res.statusCode !== 200) {
+              reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
+              return;
+            }
+
+            const xmlString = data.toString('utf8');
+            console.log('XMLデータ直接取得成功');
+            console.log('XMLの最初の500文字:', xmlString.substring(0, 500));
+            resolve(xmlString);
+          } catch (parseError) {
+            reject(new Error(`XML処理エラー: ${parseError.message}`));
+          }
+        });
+      });
+      
+      req.on('error', (error) => {
+        reject(new Error(`XML取得エラー: ${error.message}`));
+      });
+      
+      req.on('timeout', () => {
+        req.destroy();
+        reject(new Error('XML取得がタイムアウトしました'));
+      });
+    });
+  }
+
   async fetchXbrlDocument(docId, apiKey) {
     return new Promise((resolve, reject) => {
       const url = `https://disclosure.edinet-fsa.go.jp/api/v2/documents/${docId}?type=1&Subscription-Key=${apiKey}`;
@@ -160,10 +228,28 @@ class SimpleXbrlParser {
             const contentType = res.headers['content-type'] || '';
             
             if (contentType.includes('application/zip')) {
-              // ZIPファイルの場合（実際の実装では展開が必要）
-              console.warn('ZIP形式は現在未対応です。XML形式を要求してください。');
-              console.log('ZIPファイルの最初の100バイト:', data.subarray(0, 100));
-              resolve(null);
+              // ZIPファイルの場合 - 実際のZIP展開を試行
+              console.log('ZIP形式を検出しました。展開を試行します。');
+              console.log('ZIPファイルサイズ:', data.length);
+              
+              try {
+                // ZIPの最初の数バイトを確認してZIPファイルかチェック
+                const zipHeader = data.subarray(0, 4);
+                const isZip = zipHeader[0] === 0x50 && zipHeader[1] === 0x4B;
+                
+                if (isZip) {
+                  console.log('有効なZIPファイルを確認しました');
+                  // 現在はZIP展開ライブラリが未実装のため、type=1でXML直接要求に変更
+                  console.log('ZIP展開ライブラリ未実装のため、XML直接要求にフォールバック');
+                  resolve(this.fetchXbrlAsXml(docId, apiKey));
+                } else {
+                  console.log('ZIPヘッダーが無効です');
+                  resolve(null);
+                }
+              } catch (zipError) {
+                console.error('ZIP処理エラー:', zipError);
+                resolve(null);
+              }
             } else if (contentType.includes('xml')) {
               // XMLの場合
               const xmlString = data.toString('utf8');
@@ -276,19 +362,32 @@ class SimpleXbrlParser {
         // 1. 完全一致パターン（名前空間なし）
         const exactPatterns = [
           new RegExp(`<${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</${this.escapeRegex(tag)}>`, 'gi'),
-          new RegExp(`<${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi')
+          new RegExp(`<${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi'),
+          // contextRef付きパターン
+          new RegExp(`<${this.escapeRegex(tag)}[^>]*contextRef="[^"]*"[^>]*>([\\d,\\-\\.\\s]+)</${this.escapeRegex(tag)}>`, 'gi'),
+          // unitRef付きパターン  
+          new RegExp(`<${this.escapeRegex(tag)}[^>]*unitRef="[^"]*"[^>]*>([\\d,\\-\\.\\s]+)</${this.escapeRegex(tag)}>`, 'gi')
         ];
 
-        // 2. 名前空間付きパターン
+        // 2. 名前空間付きパターン（より具体的）
         const namespacePatterns = [
           new RegExp(`<[^:]*:${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</[^:]*:${this.escapeRegex(tag)}>`, 'gi'),
-          new RegExp(`<[^:]*:${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi')
+          new RegExp(`<[^:]*:${this.escapeRegex(tag)}[^>]*contextRef="[^"]*"[^>]*>([\\d,\\-\\.\\s]+)</[^:]*:${this.escapeRegex(tag)}>`, 'gi'),
+          // 名前空間が含まれているタグの場合はそのまま検索
+          ...(tag.includes(':') ? [
+            new RegExp(`<${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</${this.escapeRegex(tag)}>`, 'gi'),
+            new RegExp(`<${this.escapeRegex(tag)}[^>]*contextRef="[^"]*"[^>]*>([\\d,\\-\\.\\s]+)</${this.escapeRegex(tag)}>`, 'gi')
+          ] : [])
         ];
 
         // 3. 部分一致パターン（タグ名の一部を含む）
         const partialPatterns = [
           new RegExp(`<[^>]*${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi'),
-          new RegExp(`<[^>]*${this.escapeRegex(tag.toLowerCase())}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi')
+          new RegExp(`<[^>]*${this.escapeRegex(tag.toLowerCase())}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi'),
+          // 大文字小文字を区別しない検索
+          new RegExp(`<[^>]*${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gmi'),
+          // カスタム区切り文字対応
+          new RegExp(`<[^>]*${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s千万億兆]+)</`, 'gi')
         ];
 
         // 4. 日本語タグパターン
@@ -413,9 +512,15 @@ class SimpleXbrlParser {
       
       // 日本語の数値表記を処理
       strValue = strValue.replace(/円/g, '').replace(/千円/g, '000').replace(/百万円/g, '000000').replace(/十億円/g, '000000000');
+      strValue = strValue.replace(/千/g, '000').replace(/万/g, '0000').replace(/億/g, '00000000').replace(/兆/g, '000000000000');
       
       // カンマ、空白、その他の非数値文字を除去
       strValue = strValue.replace(/[,\s　]/g, '');
+      
+      // 全角数字を半角に変換
+      strValue = strValue.replace(/[０-９]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
       
       // マイナス記号の正規化
       strValue = strValue.replace(/[−－‐]/g, '-');
