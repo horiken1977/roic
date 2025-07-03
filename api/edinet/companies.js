@@ -6,19 +6,18 @@
 const https = require('https');
 
 export default async function handler(req, res) {
-  try {
-    // 完全なCORS ヘッダーを設定（関数の最初で設定）
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With');
-    res.setHeader('Access-Control-Allow-Credentials', 'false');
-    res.setHeader('Access-Control-Max-Age', '86400');
+  // 完全なCORS ヘッダーを設定（関数の最初で設定）
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Credentials', 'false');
+  res.setHeader('Access-Control-Max-Age', '86400');
 
-    // CORS プリフライト対応
-    if (req.method === 'OPTIONS') {
-      console.log('OPTIONS request received - sending CORS headers');
-      return res.status(200).end();
-    }
+  // CORS プリフライト対応
+  if (req.method === 'OPTIONS') {
+    console.log('OPTIONS request received - sending CORS headers');
+    return res.status(200).end();
+  }
 
   // GET リクエストのみ許可
   if (req.method !== 'GET') {
