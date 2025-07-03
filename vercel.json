@@ -4,16 +4,20 @@
   "installCommand": "npm install",
   "functions": {
     "api/edinet/companies.js": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "memory": 1024
     },
     "api/edinet/financial.js": {
-      "maxDuration": 30
+      "maxDuration": 60,
+      "memory": 1024
     },
     "api/vercel/logs.js": {
-      "maxDuration": 20
+      "maxDuration": 20,
+      "memory": 512
     },
     "api/debug/mitsubishi.js": {
-      "maxDuration": 40
+      "maxDuration": 40,
+      "memory": 1024
     }
   },
   "headers": [

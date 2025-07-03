@@ -27,9 +27,11 @@
   },
   "dependencies": {
     "chokidar": "^4.0.3",
+    "concurrently": "^8.2.2",
+    "decompress": "^4.2.1",
     "marked": "^9.1.6",
-    "ws": "^8.18.3",
-    "concurrently": "^8.2.2"
+    "p-retry": "^6.2.1",
+    "ws": "^8.18.3"
   },
   "keywords": [
     "roic",

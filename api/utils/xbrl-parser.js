@@ -5,6 +5,8 @@
 
 const https = require('https');
 const zlib = require('zlib');
+const decompress = require('decompress');
+const pRetry = require('p-retry');
 
 class SimpleXbrlParser {
   constructor() {
@@ -493,8 +495,8 @@ class SimpleXbrlParser {
           console.log('🎯 ZIPファイルを検出 - CSVパーサーを使用');
           
           try {
-            // 新しいZIP/CSV処理を使用
-            const csvContent = await this.extractCsvFromZip(xbrlDataResult);
+            // 新しいZIP/CSV処理を使用（堅牢版）
+            const csvContent = await this.extractCsvFromZipRobust(xbrlDataResult);
             financialData = this.parseCsvFinancialData(csvContent);
             
             console.log('✅ ZIP/CSV処理成功');
@@ -718,8 +720,8 @@ class SimpleXbrlParser {
         if (isZip) {
           console.log('✓ ZIPファイルを検出 - CSV抽出処理開始');
           
-          // CSVファイルを抽出
-          const csvContent = await this.extractCsvFromZip(xbrlData);
+          // CSVファイルを抽出（堅牢版）
+          const csvContent = await this.extractCsvFromZipRobust(xbrlData);
           if (csvContent) {
             // CSVからXBRL XMLに変換
             xbrlString = this.convertCsvToXbrlFormat(csvContent, 'extracted-financial.csv');
@@ -1214,6 +1216,94 @@ class SimpleXbrlParser {
       console.error('エラー詳細:', error.stack);
       return null;
     }
+  }
+
+  /**
+   * ZIPファイルからCSVファイルを抽出（堅牢版 - decompressライブラリ使用）
+   */
+  async extractCsvFromZipRobust(zipBuffer) {
+    try {
+      console.log('=== ZIP解析開始（堅牢版） ===');
+      console.log(`ZIPファイルサイズ: ${zipBuffer.length} bytes`);
+      
+      // decompressライブラリを使用してZIP解析
+      const retryOperation = async () => {
+        const files = await decompress(zipBuffer, {
+          filter: file => file.path.toLowerCase().endsWith('.csv'),
+          map: file => {
+            file.path = file.path.toLowerCase();
+            return file;
+          }
+        });
+        
+        if (files.length === 0) {
+          throw new Error('ZIPファイル内にCSVファイルが見つかりません');
+        }
+        
+        console.log(`✓ ${files.length}個のCSVファイルを発見`);
+        files.forEach((file, index) => {
+          console.log(`  ${index + 1}. ${file.path} (${file.data.length} bytes)`);
+        });
+        
+        // 最適なCSVファイルを選択
+        const selectedFile = this.selectBestCsvFile(files);
+        const csvContent = selectedFile.data.toString('utf8');
+        
+        console.log(`✓ 選択されたCSVファイル: ${selectedFile.path}`);
+        console.log(`✓ CSV抽出成功: ${csvContent.length} 文字`);
+        console.log(`CSV内容サンプル: ${csvContent.substring(0, 300)}`);
+        
+        return csvContent;
+      };
+      
+      // リトライ機能付きで実行
+      return await pRetry(retryOperation, {
+        retries: 2,
+        onFailedAttempt: error => {
+          console.warn(`ZIP解析試行失敗 (${error.attemptNumber}/${error.retriesLeft + error.attemptNumber}): ${error.message}`);
+        }
+      });
+      
+    } catch (error) {
+      console.error('ZIP解析エラー（堅牢版）:', error);
+      
+      // フォールバック: 従来の手動解析を試行
+      console.log('🔄 フォールバック: 従来の手動解析を試行');
+      return this.extractCsvFromZip(zipBuffer);
+    }
+  }
+
+  /**
+   * 最適なCSVファイルを選択
+   */
+  selectBestCsvFile(files) {
+    // 優先度ベースのファイル選択
+    const priorities = [
+      'jpcrp',     // 企業情報
+      'asr',       // Annual Securities Report
+      'xbrl_to_csv', // XBRL変換済みCSV
+      'financial', // 財務データ
+      'jpaud'      // 監査法人関連
+    ];
+    
+    // 優先度順で検索
+    for (const priority of priorities) {
+      const file = files.find(f => 
+        f.path.includes(priority) && f.data.length > 1000
+      );
+      if (file) {
+        console.log(`✓ 優先度ベース選択: ${file.path} (${priority})`);
+        return file;
+      }
+    }
+    
+    // 最大サイズのファイルを選択
+    const largestFile = files.reduce((prev, current) => 
+      (current.data.length > prev.data.length) ? current : prev
+    );
+    
+    console.log(`✓ サイズベース選択: ${largestFile.path} (${largestFile.data.length} bytes)`);
+    return largestFile;
   }
 
   /**
