@@ -92,6 +92,11 @@ export default function EDINETCompanySearchSimple() {
         const convertedData = convertEDINETDataToFinancialData(response.data)
         console.log('Converted financial data:', convertedData) // デバッグ用
         
+        // デバッグ情報がある場合は表示
+        if (response.data.debug) {
+          console.log('XBRL Debug Info:', response.data.debug)
+        }
+        
         const results = calculateAllROIC(convertedData)
         console.log('ROIC results:', results) // デバッグ用
         

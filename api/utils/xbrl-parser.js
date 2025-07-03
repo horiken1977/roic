@@ -264,13 +264,33 @@ class SimpleXbrlParser {
               const xmlString = data.toString('utf8');
               console.log('XML形式として処理します');
               console.log('XMLの最初の500文字:', xmlString.substring(0, 500));
+              console.log('XMLの最後の200文字:', xmlString.substring(Math.max(0, xmlString.length - 200)));
+              
+              // XMLの基本構造チェック
+              const hasXmlDeclaration = xmlString.includes('<?xml');
+              const hasXbrlTag = xmlString.includes('<xbrl') || xmlString.includes('<XBRL');
+              const hasNamespace = xmlString.includes('jpcrp_cor') || xmlString.includes('jppfs_cor');
+              console.log(`XML構造チェック - Declaration: ${hasXmlDeclaration}, XBRL: ${hasXbrlTag}, Namespace: ${hasNamespace}`);
+              
               resolve(xmlString);
             } else {
               // その他の形式
               const textData = data.toString('utf8');
               console.log('テキスト形式として処理します');
               console.log('データの最初の500文字:', textData.substring(0, 500));
-              resolve(textData);
+              console.log('Content-Type詳細:', contentType);
+              
+              // バイナリデータかどうかチェック
+              const isBinary = data.some(byte => byte === 0 || byte > 127);
+              console.log('バイナリデータ判定:', isBinary);
+              
+              if (isBinary) {
+                console.log('バイナリデータが検出されました - ZIP展開が必要の可能性');
+                // ZIP展開の代替手段を試行
+                resolve(this.fetchXbrlAsXml(docId, apiKey));
+              } else {
+                resolve(textData);
+              }
             }
           } catch (parseError) {
             reject(new Error(`レスポンス処理エラー: ${parseError.message}`));
@@ -393,6 +413,17 @@ class SimpleXbrlParser {
       this.calculateDerivedValues(financialData);
       
       console.log('=== XBRL解析完了 ===');
+      
+      // デバッグ情報を財務データに追加
+      financialData.debug = {
+        xbrlSize: xbrlString ? xbrlString.length : 0,
+        xbrlSample: xbrlString ? xbrlString.substring(0, 300) : 'No XBRL data',
+        tagCount: xbrlString ? (xbrlString.match(/<[^>]+>/g) || []).length : 0,
+        numericTagCount: xbrlString ? (xbrlString.match(/<[^>]*>[^<]*[\d,]+[^<]*<\/[^>]*>/g) || []).length : 0,
+        isXml: xbrlString ? (xbrlString.includes('<?xml') || xbrlString.includes('<xbrl') || xbrlString.includes('<XBRL')) : false,
+        extractedValueCount: Object.values(financialData).filter(v => typeof v === 'number' && v !== 0).length
+      };
+      
       return financialData;
 
     } catch (error) {
