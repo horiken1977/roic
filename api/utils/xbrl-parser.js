@@ -588,8 +588,8 @@ class SimpleXbrlParser {
 
   async fetchXbrlDocument(docId, apiKey) {
     return new Promise((resolve, reject) => {
-      // EDINET API v2の正しいエンドポイント
-      const url = `https://disclosure.edinet-fsa.go.jp/api/v2/documents/${docId}?type=1&Subscription-Key=${apiKey}`;
+      // EDINET API v2でCSVデータを取得（type=5）
+      const url = `https://disclosure.edinet-fsa.go.jp/api/v2/documents/${docId}?type=5&Subscription-Key=${apiKey}`;
       
       console.log(`XBRL取得URL確認: ${url.replace(apiKey, '[API_KEY]')}`);
       console.log(`DocID詳細: ${docId}`);
@@ -701,10 +701,46 @@ class SimpleXbrlParser {
   /**
    * XBRLデータをパースして財務データを抽出
    */
-  async parseXbrlData(xbrlString) {
+  async parseXbrlData(xbrlData) {
     try {
       console.log('=== XBRL解析開始 ===');
-      console.log(`XBRLデータサイズ: ${xbrlString ? xbrlString.length : 0} 文字`);
+      
+      // データがBufferかStringかを判定
+      let xbrlString;
+      
+      if (Buffer.isBuffer(xbrlData)) {
+        console.log(`XBRLデータ（Buffer）サイズ: ${xbrlData.length} bytes`);
+        
+        // ZIPファイルかチェック
+        const isZip = xbrlData.length >= 4 && xbrlData[0] === 0x50 && xbrlData[1] === 0x4B && 
+                     xbrlData[2] === 0x03 && xbrlData[3] === 0x04;
+        
+        if (isZip) {
+          console.log('✓ ZIPファイルを検出 - CSV抽出処理開始');
+          
+          // CSVファイルを抽出
+          const csvContent = await this.extractCsvFromZip(xbrlData);
+          if (csvContent) {
+            // CSVからXBRL XMLに変換
+            xbrlString = this.convertCsvToXbrlFormat(csvContent, 'extracted-financial.csv');
+            if (!xbrlString) {
+              console.error('❌ CSV→XML変換に失敗');
+              return null;
+            }
+            console.log('✓ CSV→XML変換成功');
+          } else {
+            console.error('❌ ZIP内CSVファイル抽出に失敗');
+            return null;
+          }
+        } else {
+          // Bufferを文字列に変換
+          xbrlString = xbrlData.toString('utf8');
+        }
+      } else {
+        // 既に文字列の場合
+        xbrlString = xbrlData;
+        console.log(`XBRLデータ（String）サイズ: ${xbrlString.length} 文字`);
+      }
       
       if (!xbrlString || xbrlString.length < 100) {
         console.warn('XBRLデータが空または小さすぎます');
@@ -1061,96 +1097,271 @@ class SimpleXbrlParser {
   }
 
   /**
-   * CSVファイルからXBRL形式のデータを抽出
+   * ZIPファイルからCSVデータを抽出（改良版）
    */
-  convertCsvToXbrlFormat(csvContent, fileName) {
+  async extractCsvFromZip(zipBuffer) {
     try {
-      console.log('CSVファイルからデータ抽出を開始:', fileName);
+      console.log('=== ZIP CSVデータ抽出開始 ===');
+      console.log(`ZIPサイズ: ${zipBuffer.length} bytes`);
       
-      // CSVファイルの構造を分析
-      const lines = csvContent.split('\n');
-      console.log(`CSV行数: ${lines.length}`);
-      
-      if (lines.length < 2) {
-        console.log('CSVファイルが空または行数不足');
-        return null;
-      }
-      
-      // CSVデータから財務情報を抽出するためのマッピング
-      const financialData = {
-        netSales: null,
-        operatingIncome: null,
-        totalAssets: null,
-        cashAndEquivalents: null,
-        shareholdersEquity: null,
-        interestBearingDebt: null,
-        accountsPayable: null,
-        accruedExpenses: null,
-        interestIncome: null,
-        grossProfit: null,
-        sellingAdminExpenses: null,
-        leaseExpense: null,
-        leaseDebt: null
-      };
-      
-      // EDINETのCSVフォーマットに基づいて解析
-      // 各行を解析して、勘定科目名と金額を抽出
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-        
-        // CSVの各フィールドを解析
-        const fields = line.split(',');
-        if (fields.length < 2) continue;
-        
-        // 勘定科目名と金額を抽出（EDINETのCSV形式に対応）
-        const accountName = fields[0].replace(/"/g, '').trim();
-        const value = this.parseNumber(fields[fields.length - 1]);
-        
-        if (value === null) continue;
-        
-        // 勘定科目名をマッチング
-        if (accountName.includes('売上高') || accountName.includes('営業収益') || accountName.toLowerCase().includes('revenue')) {
-          if (!financialData.netSales || Math.abs(value) > Math.abs(financialData.netSales)) {
-            financialData.netSales = value;
-            console.log(`売上高を検出: ${value}`);
+      // 簡易ZIP解析でCSVファイルを探す
+      let offset = 0;
+      while (offset < zipBuffer.length - 30) {
+        // ローカルファイルヘッダー検索 (PK\x03\x04)
+        if (zipBuffer[offset] === 0x50 && zipBuffer[offset + 1] === 0x4B && 
+            zipBuffer[offset + 2] === 0x03 && zipBuffer[offset + 3] === 0x04) {
+          
+          try {
+            // ファイル情報を読み取り
+            const fileNameLength = zipBuffer[offset + 26] + (zipBuffer[offset + 27] << 8);
+            const extraFieldLength = zipBuffer[offset + 28] + (zipBuffer[offset + 29] << 8);
+            const uncompressedSize = zipBuffer[offset + 22] + (zipBuffer[offset + 23] << 8) + 
+                                   (zipBuffer[offset + 24] << 16) + (zipBuffer[offset + 25] << 24);
+            const compressionMethod = zipBuffer[offset + 8] + (zipBuffer[offset + 9] << 8);
+            
+            // ファイル名取得
+            const fileNameStart = offset + 30;
+            const fileName = zipBuffer.subarray(fileNameStart, fileNameStart + fileNameLength).toString('utf8');
+            
+            console.log(`ファイル発見: ${fileName} (圧縮方式: ${compressionMethod}, 展開後: ${uncompressedSize} bytes)`);
+            
+            // CSVファイルかチェック（財務データ用のCSVを優先）
+            if (fileName.toLowerCase().includes('.csv') && 
+                (fileName.includes('jpcrp') || fileName.includes('asr') || fileName.includes('financial'))) {
+              
+              const dataStart = fileNameStart + fileNameLength + extraFieldLength;
+              
+              if (compressionMethod === 0) {
+                // 非圧縮の場合
+                const csvData = zipBuffer.subarray(dataStart, dataStart + uncompressedSize);
+                const csvContent = csvData.toString('utf8');
+                console.log(`✓ CSVファイル抽出成功 (非圧縮): ${fileName}`);
+                return csvContent;
+              } else {
+                console.log(`⚠️ 圧縮されたCSVファイル (方式${compressionMethod}): ${fileName} - 要Node.js zlib対応`);
+                // 圧縮されたファイルは現在の簡易実装では対応困難
+                // 後続ファイルを探す
+              }
+            }
+            
+            // 次のファイルエントリへ
+            offset = dataStart + uncompressedSize;
+          } catch (fileError) {
+            console.warn(`ファイル解析エラー offset ${offset}:`, fileError.message);
+            offset++;
           }
-        } else if (accountName.includes('営業利益') || accountName.toLowerCase().includes('operating income')) {
-          financialData.operatingIncome = value;
-          console.log(`営業利益を検出: ${value}`);
-        } else if (accountName.includes('資産合計') || accountName.includes('総資産') || accountName.toLowerCase().includes('total assets')) {
-          financialData.totalAssets = value;
-          console.log(`総資産を検出: ${value}`);
-        } else if (accountName.includes('現金及び預金') || accountName.toLowerCase().includes('cash')) {
-          financialData.cashAndEquivalents = value;
-          console.log(`現金及び預金を検出: ${value}`);
-        } else if (accountName.includes('株主資本') || accountName.includes('純資産') || accountName.toLowerCase().includes('equity')) {
-          financialData.shareholdersEquity = value;
-          console.log(`株主資本を検出: ${value}`);
-        } else if (accountName.includes('有利子負債') || accountName.includes('借入金') || accountName.toLowerCase().includes('debt')) {
-          financialData.interestBearingDebt = value;
-          console.log(`有利子負債を検出: ${value}`);
+        } else {
+          offset++;
         }
       }
       
-      // 疑似的なXBRL形式のXMLを生成
-      const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
-<xbrl xmlns="http://www.xbrl.org/2003/instance">
-  ${financialData.netSales !== null ? `<jpcrp_cor:NetSales>${financialData.netSales}</jpcrp_cor:NetSales>` : ''}
-  ${financialData.operatingIncome !== null ? `<jpcrp_cor:OperatingIncome>${financialData.operatingIncome}</jpcrp_cor:OperatingIncome>` : ''}
-  ${financialData.totalAssets !== null ? `<jpcrp_cor:Assets>${financialData.totalAssets}</jpcrp_cor:Assets>` : ''}
-  ${financialData.cashAndEquivalents !== null ? `<jpcrp_cor:CashAndDeposits>${financialData.cashAndEquivalents}</jpcrp_cor:CashAndDeposits>` : ''}
-  ${financialData.shareholdersEquity !== null ? `<jpcrp_cor:ShareholdersEquity>${financialData.shareholdersEquity}</jpcrp_cor:ShareholdersEquity>` : ''}
-  ${financialData.interestBearingDebt !== null ? `<jpcrp_cor:InterestBearingDebt>${financialData.interestBearingDebt}</jpcrp_cor:InterestBearingDebt>` : ''}
-</xbrl>`;
+      console.log('❌ 対応可能なCSVファイルが見つかりませんでした');
+      return null;
+    } catch (error) {
+      console.error('ZIP解析エラー:', error);
+      return null;
+    }
+  }
+
+  /**
+   * CSVファイルからXBRL形式のデータを抽出（改良版）
+   */
+  convertCsvToXbrlFormat(csvContent, fileName) {
+    try {
+      console.log('=== CSV解析開始 ===');
+      console.log(`ファイル: ${fileName}`);
+      console.log(`CSVサイズ: ${csvContent.length} 文字`);
       
-      console.log('生成されたXML:', xmlContent);
+      // CSVファイルの構造を分析
+      const lines = csvContent.split('\n').filter(line => line.trim());
+      console.log(`有効行数: ${lines.length}`);
+      
+      if (lines.length < 2) {
+        console.log('❌ CSVファイルが空または行数不足');
+        return null;
+      }
+      
+      // 最初の数行をサンプル表示
+      console.log('CSV最初の5行:');
+      lines.slice(0, 5).forEach((line, i) => {
+        console.log(`  ${i+1}: ${line.substring(0, 100)}...`);
+      });
+      
+      // EDINETのCSV構造を解析（コンテキスト、要素名、値の順）
+      const financialData = {};
+      let extractedCount = 0;
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line || line.startsWith('#')) continue;
+        
+        // CSVパース（カンマ区切り、クォート対応）
+        const fields = this.parseCSVLine(line);
+        if (fields.length < 3) continue;
+        
+        // EDINET CSV形式: [コンテキスト, 要素名, 値, ...]
+        const context = fields[0];
+        const elementName = fields[1];
+        const value = fields[2];
+        
+        // 財務データに関連する要素のみ抽出
+        const numericValue = this.parseNumber(value);
+        if (numericValue !== null && Math.abs(numericValue) > 0) {
+          // 日本語と英語の両方で主要財務項目をマッチング
+          const mappedField = this.mapFinancialElement(elementName);
+          if (mappedField) {
+            // より大きな値を採用（連結 > 単体）
+            if (!financialData[mappedField] || Math.abs(numericValue) > Math.abs(financialData[mappedField])) {
+              financialData[mappedField] = numericValue;
+              console.log(`✓ ${mappedField}: ${numericValue.toLocaleString()} (${elementName})`);
+              extractedCount++;
+            }
+          }
+        }
+      }
+      
+      console.log(`=== 抽出結果: ${extractedCount}項目 ===`);
+      Object.entries(financialData).forEach(([key, value]) => {
+        console.log(`${key}: ${value.toLocaleString()}`);
+      });
+      
+      if (extractedCount === 0) {
+        console.log('❌ 財務データが抽出できませんでした');
+        return null;
+      }
+      
+      // 疑似的なXBRL形式のXMLを生成
+      const xmlContent = this.generateXBRLFromFinancialData(financialData);
+      console.log('✓ XBRL XML生成完了');
+      
       return xmlContent;
       
     } catch (error) {
       console.error('CSV変換エラー:', error);
       return null;
     }
+  }
+
+  /**
+   * CSV行をパース（カンマ区切り、クォート対応）
+   */
+  parseCSVLine(line) {
+    const fields = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        fields.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    
+    fields.push(current.trim());
+    return fields.map(f => f.replace(/^"|"$/g, '')); // クォートを除去
+  }
+
+  /**
+   * 要素名を財務データフィールドにマッピング
+   */
+  mapFinancialElement(elementName) {
+    const mappings = {
+      // 売上高
+      'NetSales': 'netSales',
+      'OperatingRevenues': 'netSales',
+      'Sales': 'netSales',
+      'Revenue': 'netSales',
+      '売上高': 'netSales',
+      '営業収益': 'netSales',
+      
+      // 営業利益
+      'OperatingIncome': 'operatingIncome',
+      'OperatingProfit': 'operatingIncome',
+      '営業利益': 'operatingIncome',
+      
+      // 総資産
+      'Assets': 'totalAssets',
+      'TotalAssets': 'totalAssets',
+      'AssetsTotal': 'totalAssets',
+      '資産合計': 'totalAssets',
+      '総資産': 'totalAssets',
+      
+      // 現金及び預金
+      'CashAndCashEquivalents': 'cashAndEquivalents',
+      'CashAndDeposits': 'cashAndEquivalents',
+      'Cash': 'cashAndEquivalents',
+      '現金及び預金': 'cashAndEquivalents',
+      '現金及び現金同等物': 'cashAndEquivalents',
+      
+      // 株主資本
+      'ShareholdersEquity': 'shareholdersEquity',
+      'Equity': 'shareholdersEquity',
+      'NetAssets': 'shareholdersEquity',
+      '株主資本': 'shareholdersEquity',
+      '純資産': 'shareholdersEquity',
+      
+      // 有利子負債
+      'InterestBearingDebt': 'interestBearingDebt',
+      'Debt': 'interestBearingDebt',
+      'BorrowingsAndBonds': 'interestBearingDebt',
+      '有利子負債': 'interestBearingDebt',
+      '借入金': 'interestBearingDebt'
+    };
+    
+    // 完全一致を最初に試す
+    if (mappings[elementName]) {
+      return mappings[elementName];
+    }
+    
+    // 部分一致を試す
+    for (const [key, value] of Object.entries(mappings)) {
+      if (elementName.includes(key) || key.includes(elementName)) {
+        return value;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * 財務データからXBRL XMLを生成
+   */
+  generateXBRLFromFinancialData(financialData) {
+    const timestamp = new Date().toISOString();
+    
+    let xmlElements = '';
+    Object.entries(financialData).forEach(([key, value]) => {
+      const tagName = this.getXBRLTagName(key);
+      xmlElements += `  <${tagName}>${value}</${tagName}>\n`;
+    });
+    
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<xbrl xmlns="http://www.xbrl.org/2003/instance" 
+      xmlns:jpcrp_cor="http://disclosure.edinet-fsa.go.jp/taxonomy/jpcrp/2024-02-28/jpcrp_cor">
+  <!-- Generated from EDINET CSV data at ${timestamp} -->
+${xmlElements}</xbrl>`;
+  }
+
+  /**
+   * フィールド名に対応するXBRLタグ名を取得
+   */
+  getXBRLTagName(fieldName) {
+    const tagMappings = {
+      'netSales': 'jpcrp_cor:NetSales',
+      'operatingIncome': 'jpcrp_cor:OperatingIncome',
+      'totalAssets': 'jpcrp_cor:Assets',
+      'cashAndEquivalents': 'jpcrp_cor:CashAndDeposits',
+      'shareholdersEquity': 'jpcrp_cor:ShareholdersEquity',
+      'interestBearingDebt': 'jpcrp_cor:InterestBearingDebt'
+    };
+    
+    return tagMappings[fieldName] || `jpcrp_cor:${fieldName}`;
   }
 }
 
