@@ -1143,16 +1143,53 @@ class SimpleXbrlParser {
               
               const dataStart = fileNameStart + fileNameLength + extraFieldLength;
               
+              const compressedSize = zipBuffer[offset + 18] + (zipBuffer[offset + 19] << 8) + 
+                                   (zipBuffer[offset + 20] << 16) + (zipBuffer[offset + 21] << 24);
+              
+              const compressedData = zipBuffer.subarray(dataStart, dataStart + compressedSize);
+              
               if (compressionMethod === 0) {
                 // 非圧縮の場合
-                const csvData = zipBuffer.subarray(dataStart, dataStart + uncompressedSize);
-                const csvContent = csvData.toString('utf8');
+                const csvContent = compressedData.toString('utf8');
                 console.log(`✓ CSVファイル抽出成功 (非圧縮): ${fileName}`);
+                console.log(`CSV内容サンプル: ${csvContent.substring(0, 200)}`);
                 return csvContent;
+              } else if (compressionMethod === 8) {
+                // Deflate圧縮の場合（最も一般的）
+                console.log(`🔧 Deflate圧縮CSVファイルを展開中: ${fileName}`);
+                try {
+                  const zlib = require('zlib');
+                  
+                  // まずinflateRawSyncを試す
+                  let csvContent;
+                  try {
+                    csvContent = zlib.inflateRawSync(compressedData).toString('utf8');
+                  } catch (rawError) {
+                    console.log(`inflateRawSync失敗: ${rawError.message}, inflateSyncを試行`);
+                    // inflateRawSyncが失敗した場合はinflateSyncを試す
+                    csvContent = zlib.inflateSync(compressedData).toString('utf8');
+                  }
+                  
+                  console.log(`✓ CSVファイル抽出成功 (Deflate圧縮): ${fileName}`);
+                  console.log(`CSV展開後サイズ: ${csvContent.length} 文字`);
+                  console.log(`CSV内容サンプル: ${csvContent.substring(0, 300)}`);
+                  
+                  // CSV内容の有効性をチェック
+                  if (csvContent.length > 100 && (csvContent.includes(',') || csvContent.includes('\n'))) {
+                    console.log(`✓ 有効なCSV内容を確認`);
+                    return csvContent;
+                  } else {
+                    console.log(`❌ 無効なCSV内容: 長さ${csvContent.length}, カンマ含有${csvContent.includes(',')}`);
+                  }
+                } catch (zlibError) {
+                  console.error(`Deflate展開エラー: ${zlibError.message}`);
+                  console.error(`圧縮データサイズ: ${compressedData.length}, 展開予定サイズ: ${uncompressedSize}`);
+                  console.error(`圧縮データの最初の50バイト:`, compressedData.slice(0, 50).toString('hex'));
+                  // 他のCSVファイルを探す
+                }
               } else {
-                console.log(`⚠️ 圧縮されたCSVファイル (方式${compressionMethod}): ${fileName} - 要Node.js zlib対応`);
-                // 圧縮されたファイルは現在の簡易実装では対応困難
-                // 後続ファイルを探す
+                console.log(`⚠️ 未対応の圧縮方式 ${compressionMethod}: ${fileName}`);
+                // 他のCSVファイルを探す
               }
             }
             
@@ -1168,9 +1205,13 @@ class SimpleXbrlParser {
       }
       
       console.log('❌ 対応可能なCSVファイルが見つかりませんでした');
+      console.log('=== ZIP解析失敗の詳細 ===');
+      console.log('ZIPファイルの最初の100バイト (hex):', zipBuffer.slice(0, 100).toString('hex'));
+      console.log('ZIPファイルの最初の100バイト (ascii):', zipBuffer.slice(0, 100).toString('ascii').replace(/[^\x20-\x7E]/g, '.'));
       return null;
     } catch (error) {
       console.error('ZIP解析エラー:', error);
+      console.error('エラー詳細:', error.stack);
       return null;
     }
   }
