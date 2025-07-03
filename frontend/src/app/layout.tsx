@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navigation from "../components/Navigation";
 import Breadcrumb from "../components/Breadcrumb";
+import LogCaptureWidget from "../components/LogCaptureWidget";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function RootLayout({
         <main className="min-h-screen">
           {children}
         </main>
+        <LogCaptureWidget />
       </body>
     </html>
   );
