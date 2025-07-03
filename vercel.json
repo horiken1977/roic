@@ -27,8 +27,5 @@
       "source": "/api/(.*)",
       "destination": "/api/$1"
     }
-  ],
-  "env": {
-    "EDINET_API_KEY": "@edinet-api-key"
-  }
+  ]
 }
