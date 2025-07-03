@@ -114,6 +114,7 @@ async function searchCompaniesFromEDINET(query, apiKey) {
           documents.forEach((doc, idx) => {
             if (doc.filerName && doc.filerName.includes('三菱')) {
               console.log(`  ${idx+1}. ${doc.filerName}`);
+              console.log(`     - 全フィールド:`, Object.keys(doc));
               console.log(`     - docId: ${doc.docId}`);
               console.log(`     - docTypeCode: ${doc.docTypeCode}`);
               console.log(`     - periodEnd: ${doc.periodEnd}`);
