@@ -84,18 +84,28 @@ export default function EDINETCompanySearchSimple() {
       // 最新年度の財務データを取得
       const response = await edinetApiClient.getFinancialData(company.edinetCode, 2023)
       console.log('Financial data response:', response) // デバッグ用
+      console.log('Response data keys:', Object.keys(response.data || {})) // デバッグ用
 
       if (response.success && response.data) {
         setFinancialData(response.data)
         
+        // デバッグ情報がある場合は表示
+        if (response.data.debug) {
+          console.log('=== XBRL Debug Info ===')
+          console.log('XBRL Size:', response.data.debug.xbrlSize)
+          console.log('Is XML:', response.data.debug.isXml)
+          console.log('Tag Count:', response.data.debug.tagCount)
+          console.log('Numeric Tag Count:', response.data.debug.numericTagCount)
+          console.log('Extracted Value Count:', response.data.debug.extractedValueCount)
+          console.log('XBRL Sample:', response.data.debug.xbrlSample)
+        } else {
+          console.log('❌ デバッグ情報が含まれていません')
+          console.log('Raw response data:', response.data)
+        }
+        
         // ROIC計算を実行
         const convertedData = convertEDINETDataToFinancialData(response.data)
         console.log('Converted financial data:', convertedData) // デバッグ用
-        
-        // デバッグ情報がある場合は表示
-        if (response.data.debug) {
-          console.log('XBRL Debug Info:', response.data.debug)
-        }
         
         const results = calculateAllROIC(convertedData)
         console.log('ROIC results:', results) // デバッグ用

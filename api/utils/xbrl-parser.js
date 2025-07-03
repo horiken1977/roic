@@ -248,9 +248,60 @@ class SimpleXbrlParser {
                 
                 if (isZip) {
                   console.log('有効なZIPファイルを確認しました');
-                  // 現在はZIP展開ライブラリが未実装のため、type=1でXML直接要求に変更
-                  console.log('ZIP展開ライブラリ未実装のため、XML直接要求にフォールバック');
-                  resolve(this.fetchXbrlAsXml(docId, apiKey));
+                  // ZIP展開を試行（簡易的な実装）
+                  console.log('ZIP展開を試行します');
+                  
+                  try {
+                    // ZIP内の最初のXMLファイルを探す試行
+                    const zipString = data.toString('binary');
+                    
+                    // PKZipヘッダーを探して、ファイルエントリを解析
+                    // 簡易的なZIP解析（完全ではないが、多くの場合動作する）
+                    let xmlContent = null;
+                    
+                    // PK\x03\x04 (ローカルファイルヘッダー) を探す
+                    let offset = 0;
+                    while (offset < data.length - 30) {
+                      if (data[offset] === 0x50 && data[offset + 1] === 0x4B && 
+                          data[offset + 2] === 0x03 && data[offset + 3] === 0x04) {
+                        // ファイル名の長さを読む
+                        const fileNameLength = data[offset + 26] + (data[offset + 27] << 8);
+                        const extraFieldLength = data[offset + 28] + (data[offset + 29] << 8);
+                        const compressedSize = data[offset + 18] + (data[offset + 19] << 8) + 
+                                             (data[offset + 20] << 16) + (data[offset + 21] << 24);
+                        
+                        // ファイル名を読む
+                        const fileNameStart = offset + 30;
+                        const fileName = data.subarray(fileNameStart, fileNameStart + fileNameLength).toString('utf8');
+                        
+                        console.log(`ZIP内ファイル発見: ${fileName} (${compressedSize} bytes)`);
+                        
+                        // XMLファイルかチェック
+                        if (fileName.toLowerCase().includes('.xml') || fileName.toLowerCase().includes('xbrl')) {
+                          const dataStart = fileNameStart + fileNameLength + extraFieldLength;
+                          const fileData = data.subarray(dataStart, dataStart + compressedSize);
+                          xmlContent = fileData.toString('utf8');
+                          console.log(`XMLファイル抽出成功: ${fileName}`);
+                          break;
+                        }
+                        
+                        offset = fileNameStart + fileNameLength + extraFieldLength + compressedSize;
+                      } else {
+                        offset++;
+                      }
+                    }
+                    
+                    if (xmlContent) {
+                      console.log('ZIP内XMLの最初の500文字:', xmlContent.substring(0, 500));
+                      resolve(xmlContent);
+                    } else {
+                      console.log('ZIP内にXMLファイルが見つかりませんでした');
+                      resolve(this.fetchXbrlAsXml(docId, apiKey));
+                    }
+                  } catch (zipError) {
+                    console.error('ZIP展開エラー:', zipError);
+                    resolve(this.fetchXbrlAsXml(docId, apiKey));
+                  }
                 } else {
                   console.log('ZIPヘッダーが無効です');
                   resolve(null);
@@ -415,14 +466,18 @@ class SimpleXbrlParser {
       console.log('=== XBRL解析完了 ===');
       
       // デバッグ情報を財務データに追加
-      financialData.debug = {
+      const debugInfo = {
         xbrlSize: xbrlString ? xbrlString.length : 0,
         xbrlSample: xbrlString ? xbrlString.substring(0, 300) : 'No XBRL data',
         tagCount: xbrlString ? (xbrlString.match(/<[^>]+>/g) || []).length : 0,
         numericTagCount: xbrlString ? (xbrlString.match(/<[^>]*>[^<]*[\d,]+[^<]*<\/[^>]*>/g) || []).length : 0,
         isXml: xbrlString ? (xbrlString.includes('<?xml') || xbrlString.includes('<xbrl') || xbrlString.includes('<XBRL')) : false,
-        extractedValueCount: Object.values(financialData).filter(v => typeof v === 'number' && v !== 0).length
+        extractedValueCount: Object.values(financialData).filter(v => typeof v === 'number' && v !== 0).length,
+        timestamp: new Date().toISOString()
       };
+      
+      console.log('デバッグ情報作成:', debugInfo);
+      financialData.debug = debugInfo;
       
       return financialData;
 
