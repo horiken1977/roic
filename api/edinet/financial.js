@@ -95,11 +95,18 @@ export default async function handler(req, res) {
       financialData.dataSource = 'edinet_xbrl_realtime';
       financialData.lastUpdated = new Date().toISOString();
       
+      // 実際に値が取得できているかチェック
+      const extractedValues = Object.entries(financialData)
+        .filter(([key, value]) => typeof value === 'number' && value !== 0)
+        .length;
+      
+      console.log(`財務データ抽出完了: ${extractedValues}個の非ゼロ値を取得`);
+      
       return res.status(200).json({
         success: true,
         data: financialData,
         source: 'edinet_xbrl_realtime',
-        message: `${year}年度の財務データ（EDINET XBRL - リアルタイム解析）`
+        message: `${year}年度の財務データ（EDINET XBRL - リアルタイム解析、${extractedValues}項目抽出）`
       });
 
     } catch (xbrlError) {

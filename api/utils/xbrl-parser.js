@@ -122,8 +122,17 @@ class SimpleXbrlParser {
       const xbrlData = await this.fetchXbrlDocument(docId, apiKey);
       
       if (!xbrlData) {
+        console.error('XBRLデータが空またはnull');
         throw new Error('XBRLデータの取得に失敗しました');
       }
+      
+      console.log(`取得したXBRLデータサイズ: ${xbrlData.length} 文字`);
+      console.log(`XBRLデータタイプ: ${typeof xbrlData}`);
+      console.log(`XBRLデータの最初の200文字: ${xbrlData.substring(0, 200)}`);
+      
+      // XMLかどうかの基本チェック
+      const isXml = xbrlData.includes('<?xml') || xbrlData.includes('<xbrl') || xbrlData.includes('<XBRL');
+      console.log(`XML形式チェック: ${isXml}`);
 
       // 財務データを抽出
       const financialData = await this.parseXbrlData(xbrlData);
@@ -364,6 +373,19 @@ class SimpleXbrlParser {
           console.log(`"${tag}" マッチ数: ${matches.length}, 例: ${matches.slice(0, 3).join(', ')}`);
         } else {
           console.log(`"${tag}" マッチなし`);
+        }
+      });
+      
+      // 名前空間を含むタグのパターンも検索
+      console.log('=== 名前空間付きタグ検索 ===');
+      const namespaceTags = ['jpcrp_cor:', 'jppfs_cor:', 'jp:', 'ifrs:', 'us-gaap:'];
+      namespaceTags.forEach(ns => {
+        const regex = new RegExp(`<${ns}[^>]*>([^<]*\\d[^<]*)</${ns}[^>]*>`, 'gi');
+        const matches = xbrlString.match(regex);
+        if (matches && matches.length > 0) {
+          console.log(`"${ns}" 名前空間タグ: ${matches.length}件, 例: ${matches.slice(0, 2).join(', ')}`);
+        } else {
+          console.log(`"${ns}" 名前空間タグ: なし`);
         }
       });
 
