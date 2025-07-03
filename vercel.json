@@ -1,4 +1,7 @@
 {
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/out",
+  "installCommand": "npm install",
   "functions": {
     "api/edinet/companies.js": {
       "maxDuration": 30

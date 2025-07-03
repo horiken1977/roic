@@ -20,6 +20,11 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
+      - name: Install dependencies
+        run: |
+          npm install
+          cd frontend && npm install
+
       - name: Deploy to Vercel
         run: |
           vercel pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
