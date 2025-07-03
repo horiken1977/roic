@@ -11,6 +11,9 @@
     },
     "api/vercel/logs.js": {
       "maxDuration": 20
+    },
+    "api/debug/mitsubishi.js": {
+      "maxDuration": 40
     }
   },
   "headers": [

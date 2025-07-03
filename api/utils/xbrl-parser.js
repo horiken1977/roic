@@ -4,6 +4,7 @@
  */
 
 const https = require('https');
+const zlib = require('zlib');
 
 class SimpleXbrlParser {
   constructor() {
@@ -109,6 +110,354 @@ class SimpleXbrlParser {
         'accruedexpenses', 'othercurrentliabilities', 'accruedliabilities'
       ]
     };
+
+    // 日本語勘定科目名のCSV用マッピング（追加）
+    this.csvMappings = {
+      netSales: [
+        '売上高', '営業収益', '純売上高', '売上収益', '総売上高',
+        'Revenue', 'Sales', 'NetSales', 'OperatingRevenue'
+      ],
+      operatingIncome: [
+        '営業利益', '営業損益', '事業利益', '営業収益',
+        'OperatingIncome', 'OperatingProfit', 'OperatingEarnings'
+      ],
+      ordinaryIncome: [
+        '経常利益', '経常損益', '税引前利益',
+        'OrdinaryIncome', 'IncomeBeforeIncomeTaxes', 'ProfitBeforeTax'
+      ],
+      netIncome: [
+        '当期純利益', '純利益', '最終利益', '親会社株主に帰属する当期純利益',
+        'NetIncome', 'NetProfit', 'ProfitForThePeriod'
+      ],
+      totalAssets: [
+        '資産合計', '総資産', '資産の部合計', '資産総額',
+        'Assets', 'TotalAssets', 'AssetsTotal'
+      ],
+      cashAndEquivalents: [
+        '現金及び預金', '現金預金', '現金及び現金同等物',
+        'CashAndCashEquivalents', 'CashAndDeposits', 'Cash'
+      ],
+      shareholdersEquity: [
+        '株主資本', '純資産', '株主資本合計', '純資産合計', '親会社株主持分',
+        'ShareholdersEquity', 'NetAssets', 'TotalEquity'
+      ],
+      interestBearingDebt: [
+        '有利子負債', '借入金', '長期借入金', '短期借入金', '社債',
+        'InterestBearingDebt', 'Borrowings', 'BorrowingsAndBonds'
+      ],
+      accountsPayable: [
+        '買掛金', '仕入債務', '支払手形及び買掛金', '営業債務',
+        'AccountsPayable', 'TradePayables', 'TradeAndOtherPayables'
+      ],
+      accruedExpenses: [
+        '未払費用', '未払金', '未払法人税等', 'その他流動負債',
+        'AccruedExpenses', 'AccruedLiabilities', 'OtherCurrentLiabilities'
+      ],
+      interestIncome: [
+        '受取利息', '受取利息配当金', '金融収益', '受取配当金',
+        'InterestIncome', 'InterestRevenue', 'FinancialIncome'
+      ]
+    };
+  }
+
+  /**
+   * ZIPファイルからCSVを抽出（新機能）
+   */
+  async extractCsvFromZip(zipBuffer) {
+    try {
+      console.log('=== ZIP解析開始 ===');
+      console.log(`ZIPファイルサイズ: ${zipBuffer.length} bytes`);
+      
+      // ZIP magic bytes確認
+      const isZip = zipBuffer[0] === 0x50 && zipBuffer[1] === 0x4B;
+      if (!isZip) {
+        throw new Error('有効なZIPファイルではありません');
+      }
+      
+      console.log('✓ 有効なZIPファイルを確認');
+      
+      // ZIP内のファイルを解析
+      const files = await this.parseZipDirectory(zipBuffer);
+      console.log(`ZIP内ファイル数: ${files.length}`);
+      
+      // CSVファイルを検索
+      const csvFiles = files.filter(f => 
+        f.name.toLowerCase().includes('.csv') && 
+        (f.name.toLowerCase().includes('xbrl') || f.name.toLowerCase().includes('to_csv'))
+      );
+      
+      console.log(`CSVファイル数: ${csvFiles.length}`);
+      csvFiles.forEach(f => console.log(`  - ${f.name}`));
+      
+      if (csvFiles.length === 0) {
+        throw new Error('ZIP内にXBRL CSVファイルが見つかりません');
+      }
+      
+      // 最初のCSVファイルを展開
+      const csvFile = csvFiles[0];
+      const csvData = await this.extractFileFromZip(zipBuffer, csvFile);
+      const csvContent = csvData.toString('utf8');
+      
+      console.log(`✓ CSVファイル展開成功: ${csvFile.name}`);
+      console.log(`CSV サイズ: ${csvContent.length} 文字`);
+      
+      return csvContent;
+      
+    } catch (error) {
+      console.error('ZIP解析エラー:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * ZIP内のファイル一覧を取得
+   */
+  async parseZipDirectory(zipBuffer) {
+    const files = [];
+    let offset = 0;
+    
+    while (offset < zipBuffer.length - 30) {
+      // ローカルファイルヘッダー検索 (PK\x03\x04)
+      if (zipBuffer[offset] === 0x50 && zipBuffer[offset + 1] === 0x4B && 
+          zipBuffer[offset + 2] === 0x03 && zipBuffer[offset + 3] === 0x04) {
+        
+        // ファイル情報を読み取り
+        const fileNameLength = zipBuffer[offset + 26] + (zipBuffer[offset + 27] << 8);
+        const extraFieldLength = zipBuffer[offset + 28] + (zipBuffer[offset + 29] << 8);
+        const compressedSize = zipBuffer[offset + 18] + (zipBuffer[offset + 19] << 8) + 
+                             (zipBuffer[offset + 20] << 16) + (zipBuffer[offset + 21] << 24);
+        const compressionMethod = zipBuffer[offset + 8] + (zipBuffer[offset + 9] << 8);
+        
+        // ファイル名取得
+        const fileNameStart = offset + 30;
+        const fileName = zipBuffer.subarray(fileNameStart, fileNameStart + fileNameLength).toString('utf8');
+        
+        files.push({
+          name: fileName,
+          offset: offset,
+          compressedSize: compressedSize,
+          dataOffset: fileNameStart + fileNameLength + extraFieldLength,
+          compressionMethod: compressionMethod
+        });
+        
+        offset = fileNameStart + fileNameLength + extraFieldLength + compressedSize;
+      } else {
+        offset++;
+      }
+    }
+    
+    return files;
+  }
+
+  /**
+   * ZIP内の特定ファイルを展開
+   */
+  async extractFileFromZip(zipBuffer, fileInfo) {
+    const compressedData = zipBuffer.subarray(
+      fileInfo.dataOffset, 
+      fileInfo.dataOffset + fileInfo.compressedSize
+    );
+    
+    if (fileInfo.compressionMethod === 0) {
+      // 無圧縮
+      return compressedData;
+    } else if (fileInfo.compressionMethod === 8) {
+      // Deflate圧縮
+      return new Promise((resolve, reject) => {
+        zlib.inflateRaw(compressedData, (err, decompressed) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(decompressed);
+          }
+        });
+      });
+    } else {
+      throw new Error(`未対応の圧縮形式: ${fileInfo.compressionMethod}`);
+    }
+  }
+
+  /**
+   * CSVから財務データを抽出（新機能）
+   */
+  parseCsvFinancialData(csvContent) {
+    try {
+      console.log('=== CSV解析開始 ===');
+      const lines = csvContent.split('\n');
+      console.log(`CSV行数: ${lines.length}`);
+      
+      const financialData = {
+        fiscalYear: new Date().getFullYear(),
+        companyName: '企業名未取得',
+        netSales: null,
+        operatingIncome: null,
+        ordinaryIncome: null,
+        netIncome: null,
+        interestIncome: null,
+        grossProfit: null,
+        sellingAdminExpenses: null,
+        totalAssets: null,
+        cashAndEquivalents: null,
+        shareholdersEquity: null,
+        interestBearingDebt: null,
+        accountsPayable: null,
+        accruedExpenses: null,
+        leaseExpense: null,
+        leaseDebt: null,
+        taxRate: 0.30
+      };
+      
+      let extractedCount = 0;
+      
+      // 各行を解析
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        // CSV行を解析（カンマ区切り、クォートを考慮）
+        const fields = this.parseCsvLine(line);
+        if (fields.length < 5) continue;
+        
+        // 通常のEDINET CSV形式: 勘定科目名, コード, コンテキスト, 単位, 金額
+        const accountName = fields[0];
+        const contextRef = fields[2];
+        const unit = fields[3];
+        const rawValue = fields[4];
+        
+        // 連結データを優先（CurrentYearInstant_ConsolidatedMemberなど）
+        const isConsolidated = contextRef.toLowerCase().includes('consolidated') || 
+                             contextRef.toLowerCase().includes('連結');
+        
+        // 金額を数値に変換
+        const value = this.parseJapaneseNumber(rawValue);
+        if (value === null || value === 0) continue;
+        
+        // 勘定科目をマッピング
+        const mappedField = this.mapAccountToField(accountName);
+        if (mappedField && (financialData[mappedField] === null || 
+            (isConsolidated && Math.abs(value) > Math.abs(financialData[mappedField] || 0)))) {
+          
+          financialData[mappedField] = value;
+          extractedCount++;
+          
+          console.log(`✓ ${mappedField}: ${value.toLocaleString()} (${accountName})`);
+        }
+      }
+      
+      console.log(`=== CSV解析完了: ${extractedCount}項目抽出 ===`);
+      
+      // 派生値計算
+      this.calculateDerivedValues(financialData);
+      
+      return financialData;
+      
+    } catch (error) {
+      console.error('CSV解析エラー:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * CSV行を解析（クォート対応）
+   */
+  parseCsvLine(line) {
+    const fields = [];
+    let current = '';
+    let inQuotes = false;
+    let i = 0;
+    
+    while (i < line.length) {
+      const char = line[i];
+      
+      if (char === '"' && !inQuotes) {
+        inQuotes = true;
+      } else if (char === '"' && inQuotes) {
+        if (line[i + 1] === '"') {
+          // エスケープされたクォート
+          current += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+      } else if (char === ',' && !inQuotes) {
+        fields.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+      
+      i++;
+    }
+    
+    fields.push(current.trim());
+    return fields;
+  }
+
+  /**
+   * 勘定科目名をフィールドにマッピング
+   */
+  mapAccountToField(accountName) {
+    const cleanName = accountName.replace(/[「」\s]/g, '');
+    
+    for (const [field, mappings] of Object.entries(this.csvMappings)) {
+      for (const mapping of mappings) {
+        if (cleanName.includes(mapping) || mapping.includes(cleanName)) {
+          return field;
+        }
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * 日本語数値を解析（改善版）
+   */
+  parseJapaneseNumber(value) {
+    if (!value || value === '-') return null;
+    
+    try {
+      let strValue = value.toString().trim();
+      
+      // 単位変換
+      const units = {
+        '千円': 1000,
+        '百万円': 1000000,
+        '十億円': 1000000000,
+        '兆円': 1000000000000,
+        '千': 1000,
+        '万': 10000,
+        '億': 100000000,
+        '兆': 1000000000000
+      };
+      
+      let multiplier = 1;
+      for (const [unit, factor] of Object.entries(units)) {
+        if (strValue.includes(unit)) {
+          multiplier = factor;
+          strValue = strValue.replace(unit, '');
+          break;
+        }
+      }
+      
+      // 文字クリーニング
+      strValue = strValue.replace(/[,\s　円]/g, '');
+      strValue = strValue.replace(/[−－‐]/g, '-');
+      
+      // 全角数字を半角に変換
+      strValue = strValue.replace(/[０-９]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+      
+      const number = parseFloat(strValue);
+      if (isNaN(number)) return null;
+      
+      return number * multiplier;
+      
+    } catch (error) {
+      console.warn('数値解析エラー:', error.message, 'value:', value);
+      return null;
+    }
   }
 
   /**
@@ -119,23 +468,57 @@ class SimpleXbrlParser {
       console.log(`XBRLドキュメント取得開始: ${docId}`);
 
       // XBRLファイルを取得
-      const xbrlData = await this.fetchXbrlDocument(docId, apiKey);
+      const xbrlDataResult = await this.fetchXbrlDocument(docId, apiKey);
       
-      if (!xbrlData) {
+      if (!xbrlDataResult) {
         console.error('XBRLデータが空またはnull');
         throw new Error('XBRLデータの取得に失敗しました');
       }
       
-      console.log(`取得したXBRLデータサイズ: ${xbrlData.length} 文字`);
-      console.log(`XBRLデータタイプ: ${typeof xbrlData}`);
-      console.log(`XBRLデータの最初の200文字: ${xbrlData.substring(0, 200)}`);
+      console.log(`取得したXBRLデータサイズ: ${xbrlDataResult.length} bytes/文字`);
+      console.log(`XBRLデータタイプ: ${typeof xbrlDataResult}`);
       
-      // XMLかどうかの基本チェック
-      const isXml = xbrlData.includes('<?xml') || xbrlData.includes('<xbrl') || xbrlData.includes('<XBRL');
-      console.log(`XML形式チェック: ${isXml}`);
+      // バイナリデータ（Buffer）かテキストデータかを判定
+      const isBuffer = Buffer.isBuffer(xbrlDataResult);
+      console.log(`データ形式: ${isBuffer ? 'Buffer (バイナリ)' : 'String (テキスト)'}`);
+      
+      let financialData;
+      
+      if (isBuffer) {
+        // Bufferの場合、ZIPファイルかどうかチェック
+        const isZip = xbrlDataResult[0] === 0x50 && xbrlDataResult[1] === 0x4B;
+        console.log(`ZIP形式チェック: ${isZip}`);
+        
+        if (isZip) {
+          console.log('🎯 ZIPファイルを検出 - CSVパーサーを使用');
+          
+          try {
+            // 新しいZIP/CSV処理を使用
+            const csvContent = await this.extractCsvFromZip(xbrlDataResult);
+            financialData = this.parseCsvFinancialData(csvContent);
+            
+            console.log('✅ ZIP/CSV処理成功');
+          } catch (zipError) {
+            console.warn('ZIP/CSV処理失敗、XMLパーサーにフォールバック:', zipError.message);
+            // フォールバック: 既存のXMLパーサーを試す
+            const xbrlString = xbrlDataResult.toString('utf8');
+            financialData = await this.parseXbrlData(xbrlString);
+          }
+        } else {
+          // ZIPではないバイナリデータの場合、テキストとして解釈
+          const xbrlString = xbrlDataResult.toString('utf8');
+          financialData = await this.parseXbrlData(xbrlString);
+        }
+      } else {
+        // 文字列データの場合、既存のパーサーを使用
+        console.log(`XBRLデータの最初の200文字: ${xbrlDataResult.substring(0, 200)}`);
+        
+        // XMLかどうかの基本チェック
+        const isXml = xbrlDataResult.includes('<?xml') || xbrlDataResult.includes('<xbrl') || xbrlDataResult.includes('<XBRL');
+        console.log(`XML形式チェック: ${isXml}`);
 
-      // 財務データを抽出
-      const financialData = await this.parseXbrlData(xbrlData);
+        financialData = await this.parseXbrlData(xbrlDataResult);
+      }
       
       console.log(`XBRLパース完了: ${Object.keys(financialData).length}項目抽出`);
       return financialData;
@@ -243,95 +626,28 @@ class SimpleXbrlParser {
             // Content-Typeでデータ形式を判定
             const contentType = res.headers['content-type'] || '';
             
-            if (contentType.includes('application/zip')) {
-              // ZIPファイルの場合 - 実際のZIP展開を試行
-              console.log('ZIP形式を検出しました。展開を試行します。');
+            // ZIP magic bytes チェック（Content-Typeに関係なく）
+            const isZipData = data.length >= 4 && data[0] === 0x50 && data[1] === 0x4B && 
+                             data[2] === 0x03 && data[3] === 0x04;
+            
+            if (contentType.includes('application/zip') || isZipData) {
+              // ZIPファイルの場合 - 新しいパーサーで処理するためBufferをそのまま返す
+              console.log('ZIP形式を検出しました。新しいZIP/CSVパーサーで処理します。');
               console.log('ZIPファイルサイズ:', data.length);
               
-              try {
-                // ZIPの最初の数バイトを確認してZIPファイルかチェック
-                const zipHeader = data.subarray(0, 4);
-                const isZip = zipHeader[0] === 0x50 && zipHeader[1] === 0x4B;
-                
-                if (isZip) {
-                  console.log('有効なZIPファイルを確認しました');
-                  // ZIP展開を試行（簡易的な実装）
-                  console.log('ZIP展開を試行します');
-                  
-                  try {
-                    // ZIP内の最初のXMLファイルを探す試行
-                    const zipString = data.toString('binary');
-                    
-                    // PKZipヘッダーを探して、ファイルエントリを解析
-                    // 簡易的なZIP解析（完全ではないが、多くの場合動作する）
-                    let xmlContent = null;
-                    
-                    // PK\x03\x04 (ローカルファイルヘッダー) を探す
-                    let offset = 0;
-                    while (offset < data.length - 30) {
-                      if (data[offset] === 0x50 && data[offset + 1] === 0x4B && 
-                          data[offset + 2] === 0x03 && data[offset + 3] === 0x04) {
-                        // ファイル名の長さを読む
-                        const fileNameLength = data[offset + 26] + (data[offset + 27] << 8);
-                        const extraFieldLength = data[offset + 28] + (data[offset + 29] << 8);
-                        const compressedSize = data[offset + 18] + (data[offset + 19] << 8) + 
-                                             (data[offset + 20] << 16) + (data[offset + 21] << 24);
-                        
-                        // ファイル名を読む
-                        const fileNameStart = offset + 30;
-                        const fileName = data.subarray(fileNameStart, fileNameStart + fileNameLength).toString('utf8');
-                        
-                        console.log(`ZIP内ファイル発見: ${fileName} (${compressedSize} bytes)`);
-                        
-                        // XMLファイルまたはCSVファイルかチェック
-                        if (fileName.toLowerCase().includes('.xml') || fileName.toLowerCase().includes('xbrl') || fileName.toLowerCase().includes('.csv')) {
-                          const dataStart = fileNameStart + fileNameLength + extraFieldLength;
-                          const fileData = data.subarray(dataStart, dataStart + compressedSize);
-                          
-                          // CSVファイルの場合は特別な処理
-                          if (fileName.toLowerCase().includes('.csv')) {
-                            console.log(`CSVファイル発見: ${fileName}`);
-                            const csvContent = fileData.toString('utf8');
-                            console.log('CSV内容の最初の500文字:', csvContent.substring(0, 500));
-                            
-                            // CSVからXBRL形式のデータに変換を試みる
-                            xmlContent = this.convertCsvToXbrlFormat(csvContent, fileName);
-                            if (xmlContent) {
-                              console.log(`CSVファイルからのデータ変換成功: ${fileName}`);
-                              break;
-                            }
-                          } else {
-                            xmlContent = fileData.toString('utf8');
-                            console.log(`XMLファイル抽出成功: ${fileName}`);
-                            break;
-                          }
-                        }
-                        
-                        offset = fileNameStart + fileNameLength + extraFieldLength + compressedSize;
-                      } else {
-                        offset++;
-                      }
-                    }
-                    
-                    if (xmlContent) {
-                      console.log('ZIP内XMLの最初の500文字:', xmlContent.substring(0, 500));
-                      resolve(xmlContent);
-                    } else {
-                      console.log('ZIP内にXMLファイルが見つかりませんでした');
-                      resolve(this.fetchXbrlAsXml(docId, apiKey));
-                    }
-                  } catch (zipError) {
-                    console.error('ZIP展開エラー:', zipError);
-                    resolve(this.fetchXbrlAsXml(docId, apiKey));
-                  }
-                } else {
-                  console.log('ZIPヘッダーが無効です');
-                  resolve(null);
-                }
-              } catch (zipError) {
-                console.error('ZIP処理エラー:', zipError);
-                resolve(null);
+              // ZIPの最初の数バイトを確認してZIPファイルかチェック
+              const zipHeader = data.subarray(0, 4);
+              const isZip = zipHeader[0] === 0x50 && zipHeader[1] === 0x4B;
+              
+              if (isZip) {
+                console.log('有効なZIPファイルを確認しました - Bufferを返します');
+                resolve(data); // Buffer をそのまま返す
+                return;
               }
+              
+              // ZIP形式でない場合はnullを返す
+              console.log('ZIPヘッダーが無効です');
+              resolve(null);
             } else if (contentType.includes('xml')) {
               // XMLの場合
               const xmlString = data.toString('utf8');
