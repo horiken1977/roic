@@ -177,16 +177,36 @@ async function findLatestFinancialDocument(edinetCode, fiscalYear, apiKey) {
         if (companyDocs.length > 0) {
           console.log(`${date}: ${edinetCode}の書類${companyDocs.length}件発見`);
           companyDocs.forEach(doc => {
-            console.log(`  - ${doc.docTypeCode} ${doc.docTypeName} (XBRL: ${doc.xbrlFlag})`);
+            console.log(`  - DocID: ${doc.docId}`);
+            console.log(`  - Type: ${doc.docTypeCode} ${doc.docTypeName}`);
+            console.log(`  - XBRL: ${doc.xbrlFlag}, Period: ${doc.periodEnd}`);
+            console.log(`  - Submitted: ${doc.submitDate}`);
           });
+        } else if (documents.length > 0) {
+          // 三菱電機関連の企業コードを探す
+          const mitsubishiRelated = documents.filter(doc => 
+            doc.filerName && doc.filerName.includes('三菱')
+          );
+          if (mitsubishiRelated.length > 0) {
+            console.log(`${date}: 三菱関連企業${mitsubishiRelated.length}件発見`);
+            mitsubishiRelated.forEach(doc => {
+              console.log(`  - ${doc.edinetCode}: ${doc.filerName} (${doc.docTypeName})`);
+            });
+          }
         }
         
-        // 指定企業の有価証券報告書を検索（条件を緩和）
-        const potentialDocs = documents.filter(doc => 
-          doc.edinetCode === edinetCode &&
-          (doc.docTypeCode === '120' || doc.docTypeCode === '130' || doc.docTypeCode === '140') && // 有価証券報告書、四半期報告書、半期報告書
-          doc.xbrlFlag === '1' // XBRL形式あり
+        // 指定企業の財務関連書類を検索（条件を大幅に緩和）
+        const allCompanyDocs = documents.filter(doc => doc.edinetCode === edinetCode);
+        const potentialDocs = allCompanyDocs.filter(doc => 
+          doc.xbrlFlag === '1' // XBRLがあるもの全て
         );
+        
+        if (allCompanyDocs.length > 0) {
+          console.log(`${date}: ${edinetCode}の全書類${allCompanyDocs.length}件`);
+          allCompanyDocs.forEach((doc, idx) => {
+            console.log(`  ${idx+1}. ${doc.docTypeCode} (XBRL:${doc.xbrlFlag}) ${doc.docTypeName}`);
+          });
+        }
         
         if (potentialDocs.length > 0) {
           console.log(`${date}: ${edinetCode}の候補書類${potentialDocs.length}件`);
@@ -195,10 +215,12 @@ async function findLatestFinancialDocument(edinetCode, fiscalYear, apiKey) {
           });
         }
         
-        // 有価証券報告書を優先、なければその他の報告書
-        const financialDoc = potentialDocs.find(doc => doc.docTypeCode === '120') || 
-                            potentialDocs.find(doc => doc.docTypeCode === '130') ||
-                            potentialDocs.find(doc => doc.docTypeCode === '140');
+        // 書類の優先順位を設定（有価証券報告書 > 四半期報告書 > その他）
+        const financialDoc = potentialDocs.find(doc => doc.docTypeCode === '120') ||  // 有価証券報告書
+                            potentialDocs.find(doc => doc.docTypeCode === '130') ||  // 四半期報告書
+                            potentialDocs.find(doc => doc.docTypeCode === '140') ||  // 半期報告書
+                            potentialDocs.find(doc => doc.docTypeCode === '110') ||  // 臨時報告書
+                            potentialDocs[0]; // 他にXBRLがあるもの
         
         if (financialDoc) {
           console.log(`✓ 見つかりました: ${financialDoc.docId} (${date})`);

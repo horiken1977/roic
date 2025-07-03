@@ -205,7 +205,11 @@ class SimpleXbrlParser {
 
   async fetchXbrlDocument(docId, apiKey) {
     return new Promise((resolve, reject) => {
+      // EDINET API v2の正しいエンドポイント
       const url = `https://disclosure.edinet-fsa.go.jp/api/v2/documents/${docId}?type=1&Subscription-Key=${apiKey}`;
+      
+      console.log(`XBRL取得URL確認: ${url.replace(apiKey, '[API_KEY]')}`);
+      console.log(`DocID詳細: ${docId}`);
       
       console.log(`XBRL取得: ${url.replace(apiKey, '***')}`);
 
