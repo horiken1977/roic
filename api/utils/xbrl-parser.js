@@ -283,13 +283,28 @@ class SimpleXbrlParser {
                         
                         console.log(`ZIP内ファイル発見: ${fileName} (${compressedSize} bytes)`);
                         
-                        // XMLファイルかチェック
-                        if (fileName.toLowerCase().includes('.xml') || fileName.toLowerCase().includes('xbrl')) {
+                        // XMLファイルまたはCSVファイルかチェック
+                        if (fileName.toLowerCase().includes('.xml') || fileName.toLowerCase().includes('xbrl') || fileName.toLowerCase().includes('.csv')) {
                           const dataStart = fileNameStart + fileNameLength + extraFieldLength;
                           const fileData = data.subarray(dataStart, dataStart + compressedSize);
-                          xmlContent = fileData.toString('utf8');
-                          console.log(`XMLファイル抽出成功: ${fileName}`);
-                          break;
+                          
+                          // CSVファイルの場合は特別な処理
+                          if (fileName.toLowerCase().includes('.csv')) {
+                            console.log(`CSVファイル発見: ${fileName}`);
+                            const csvContent = fileData.toString('utf8');
+                            console.log('CSV内容の最初の500文字:', csvContent.substring(0, 500));
+                            
+                            // CSVからXBRL形式のデータに変換を試みる
+                            xmlContent = this.convertCsvToXbrlFormat(csvContent, fileName);
+                            if (xmlContent) {
+                              console.log(`CSVファイルからのデータ変換成功: ${fileName}`);
+                              break;
+                            }
+                          } else {
+                            xmlContent = fileData.toString('utf8');
+                            console.log(`XMLファイル抽出成功: ${fileName}`);
+                            break;
+                          }
                         }
                         
                         offset = fileNameStart + fileNameLength + extraFieldLength + compressedSize;
@@ -727,6 +742,99 @@ class SimpleXbrlParser {
     }
 
     return data;
+  }
+
+  /**
+   * CSVファイルからXBRL形式のデータを抽出
+   */
+  convertCsvToXbrlFormat(csvContent, fileName) {
+    try {
+      console.log('CSVファイルからデータ抽出を開始:', fileName);
+      
+      // CSVファイルの構造を分析
+      const lines = csvContent.split('\n');
+      console.log(`CSV行数: ${lines.length}`);
+      
+      if (lines.length < 2) {
+        console.log('CSVファイルが空または行数不足');
+        return null;
+      }
+      
+      // CSVデータから財務情報を抽出するためのマッピング
+      const financialData = {
+        netSales: null,
+        operatingIncome: null,
+        totalAssets: null,
+        cashAndEquivalents: null,
+        shareholdersEquity: null,
+        interestBearingDebt: null,
+        accountsPayable: null,
+        accruedExpenses: null,
+        interestIncome: null,
+        grossProfit: null,
+        sellingAdminExpenses: null,
+        leaseExpense: null,
+        leaseDebt: null
+      };
+      
+      // EDINETのCSVフォーマットに基づいて解析
+      // 各行を解析して、勘定科目名と金額を抽出
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        // CSVの各フィールドを解析
+        const fields = line.split(',');
+        if (fields.length < 2) continue;
+        
+        // 勘定科目名と金額を抽出（EDINETのCSV形式に対応）
+        const accountName = fields[0].replace(/"/g, '').trim();
+        const value = this.parseNumber(fields[fields.length - 1]);
+        
+        if (value === null) continue;
+        
+        // 勘定科目名をマッチング
+        if (accountName.includes('売上高') || accountName.includes('営業収益') || accountName.toLowerCase().includes('revenue')) {
+          if (!financialData.netSales || Math.abs(value) > Math.abs(financialData.netSales)) {
+            financialData.netSales = value;
+            console.log(`売上高を検出: ${value}`);
+          }
+        } else if (accountName.includes('営業利益') || accountName.toLowerCase().includes('operating income')) {
+          financialData.operatingIncome = value;
+          console.log(`営業利益を検出: ${value}`);
+        } else if (accountName.includes('資産合計') || accountName.includes('総資産') || accountName.toLowerCase().includes('total assets')) {
+          financialData.totalAssets = value;
+          console.log(`総資産を検出: ${value}`);
+        } else if (accountName.includes('現金及び預金') || accountName.toLowerCase().includes('cash')) {
+          financialData.cashAndEquivalents = value;
+          console.log(`現金及び預金を検出: ${value}`);
+        } else if (accountName.includes('株主資本') || accountName.includes('純資産') || accountName.toLowerCase().includes('equity')) {
+          financialData.shareholdersEquity = value;
+          console.log(`株主資本を検出: ${value}`);
+        } else if (accountName.includes('有利子負債') || accountName.includes('借入金') || accountName.toLowerCase().includes('debt')) {
+          financialData.interestBearingDebt = value;
+          console.log(`有利子負債を検出: ${value}`);
+        }
+      }
+      
+      // 疑似的なXBRL形式のXMLを生成
+      const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<xbrl xmlns="http://www.xbrl.org/2003/instance">
+  ${financialData.netSales !== null ? `<jpcrp_cor:NetSales>${financialData.netSales}</jpcrp_cor:NetSales>` : ''}
+  ${financialData.operatingIncome !== null ? `<jpcrp_cor:OperatingIncome>${financialData.operatingIncome}</jpcrp_cor:OperatingIncome>` : ''}
+  ${financialData.totalAssets !== null ? `<jpcrp_cor:Assets>${financialData.totalAssets}</jpcrp_cor:Assets>` : ''}
+  ${financialData.cashAndEquivalents !== null ? `<jpcrp_cor:CashAndDeposits>${financialData.cashAndEquivalents}</jpcrp_cor:CashAndDeposits>` : ''}
+  ${financialData.shareholdersEquity !== null ? `<jpcrp_cor:ShareholdersEquity>${financialData.shareholdersEquity}</jpcrp_cor:ShareholdersEquity>` : ''}
+  ${financialData.interestBearingDebt !== null ? `<jpcrp_cor:InterestBearingDebt>${financialData.interestBearingDebt}</jpcrp_cor:InterestBearingDebt>` : ''}
+</xbrl>`;
+      
+      console.log('生成されたXML:', xmlContent);
+      return xmlContent;
+      
+    } catch (error) {
+      console.error('CSV変換エラー:', error);
+      return null;
+    }
   }
 }
 
