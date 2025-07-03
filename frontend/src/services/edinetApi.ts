@@ -84,10 +84,7 @@ class EDINETApiClient {
    */
   private async tryMultipleApiUrls(path: string, query: string): Promise<any> {
     const apiUrls = [
-      'https://roic-horikens-projects.vercel.app/api',
-      'https://roic-api.vercel.app/api',
-      'https://roic-analysis.netlify.app/.netlify/functions', 
-      'https://horiken1977-roic.vercel.app/api'
+      'https://roic-horikens-projects.vercel.app/api'
     ];
 
     for (const baseUrl of apiUrls) {

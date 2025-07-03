@@ -196,10 +196,7 @@ export default function EDINETCompanySearchSimple() {
           <button
             onClick={async () => {
               const apiUrls = [
-                'https://roic-horikens-projects.vercel.app/api/health',
-                'https://roic-api.vercel.app/api/health',
-                'https://roic-analysis.netlify.app/.netlify/functions/health',
-                'https://horiken1977-roic.vercel.app/api/health'
+                'https://roic-horikens-projects.vercel.app/api/health'
               ];
               
               let results = [];
