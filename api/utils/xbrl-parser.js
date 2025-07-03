@@ -147,6 +147,10 @@ class SimpleXbrlParser {
         
         res.on('end', () => {
           try {
+            console.log(`XBRL取得完了: ${res.statusCode} ${res.statusMessage}`);
+            console.log(`Content-Type: ${res.headers['content-type']}`);
+            console.log(`データサイズ: ${data.length} bytes`);
+            
             if (res.statusCode !== 200) {
               reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
               return;
@@ -158,14 +162,19 @@ class SimpleXbrlParser {
             if (contentType.includes('application/zip')) {
               // ZIPファイルの場合（実際の実装では展開が必要）
               console.warn('ZIP形式は現在未対応です。XML形式を要求してください。');
+              console.log('ZIPファイルの最初の100バイト:', data.subarray(0, 100));
               resolve(null);
             } else if (contentType.includes('xml')) {
               // XMLの場合
               const xmlString = data.toString('utf8');
+              console.log('XML形式として処理します');
+              console.log('XMLの最初の500文字:', xmlString.substring(0, 500));
               resolve(xmlString);
             } else {
               // その他の形式
               const textData = data.toString('utf8');
+              console.log('テキスト形式として処理します');
+              console.log('データの最初の500文字:', textData.substring(0, 500));
               resolve(textData);
             }
           } catch (parseError) {
@@ -190,6 +199,22 @@ class SimpleXbrlParser {
    */
   async parseXbrlData(xbrlString) {
     try {
+      console.log('=== XBRL解析開始 ===');
+      console.log(`XBRLデータサイズ: ${xbrlString ? xbrlString.length : 0} 文字`);
+      
+      if (!xbrlString || xbrlString.length < 100) {
+        console.warn('XBRLデータが空または小さすぎます');
+        return null;
+      }
+
+      // XBRLの最初の1000文字をログ出力（デバッグ用）
+      console.log('XBRLサンプル（最初の1000文字）:');
+      console.log(xbrlString.substring(0, 1000));
+      
+      // タグの総数をカウント
+      const tagCount = (xbrlString.match(/<[^>]+>/g) || []).length;
+      console.log(`XMLタグ総数: ${tagCount}`);
+
       // 簡易XMLパース（正規表現ベース）
       const financialData = {
         fiscalYear: this.extractFiscalYear(xbrlString),
@@ -217,9 +242,17 @@ class SimpleXbrlParser {
         taxRate: 0.30 // デフォルト実効税率
       };
 
+      console.log('=== 抽出結果サマリー ===');
+      Object.entries(financialData).forEach(([key, value]) => {
+        if (typeof value === 'number') {
+          console.log(`${key}: ${value}`);
+        }
+      });
+
       // 計算値を補完
       this.calculateDerivedValues(financialData);
       
+      console.log('=== XBRL解析完了 ===');
       return financialData;
 
     } catch (error) {
