@@ -115,7 +115,7 @@ async function searchCompaniesFromEDINET(query, apiKey) {
             if (doc.filerName && doc.filerName.includes('三菱')) {
               console.log(`  ${idx+1}. ${doc.filerName}`);
               console.log(`     - 全フィールド:`, Object.keys(doc));
-              console.log(`     - docId: ${doc.docId}`);
+              console.log(`     - docId: ${doc.docID}`);
               console.log(`     - docTypeCode: ${doc.docTypeCode}`);
               console.log(`     - periodEnd: ${doc.periodEnd}`);
               console.log(`     - submitDateTime: ${doc.submitDateTime}`);
@@ -141,7 +141,7 @@ async function searchCompaniesFromEDINET(query, apiKey) {
           if (companies.size >= maxResults) break;
           
           console.log(`📄 書類詳細 - ${doc.filerName}:`);
-          console.log(`  - docId: ${doc.docId}`);
+          console.log(`  - docId: ${doc.docID}`);
           console.log(`  - docTypeCode: ${doc.docTypeCode}`);
           console.log(`  - periodEnd: ${doc.periodEnd}`);
           console.log(`  - submitDateTime: ${doc.submitDateTime}`);
@@ -155,7 +155,7 @@ async function searchCompaniesFromEDINET(query, apiKey) {
             industry: estimateIndustry(doc.filerName),
             hasRecentData: true,
             lastDocument: {
-              docId: doc.docId,
+              docId: doc.docID,  // 修正: docID (大文字) を使用
               docTypeCode: doc.docTypeCode,
               periodEnd: doc.periodEnd,
               submitDateTime: doc.submitDateTime
@@ -165,7 +165,7 @@ async function searchCompaniesFromEDINET(query, apiKey) {
           // 同じ企業の重複を避ける（より新しい書類を優先）
           if (!companies.has(doc.edinetCode)) {
             companies.set(doc.edinetCode, company);
-            console.log(`✓ 追加: ${doc.filerName} (${doc.edinetCode}) - docId: ${doc.docId}`);
+            console.log(`✓ 追加: ${doc.filerName} (${doc.edinetCode}) - docId: ${doc.docID}`);
           }
         }
         
