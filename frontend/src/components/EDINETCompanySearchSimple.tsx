@@ -10,7 +10,8 @@ import {
 import { 
   calculateAllROIC, 
   getROICEvaluationLevel,
-  formatCurrency
+  formatCurrency,
+  formatROIC
 } from '@/utils/roicCalculations'
 import ROICTrendChart from './ROICTrendChart'
 import ExportButtons from './ExportButtons'
