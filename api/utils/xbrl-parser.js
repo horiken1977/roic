@@ -7,49 +7,92 @@ const https = require('https');
 
 class SimpleXbrlParser {
   constructor() {
-    // ROIC計算に必要な主要財務項目のマッピング
+    // 実際のEDINET XBRLに基づいた詳細なマッピング
     this.financialMappings = {
-      // 損益計算書
+      // 損益計算書項目
       netSales: [
+        // 基本パターン
         'NetSales', 'Sales', 'Revenue', 'OperatingRevenue',
-        'jppfs_cor:NetSales', 'jppfs_cor:OperatingRevenue'
+        // 日本の勘定科目
+        '売上高', 'OperatingRevenues', 'NetSalesOfCompletedConstructionContracts',
+        // EDINET標準タグ
+        'jpcrp_cor:NetSales', 'jppfs_cor:NetSales', 'jpcrp_cor:OperatingRevenues',
+        // 名前空間なし
+        'netsales', 'sales', 'revenue',
+        // その他のパターン
+        'SalesRevenue', 'TotalRevenue', 'GrossRevenue'
       ],
       operatingIncome: [
-        'OperatingIncome', 'OperatingProfit', 
-        'jppfs_cor:OperatingIncome', 'jppfs_cor:OperatingProfit'
+        // 基本パターン
+        'OperatingIncome', 'OperatingProfit', 'OperatingEarnings',
+        // 日本語
+        '営業利益', 'OperatingProfitLoss',
+        // EDINET標準
+        'jpcrp_cor:OperatingIncome', 'jppfs_cor:OperatingIncome',
+        'jpcrp_cor:OperatingProfitLoss', 'jppfs_cor:OperatingProfitLoss',
+        // 小文字
+        'operatingincome', 'operatingprofit',
+        // その他
+        'EarningsFromOperations', 'IncomeFromOperations'
       ],
       ordinaryIncome: [
-        'OrdinaryIncome', 'IncomeBeforeIncomeTaxes',
-        'jppfs_cor:OrdinaryIncome', 'jppfs_cor:IncomeBeforeIncomeTaxes'
+        'OrdinaryIncome', 'IncomeBeforeIncomeTaxes', 'ProfitBeforeTax',
+        '経常利益', 'OrdinaryProfitLoss',
+        'jpcrp_cor:OrdinaryIncome', 'jppfs_cor:OrdinaryIncome',
+        'jpcrp_cor:OrdinaryProfitLoss', 'jppfs_cor:OrdinaryProfitLoss',
+        'ordinaryincome', 'incomebeforeincometaxes'
       ],
       interestIncome: [
-        'InterestIncome', 'jppfs_cor:InterestIncome'
+        'InterestIncome', 'InterestRevenue', 'InterestAndDividendIncome',
+        '受取利息', 'InterestAndDividends',
+        'jpcrp_cor:InterestIncome', 'jppfs_cor:InterestIncome',
+        'interestincome', 'interestrevenue'
       ],
       
-      // 貸借対照表
+      // 貸借対照表項目
       totalAssets: [
-        'Assets', 'TotalAssets', 'AssetsTotal',
-        'jppfs_cor:Assets', 'jppfs_cor:TotalAssets'
+        // 資産合計の様々な表現
+        'Assets', 'TotalAssets', 'AssetsTotal', 'GrossAssets',
+        '資産合計', '総資産', 'AssetsSum',
+        'jpcrp_cor:Assets', 'jppfs_cor:Assets', 'jpcrp_cor:TotalAssets',
+        'jppfs_cor:TotalAssets', 'jpcrp_cor:AssetsTotal',
+        'assets', 'totalassets', 'assetstotal'
       ],
       cashAndEquivalents: [
-        'CashAndCashEquivalents', 'CashAndDeposits',
-        'jppfs_cor:CashAndCashEquivalents', 'jppfs_cor:CashAndDeposits'
+        'CashAndCashEquivalents', 'CashAndDeposits', 'Cash',
+        '現金及び預金', '現金預金', 'CashOnHandAndInBanks',
+        'jpcrp_cor:CashAndCashEquivalents', 'jppfs_cor:CashAndCashEquivalents',
+        'jpcrp_cor:CashAndDeposits', 'jppfs_cor:CashAndDeposits',
+        'cashandcashequivalents', 'cashanddeposits', 'cash'
       ],
       shareholdersEquity: [
-        'NetAssets', 'TotalNetAssets', 'ShareholdersEquity',
-        'jppfs_cor:NetAssets', 'jppfs_cor:TotalNetAssets'
+        'NetAssets', 'TotalNetAssets', 'ShareholdersEquity', 'Equity',
+        '純資産', '株主資本', 'NetAssetsTotal', 'TotalEquity',
+        'jpcrp_cor:NetAssets', 'jppfs_cor:NetAssets', 
+        'jpcrp_cor:TotalNetAssets', 'jppfs_cor:TotalNetAssets',
+        'jpcrp_cor:ShareholdersEquity', 'jppfs_cor:ShareholdersEquity',
+        'netassets', 'totalnetassets', 'shareholdersequity', 'equity'
       ],
       interestBearingDebt: [
-        'InterestBearingDebt', 'BorrowingsAndBonds',
-        'jppfs_cor:InterestBearingDebt', 'jppfs_cor:BorrowingsAndBonds'
+        'InterestBearingDebt', 'BorrowingsAndBonds', 'Borrowings',
+        '有利子負債', '借入金', 'DebtWithInterest',
+        'jpcrp_cor:InterestBearingDebt', 'jppfs_cor:InterestBearingDebt',
+        'jpcrp_cor:BorrowingsAndBonds', 'jppfs_cor:BorrowingsAndBonds',
+        'interestbearingdebt', 'borrowingsandbonds', 'borrowings'
       ],
       accountsPayable: [
-        'TradeAndOtherPayables', 'AccountsPayable',
-        'jppfs_cor:TradeAndOtherPayables', 'jppfs_cor:AccountsPayable'
+        'TradeAndOtherPayables', 'AccountsPayable', 'TradePayables',
+        '買掛金', '仕入債務', 'AccountsPayableOther',
+        'jpcrp_cor:TradeAndOtherPayables', 'jppfs_cor:TradeAndOtherPayables',
+        'jpcrp_cor:AccountsPayable', 'jppfs_cor:AccountsPayable',
+        'tradeandotherpayables', 'accountspayable', 'tradepayables'
       ],
       accruedExpenses: [
-        'AccruedExpenses', 'OtherCurrentLiabilities',
-        'jppfs_cor:AccruedExpenses', 'jppfs_cor:OtherCurrentLiabilities'
+        'AccruedExpenses', 'OtherCurrentLiabilities', 'AccruedLiabilities',
+        '未払費用', '未払金', 'AccruedExpensesOther',
+        'jpcrp_cor:AccruedExpenses', 'jppfs_cor:AccruedExpenses',
+        'jpcrp_cor:OtherCurrentLiabilities', 'jppfs_cor:OtherCurrentLiabilities',
+        'accruedexpenses', 'othercurrentliabilities', 'accruedliabilities'
       ]
     };
   }
@@ -186,42 +229,87 @@ class SimpleXbrlParser {
   }
 
   /**
-   * 財務項目の値を抽出
+   * 財務項目の値を抽出（改善版）
    */
   extractFinancialValue(xbrlString, itemKey) {
     try {
       const mappings = this.financialMappings[itemKey];
       if (!mappings) return null;
 
+      console.log(`財務項目抽出開始: ${itemKey}`);
+      const foundValues = [];
+
       for (const tag of mappings) {
-        // 各タグパターンを試行
-        const patterns = [
-          // 単純なタグ
-          new RegExp(`<${tag}[^>]*>([\\d,\\-\\.]+)</`, 'gi'),
-          // 名前空間付きタグ
-          new RegExp(`<[^:]+:${tag}[^>]*>([\\d,\\-\\.]+)</`, 'gi'),
-          // contextRef付きタグ
-          new RegExp(`<${tag}[^>]*contextRef="[^"]*"[^>]*>([\\d,\\-\\.]+)</`, 'gi')
+        // 1. 完全一致パターン（名前空間なし）
+        const exactPatterns = [
+          new RegExp(`<${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</${this.escapeRegex(tag)}>`, 'gi'),
+          new RegExp(`<${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi')
         ];
 
-        for (const pattern of patterns) {
+        // 2. 名前空間付きパターン
+        const namespacePatterns = [
+          new RegExp(`<[^:]*:${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</[^:]*:${this.escapeRegex(tag)}>`, 'gi'),
+          new RegExp(`<[^:]*:${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi')
+        ];
+
+        // 3. 部分一致パターン（タグ名の一部を含む）
+        const partialPatterns = [
+          new RegExp(`<[^>]*${this.escapeRegex(tag)}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi'),
+          new RegExp(`<[^>]*${this.escapeRegex(tag.toLowerCase())}[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi')
+        ];
+
+        // 4. 日本語タグパターン
+        if (tag.match(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/)) {
+          const japanesePatterns = [
+            new RegExp(`<[^>]*>${this.escapeRegex(tag)}</[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi'),
+            new RegExp(`title="${this.escapeRegex(tag)}"[^>]*>([\\d,\\-\\.\\s]+)</`, 'gi')
+          ];
+          partialPatterns.push(...japanesePatterns);
+        }
+
+        const allPatterns = [...exactPatterns, ...namespacePatterns, ...partialPatterns];
+
+        for (const pattern of allPatterns) {
           const matches = Array.from(xbrlString.matchAll(pattern));
-          if (matches.length > 0) {
-            // 最大値を取得（通常は最新の値）
-            const values = matches.map(m => this.parseNumber(m[1])).filter(v => v !== null);
-            if (values.length > 0) {
-              const maxValue = Math.max(...values.map(Math.abs));
-              return values.find(v => Math.abs(v) === maxValue);
+          
+          for (const match of matches) {
+            const value = this.parseNumber(match[1]);
+            if (value !== null && Math.abs(value) > 0) {
+              foundValues.push({
+                tag: tag,
+                value: value,
+                context: match[0].substring(0, 100) + '...'
+              });
+              console.log(`  ✓ 見つかりました: ${tag} = ${value}`);
             }
           }
         }
       }
 
+      if (foundValues.length > 0) {
+        // 最大の絶対値を持つ値を採用（通常は連結ベース）
+        const bestValue = foundValues.reduce((prev, curr) => 
+          Math.abs(curr.value) > Math.abs(prev.value) ? curr : prev
+        );
+        
+        console.log(`  → 採用値: ${bestValue.value} (from ${bestValue.tag})`);
+        return bestValue.value;
+      }
+
+      console.log(`  ❌ 見つかりませんでした: ${itemKey}`);
       return null;
+
     } catch (error) {
       console.warn(`値抽出エラー (${itemKey}):`, error.message);
       return null;
     }
+  }
+
+  /**
+   * 正規表現用エスケープ
+   */
+  escapeRegex(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   /**
@@ -278,16 +366,44 @@ class SimpleXbrlParser {
   }
 
   /**
-   * 数値を解析
+   * 数値を解析（改善版）
    */
   parseNumber(value) {
     if (!value) return null;
     
-    // カンマと空白を除去
-    const cleanValue = value.toString().replace(/[,\s]/g, '');
-    const number = parseFloat(cleanValue);
-    
-    return isNaN(number) ? null : number;
+    try {
+      // 文字列に変換
+      let strValue = value.toString().trim();
+      
+      // HTMLエンティティをデコード
+      strValue = strValue.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+      
+      // 日本語の数値表記を処理
+      strValue = strValue.replace(/円/g, '').replace(/千円/g, '000').replace(/百万円/g, '000000').replace(/十億円/g, '000000000');
+      
+      // カンマ、空白、その他の非数値文字を除去
+      strValue = strValue.replace(/[,\s　]/g, '');
+      
+      // マイナス記号の正規化
+      strValue = strValue.replace(/[−－‐]/g, '-');
+      
+      // 数値部分のみを抽出
+      const numberMatch = strValue.match(/^[+-]?[\d\.]+/);
+      if (!numberMatch) return null;
+      
+      const number = parseFloat(numberMatch[0]);
+      
+      // 有効な数値かチェック
+      if (isNaN(number) || !isFinite(number)) return null;
+      
+      // 極端に小さい値は0として扱う
+      if (Math.abs(number) < 0.01) return null;
+      
+      return number;
+    } catch (error) {
+      console.warn('数値解析エラー:', error.message, 'value:', value);
+      return null;
+    }
   }
 
   /**
