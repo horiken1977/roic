@@ -136,16 +136,26 @@ async function findLatestFinancialDocument(edinetCode, fiscalYear, apiKey) {
     
     console.log(`書類検索: ${edinetCode} ${fiscalYear}年度 (${searchDates.length}日分)`);
     
-    for (const date of searchDates) {
+    for (const date of searchDates.slice(0, 20)) { // 最初の20日分のみ検索してパフォーマンス向上
       try {
         const documents = await fetchDocumentsForDate(date, apiKey);
+        console.log(`${date}: ${documents.length}件の書類をチェック中...`);
         
-        // 指定企業の有価証券報告書を検索
+        // 指定企業の書類があるかチェック
+        const companyDocs = documents.filter(doc => doc.edinetCode === edinetCode);
+        if (companyDocs.length > 0) {
+          console.log(`${date}: ${edinetCode}の書類${companyDocs.length}件発見`);
+          companyDocs.forEach(doc => {
+            console.log(`  - ${doc.docTypeCode} ${doc.docTypeName} (XBRL: ${doc.xbrlFlag})`);
+          });
+        }
+        
+        // 指定企業の有価証券報告書を検索（条件を緩和）
         const financialDoc = documents.find(doc => 
           doc.edinetCode === edinetCode &&
           doc.docTypeCode === '120' && // 有価証券報告書
-          doc.xbrlFlag === '1' && // XBRL形式あり
-          doc.periodEnd && doc.periodEnd.includes(fiscalYear.toString())
+          doc.xbrlFlag === '1' // XBRL形式あり
+          // periodEndの条件を削除してより広範囲に検索
         );
         
         if (financialDoc) {
@@ -215,33 +225,40 @@ function fetchDocumentsForDate(date, apiKey) {
 
 /**
  * 財務レポートの可能性がある日付リストを生成
+ * より広範囲な検索期間を設定
  */
 function getFinancialReportDates(fiscalYear) {
   const dates = [];
+  const currentDate = new Date();
   
-  // 通常の決算発表期間：年度末から3-6ヶ月後
-  const reportPeriods = [
-    { month: 6, days: [20, 25, 30] }, // 6月（3月決算）
-    { month: 7, days: [15, 31] },     // 7月
-    { month: 8, days: [15, 31] },     // 8月
-    { month: 5, days: [15, 31] },     // 5月
-    { month: 9, days: [15, 30] },     // 9月
-    { month: 11, days: [15, 30] }     // 11月
-  ];
+  // 過去2年間の範囲で検索（より確実にカバー）
+  const startYear = fiscalYear - 1;
+  const endYear = fiscalYear + 2;
   
-  for (const period of reportPeriods) {
-    for (const day of period.days) {
-      const date = new Date(fiscalYear, period.month - 1, day);
-      dates.push(date.toISOString().split('T')[0]);
+  for (let year = startYear; year <= endYear; year++) {
+    // 各年の主要な決算発表月
+    const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    
+    for (const month of months) {
+      // 各月の15日と月末付近をチェック
+      const checkDays = [15, 20, 25, 28, 30, 31];
       
-      // 翌年も追加
-      const nextYearDate = new Date(fiscalYear + 1, period.month - 1, day);
-      dates.push(nextYearDate.toISOString().split('T')[0]);
+      for (const day of checkDays) {
+        const date = new Date(year, month - 1, day);
+        
+        // 未来の日付は除外
+        if (date <= currentDate) {
+          const dateStr = date.toISOString().split('T')[0];
+          if (!dates.includes(dateStr)) {
+            dates.push(dateStr);
+          }
+        }
+      }
     }
   }
   
   // 日付順でソート（新しい順）
-  return dates.sort((a, b) => new Date(b) - new Date(a));
+  return dates.sort((a, b) => new Date(b) - new Date(a)).slice(0, 100); // 最大100日分
 }
 
 /**
