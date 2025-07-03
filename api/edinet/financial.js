@@ -3,6 +3,7 @@
  */
 
 const https = require('https');
+const SimpleXbrlParser = require('../utils/xbrl-parser');
 
 export default async function handler(req, res) {
   // 完全なCORS ヘッダーを設定（関数の最初で設定）
@@ -59,15 +60,57 @@ export default async function handler(req, res) {
       });
     }
 
-    // 暫定的な財務データを生成（実際のXBRL解析実装までの仮実装）
-    const sampleFinancialData = generateSampleFinancialData(edinetCode, year);
-    
-    return res.status(200).json({
-      success: true,
-      data: sampleFinancialData,
-      source: 'edinet_api_sample',
-      message: `${year}年度の財務データ（開発中のためサンプルデータ）`
-    });
+    try {
+      // 1. EDINET APIから企業の最新書類を検索
+      const document = await findLatestFinancialDocument(edinetCode, year, apiKey);
+      
+      if (!document) {
+        return res.status(404).json({
+          success: false,
+          error: 'DOCUMENT_NOT_FOUND',
+          message: `${year}年度の有価証券報告書が見つかりませんでした`
+        });
+      }
+
+      // 2. XBRLデータを取得・解析
+      const xbrlParser = new SimpleXbrlParser();
+      const financialData = await xbrlParser.fetchAndParseXbrl(document.docId, apiKey);
+      
+      if (!financialData) {
+        // フォールバック：サンプルデータ
+        const sampleData = generateSampleFinancialData(edinetCode, year);
+        return res.status(200).json({
+          success: true,
+          data: sampleData,
+          source: 'edinet_api_fallback',
+          message: `${year}年度の財務データ（XBRL解析失敗のためサンプルデータ使用）`
+        });
+      }
+
+      // メタデータを追加
+      financialData.edinetCode = edinetCode;
+      financialData.dataSource = 'edinet_xbrl_realtime';
+      financialData.lastUpdated = new Date().toISOString();
+      
+      return res.status(200).json({
+        success: true,
+        data: financialData,
+        source: 'edinet_xbrl_realtime',
+        message: `${year}年度の財務データ（EDINET XBRL - リアルタイム解析）`
+      });
+
+    } catch (xbrlError) {
+      console.error('XBRL解析エラー:', xbrlError);
+      
+      // フォールバック：サンプルデータ
+      const sampleData = generateSampleFinancialData(edinetCode, year);
+      return res.status(200).json({
+        success: true,
+        data: sampleData,
+        source: 'edinet_api_fallback',
+        message: `${year}年度の財務データ（XBRL解析エラーのためサンプルデータ使用）`
+      });
+    }
 
   } catch (error) {
     console.error('財務データ取得エラー:', error);
@@ -81,6 +124,124 @@ export default async function handler(req, res) {
       message: `財務データ取得中にエラーが発生しました: ${error.message}`
     });
   }
+}
+
+/**
+ * 指定企業・年度の最新財務書類を検索
+ */
+async function findLatestFinancialDocument(edinetCode, fiscalYear, apiKey) {
+  try {
+    // 検索対象期間を設定（指定年度の前後6ヶ月）
+    const searchDates = getFinancialReportDates(fiscalYear);
+    
+    console.log(`書類検索: ${edinetCode} ${fiscalYear}年度 (${searchDates.length}日分)`);
+    
+    for (const date of searchDates) {
+      try {
+        const documents = await fetchDocumentsForDate(date, apiKey);
+        
+        // 指定企業の有価証券報告書を検索
+        const financialDoc = documents.find(doc => 
+          doc.edinetCode === edinetCode &&
+          doc.docTypeCode === '120' && // 有価証券報告書
+          doc.xbrlFlag === '1' && // XBRL形式あり
+          doc.periodEnd && doc.periodEnd.includes(fiscalYear.toString())
+        );
+        
+        if (financialDoc) {
+          console.log(`✓ 見つかりました: ${financialDoc.docId} (${date})`);
+          return financialDoc;
+        }
+      } catch (dateError) {
+        console.warn(`日付 ${date} の検索エラー:`, dateError.message);
+        continue;
+      }
+    }
+    
+    console.log(`書類が見つかりませんでした: ${edinetCode} ${fiscalYear}年度`);
+    return null;
+    
+  } catch (error) {
+    console.error('書類検索エラー:', error);
+    return null;
+  }
+}
+
+/**
+ * 指定日の提出書類一覧を取得
+ */
+function fetchDocumentsForDate(date, apiKey) {
+  return new Promise((resolve, reject) => {
+    const url = `https://disclosure.edinet-fsa.go.jp/api/v2/documents.json?date=${date}&type=2&Subscription-Key=${apiKey}`;
+    
+    const req = https.get(url, {
+      headers: {
+        'User-Agent': 'ROIC-Analysis-App/1.0',
+        'Accept': 'application/json'
+      },
+      timeout: 15000
+    }, (res) => {
+      let data = '';
+      
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      res.on('end', () => {
+        try {
+          if (res.statusCode !== 200) {
+            reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
+            return;
+          }
+          
+          const result = JSON.parse(data);
+          resolve(result.results || []);
+        } catch (parseError) {
+          reject(new Error(`JSONパースエラー: ${parseError.message}`));
+        }
+      });
+    });
+    
+    req.on('error', (error) => {
+      reject(new Error(`リクエストエラー: ${error.message}`));
+    });
+    
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('APIリクエストタイムアウト'));
+    });
+  });
+}
+
+/**
+ * 財務レポートの可能性がある日付リストを生成
+ */
+function getFinancialReportDates(fiscalYear) {
+  const dates = [];
+  
+  // 通常の決算発表期間：年度末から3-6ヶ月後
+  const reportPeriods = [
+    { month: 6, days: [20, 25, 30] }, // 6月（3月決算）
+    { month: 7, days: [15, 31] },     // 7月
+    { month: 8, days: [15, 31] },     // 8月
+    { month: 5, days: [15, 31] },     // 5月
+    { month: 9, days: [15, 30] },     // 9月
+    { month: 11, days: [15, 30] }     // 11月
+  ];
+  
+  for (const period of reportPeriods) {
+    for (const day of period.days) {
+      const date = new Date(fiscalYear, period.month - 1, day);
+      dates.push(date.toISOString().split('T')[0]);
+      
+      // 翌年も追加
+      const nextYearDate = new Date(fiscalYear + 1, period.month - 1, day);
+      dates.push(nextYearDate.toISOString().split('T')[0]);
+    }
+  }
+  
+  // 日付順でソート（新しい順）
+  return dates.sort((a, b) => new Date(b) - new Date(a));
 }
 
 /**
