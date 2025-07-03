@@ -108,6 +108,22 @@ async function searchCompaniesFromEDINET(query, apiKey) {
           continue;
         }
         
+        // 三菱電機のケースを詳しく調査
+        if (query.includes('三菱電機')) {
+          console.log(`🔍 三菱電機検索 - ${date}の全書類詳細:`);
+          documents.forEach((doc, idx) => {
+            if (doc.filerName && doc.filerName.includes('三菱')) {
+              console.log(`  ${idx+1}. ${doc.filerName}`);
+              console.log(`     - docId: ${doc.docId}`);
+              console.log(`     - docTypeCode: ${doc.docTypeCode}`);
+              console.log(`     - periodEnd: ${doc.periodEnd}`);
+              console.log(`     - submitDateTime: ${doc.submitDateTime}`);
+              console.log(`     - edinetCode: ${doc.edinetCode}`);
+              console.log(`     - xbrlFlag: ${doc.xbrlFlag}`);
+            }
+          });
+        }
+        
         // 有価証券報告書、四半期報告書、半期報告書をフィルタ
         const relevantDocs = documents.filter(doc => 
           doc.docTypeCode && 
@@ -122,6 +138,14 @@ async function searchCompaniesFromEDINET(query, apiKey) {
         // マッチした企業を追加
         for (const doc of relevantDocs) {
           if (companies.size >= maxResults) break;
+          
+          console.log(`📄 書類詳細 - ${doc.filerName}:`);
+          console.log(`  - docId: ${doc.docId}`);
+          console.log(`  - docTypeCode: ${doc.docTypeCode}`);
+          console.log(`  - periodEnd: ${doc.periodEnd}`);
+          console.log(`  - submitDateTime: ${doc.submitDateTime}`);
+          console.log(`  - edinetCode: ${doc.edinetCode}`);
+          console.log(`  - secCode: ${doc.secCode}`);
           
           const company = {
             edinetCode: doc.edinetCode,
@@ -140,7 +164,7 @@ async function searchCompaniesFromEDINET(query, apiKey) {
           // 同じ企業の重複を避ける（より新しい書類を優先）
           if (!companies.has(doc.edinetCode)) {
             companies.set(doc.edinetCode, company);
-            console.log(`✓ 追加: ${doc.filerName} (${doc.edinetCode})`);
+            console.log(`✓ 追加: ${doc.filerName} (${doc.edinetCode}) - docId: ${doc.docId}`);
           }
         }
         
