@@ -296,28 +296,28 @@ export default function EDINETCompanySearchSimple() {
             📊 {selectedCompany.companyName} - 財務データ ({financialData.fiscalYear}年度)
           </h3>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-blue-50 rounded-lg p-3">
-              <div className="text-sm text-blue-700">売上高</div>
-              <div className="text-lg font-bold text-blue-900">
+              <div className="text-xs sm:text-sm text-blue-700 truncate">売上高</div>
+              <div className="text-sm sm:text-base lg:text-lg font-bold text-blue-900 break-words">
                 {formatCurrency(financialData.netSales)}
               </div>
             </div>
             <div className="bg-green-50 rounded-lg p-3">
-              <div className="text-sm text-green-700">営業利益</div>
-              <div className="text-lg font-bold text-green-900">
+              <div className="text-xs sm:text-sm text-green-700 truncate">営業利益</div>
+              <div className="text-sm sm:text-base lg:text-lg font-bold text-green-900 break-words">
                 {formatCurrency(financialData.operatingIncome)}
               </div>
             </div>
             <div className="bg-purple-50 rounded-lg p-3">
-              <div className="text-sm text-purple-700">総資産</div>
-              <div className="text-lg font-bold text-purple-900">
+              <div className="text-xs sm:text-sm text-purple-700 truncate">総資産</div>
+              <div className="text-sm sm:text-base lg:text-lg font-bold text-purple-900 break-words">
                 {formatCurrency(financialData.totalAssets)}
               </div>
             </div>
             <div className="bg-orange-50 rounded-lg p-3">
-              <div className="text-sm text-orange-700">株主資本</div>
-              <div className="text-lg font-bold text-orange-900">
+              <div className="text-xs sm:text-sm text-orange-700 truncate">株主資本</div>
+              <div className="text-sm sm:text-base lg:text-lg font-bold text-orange-900 break-words">
                 {formatCurrency(financialData.shareholdersEquity)}
               </div>
             </div>

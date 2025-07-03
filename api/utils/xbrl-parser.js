@@ -330,8 +330,24 @@ class SimpleXbrlParser {
 
       console.log('=== 抽出結果サマリー ===');
       Object.entries(financialData).forEach(([key, value]) => {
-        if (typeof value === 'number') {
-          console.log(`${key}: ${value}`);
+        console.log(`${key}: ${value}`);
+      });
+
+      // 実際のXBRLデータ構造をサンプル出力
+      console.log('=== XBRL実データサンプル ===');
+      const sampleLines = xbrlString.split('\n').slice(0, 20).join('\n');
+      console.log('XBRLの最初の20行:', sampleLines);
+      
+      // 主要な財務タグを検索
+      console.log('=== 主要タグ検索結果 ===');
+      const searchTags = ['NetSales', 'Sales', '売上高', 'Assets', '資産合計', 'OperatingIncome', '営業利益'];
+      searchTags.forEach(tag => {
+        const regex = new RegExp(`<[^>]*${tag}[^>]*>([^<]+)<`, 'gi');
+        const matches = xbrlString.match(regex);
+        if (matches) {
+          console.log(`"${tag}" マッチ数: ${matches.length}, 例: ${matches.slice(0, 3).join(', ')}`);
+        } else {
+          console.log(`"${tag}" マッチなし`);
         }
       });
 
@@ -401,18 +417,30 @@ class SimpleXbrlParser {
 
         const allPatterns = [...exactPatterns, ...namespacePatterns, ...partialPatterns];
 
-        for (const pattern of allPatterns) {
+        for (let i = 0; i < allPatterns.length; i++) {
+          const pattern = allPatterns[i];
           const matches = Array.from(xbrlString.matchAll(pattern));
           
+          if (matches.length > 0) {
+            console.log(`  パターン${i+1}で${matches.length}件ヒット: ${pattern.source.substring(0, 50)}...`);
+          }
+          
           for (const match of matches) {
-            const value = this.parseNumber(match[1]);
+            const rawValue = match[1];
+            const value = this.parseNumber(rawValue);
+            console.log(`    生値: "${rawValue}" → 解析後: ${value}`);
+            
             if (value !== null && Math.abs(value) > 0) {
               foundValues.push({
                 tag: tag,
                 value: value,
-                context: match[0].substring(0, 100) + '...'
+                context: match[0].substring(0, 150) + '...'
               });
-              console.log(`  ✓ 見つかりました: ${tag} = ${value}`);
+              console.log(`  ✓ 採用: ${tag} = ${value} (from "${rawValue}")`);
+            } else if (value === null) {
+              console.log(`    数値解析失敗: "${rawValue}"`);
+            } else {
+              console.log(`    ゼロ値のためスキップ: ${value}`);
             }
           }
         }
