@@ -74,7 +74,7 @@ class EDINETApiClient {
     // バックエンドサーバーのURL
     this.backendBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
     // Vercel Functions URL（複数候補）
-    this.vercelApiUrl = process.env.NEXT_PUBLIC_VERCEL_API_URL || 'https://roic-api.vercel.app/api';
+    this.vercelApiUrl = process.env.NEXT_PUBLIC_VERCEL_API_URL || 'https://roic-horikens-projects.vercel.app/api';
     // GitHub Pagesなどの静的サイトではサンプルデータを使用
     this.fallbackToSample = process.env.NEXT_PUBLIC_STATIC_DEPLOY === 'true';
   }
