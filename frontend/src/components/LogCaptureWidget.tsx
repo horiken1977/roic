@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { logCapture } from '@/utils/logCapture'
 import { useLogCaptureShortcuts } from '@/hooks/useLogCaptureShortcuts'
+import VercelLogViewer from './VercelLogViewer'
 
 /**
  * ログキャプチャウィジェット
@@ -58,7 +59,12 @@ export default function LogCaptureWidget() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-50 max-w-sm">
+    <div className="fixed bottom-4 right-4 z-50 max-w-sm space-y-4">
+      {/* Vercelログビューアー */}
+      <VercelLogViewer />
+      
+      {/* ブラウザログキャプチャ */}
+      <div className="bg-white border border-gray-300 rounded-lg shadow-lg p-4">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg">🎯</span>
         <h3 className="font-semibold text-gray-800">ログキャプチャ</h3>
@@ -150,6 +156,7 @@ export default function LogCaptureWidget() {
           <div>4. F12コンソールから直接操作も可能</div>
         </div>
       </details>
+      </div>
     </div>
   )
 }

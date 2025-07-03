@@ -8,6 +8,9 @@
     },
     "api/edinet/financial.js": {
       "maxDuration": 30
+    },
+    "api/vercel/logs.js": {
+      "maxDuration": 20
     }
   },
   "headers": [
