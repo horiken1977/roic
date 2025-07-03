@@ -173,20 +173,34 @@ export function formatROIC(roic: number): string {
 }
 
 /**
- * 数値を適切な単位でフォーマット（百万円単位想定）
+ * 数値を適切な単位でフォーマット（動的単位判定）
  */
 export function formatCurrency(amount: number): string {
-  if (amount === null || amount === undefined || isNaN(amount)) {
+  if (amount === null || amount === undefined || isNaN(amount) || amount === 0) {
     return '-';
   }
   
-  // 百万円単位でフォーマット（EDINET XBRLは通常百万円単位）
-  if (Math.abs(amount) >= 1000) {
-    return `${(amount / 1000).toFixed(1)}億円`;
-  } else if (Math.abs(amount) >= 1) {
-    return `${amount.toFixed(1)}百万円`;
-  } else {
-    return '0円';
+  const absAmount = Math.abs(amount);
+  
+  // 兆円単位（12桁以上）
+  if (absAmount >= 1000000000000) {
+    return `${(amount / 1000000000000).toLocaleString('ja-JP', { maximumFractionDigits: 1 })}兆円`;
+  }
+  // 億円単位（9桁以上）
+  else if (absAmount >= 100000000) {
+    return `${(amount / 100000000).toLocaleString('ja-JP', { maximumFractionDigits: 1 })}億円`;
+  }
+  // 万円単位（5桁以上）
+  else if (absAmount >= 10000) {
+    return `${(amount / 10000).toLocaleString('ja-JP', { maximumFractionDigits: 1 })}万円`;
+  }
+  // 円単位
+  else if (absAmount >= 1) {
+    return `${amount.toLocaleString('ja-JP', { maximumFractionDigits: 0 })}円`;
+  }
+  // 小数の場合
+  else {
+    return `${amount.toFixed(2)}円`;
   }
 }
 

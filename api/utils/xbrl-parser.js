@@ -338,6 +338,22 @@ class SimpleXbrlParser {
       const sampleLines = xbrlString.split('\n').slice(0, 20).join('\n');
       console.log('XBRLの最初の20行:', sampleLines);
       
+      // ファイル全体の統計
+      console.log('=== XBRL統計情報 ===');
+      console.log(`全体サイズ: ${xbrlString.length} 文字`);
+      console.log(`行数: ${xbrlString.split('\n').length} 行`);
+      console.log(`XMLタグ数: ${(xbrlString.match(/<[^>]+>/g) || []).length} 個`);
+      
+      // 数値を含むタグを検索
+      const numericTags = xbrlString.match(/<[^>]*>[^<]*[\d,]+[^<]*<\/[^>]*>/g) || [];
+      console.log(`数値を含むタグ数: ${numericTags.length} 個`);
+      if (numericTags.length > 0) {
+        console.log('数値タグの例（最初の5つ）:');
+        numericTags.slice(0, 5).forEach((tag, i) => {
+          console.log(`${i+1}: ${tag}`);
+        });
+      }
+      
       // 主要な財務タグを検索
       console.log('=== 主要タグ検索結果 ===');
       const searchTags = ['NetSales', 'Sales', '売上高', 'Assets', '資産合計', 'OperatingIncome', '営業利益'];

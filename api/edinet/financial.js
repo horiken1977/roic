@@ -65,12 +65,15 @@ export default async function handler(req, res) {
       const document = await findLatestFinancialDocument(edinetCode, year, apiKey);
       
       if (!document) {
+        console.log(`書類検索失敗: ${edinetCode} ${year}年度 - 結果なし`);
         return res.status(404).json({
           success: false,
           error: 'DOCUMENT_NOT_FOUND',
-          message: `${year}年度の有価証券報告書が見つかりませんでした`
+          message: `${year}年度の有価証券報告書が見つかりませんでした (${edinetCode})`
         });
       }
+      
+      console.log(`書類検索成功: ${document.docId} (${edinetCode} ${year}年度)`);
 
       // 2. XBRLデータを取得・解析
       const xbrlParser = new SimpleXbrlParser();
@@ -151,12 +154,23 @@ async function findLatestFinancialDocument(edinetCode, fiscalYear, apiKey) {
         }
         
         // 指定企業の有価証券報告書を検索（条件を緩和）
-        const financialDoc = documents.find(doc => 
+        const potentialDocs = documents.filter(doc => 
           doc.edinetCode === edinetCode &&
-          doc.docTypeCode === '120' && // 有価証券報告書
+          (doc.docTypeCode === '120' || doc.docTypeCode === '130' || doc.docTypeCode === '140') && // 有価証券報告書、四半期報告書、半期報告書
           doc.xbrlFlag === '1' // XBRL形式あり
-          // periodEndの条件を削除してより広範囲に検索
         );
+        
+        if (potentialDocs.length > 0) {
+          console.log(`${date}: ${edinetCode}の候補書類${potentialDocs.length}件`);
+          potentialDocs.forEach(doc => {
+            console.log(`  - ${doc.docTypeCode} ${doc.docTypeName} (期間終了: ${doc.periodEnd})`);
+          });
+        }
+        
+        // 有価証券報告書を優先、なければその他の報告書
+        const financialDoc = potentialDocs.find(doc => doc.docTypeCode === '120') || 
+                            potentialDocs.find(doc => doc.docTypeCode === '130') ||
+                            potentialDocs.find(doc => doc.docTypeCode === '140');
         
         if (financialDoc) {
           console.log(`✓ 見つかりました: ${financialDoc.docId} (${date})`);
