@@ -1191,6 +1191,19 @@ class SimpleXbrlParser {
       const financialData = {};
       let extractedCount = 0;
       
+      // コンテキスト優先度（Zenn記事参考）
+      const contextPriority = {
+        'consolidated': 100, // 連結
+        'nonconsolidated': 50, // 単体
+        'current': 80, // 当期
+        'prior': 20, // 前期
+        'annual': 90, // 年次
+        'quarterly': 30 // 四半期
+      };
+      
+      // データの重複管理（より良い値を採用）
+      const dataWithContext = {};
+      
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line || line.startsWith('#')) continue;
@@ -1207,18 +1220,35 @@ class SimpleXbrlParser {
         // 財務データに関連する要素のみ抽出
         const numericValue = this.parseNumber(value);
         if (numericValue !== null && Math.abs(numericValue) > 0) {
-          // 日本語と英語の両方で主要財務項目をマッチング
           const mappedField = this.mapFinancialElement(elementName);
           if (mappedField) {
-            // より大きな値を採用（連結 > 単体）
-            if (!financialData[mappedField] || Math.abs(numericValue) > Math.abs(financialData[mappedField])) {
-              financialData[mappedField] = numericValue;
-              console.log(`✓ ${mappedField}: ${numericValue.toLocaleString()} (${elementName})`);
-              extractedCount++;
+            // コンテキストの優先度を計算
+            let priority = this.calculateContextPriority(context, contextPriority);
+            
+            // 既存データと比較
+            const key = mappedField;
+            if (!dataWithContext[key] || 
+                priority > dataWithContext[key].priority ||
+                (priority === dataWithContext[key].priority && Math.abs(numericValue) > Math.abs(dataWithContext[key].value))) {
+              
+              dataWithContext[key] = {
+                value: numericValue,
+                context: context,
+                element: elementName,
+                priority: priority
+              };
+              
+              console.log(`✓ ${mappedField}: ${numericValue.toLocaleString()} (${elementName}, context: ${context}, priority: ${priority})`);
             }
           }
         }
       }
+      
+      // 最終的な財務データを構築
+      Object.entries(dataWithContext).forEach(([key, data]) => {
+        financialData[key] = data.value;
+        extractedCount++;
+      });
       
       console.log(`=== 抽出結果: ${extractedCount}項目 ===`);
       Object.entries(financialData).forEach(([key, value]) => {
@@ -1268,50 +1298,98 @@ class SimpleXbrlParser {
   }
 
   /**
-   * 要素名を財務データフィールドにマッピング
+   * 要素名を財務データフィールドにマッピング（Zenn記事参考に拡張）
    */
   mapFinancialElement(elementName) {
     const mappings = {
-      // 売上高
+      // 売上高（共通タクソノミ + 個別タクソノミ対応）
       'NetSales': 'netSales',
+      'NetSalesSummaryOfBusinessResults': 'netSales', // Zenn記事より
       'OperatingRevenues': 'netSales',
       'Sales': 'netSales',
       'Revenue': 'netSales',
+      'RevenuesSummaryOfBusinessResults': 'netSales',
+      'NetSalesAndOperatingRevenues': 'netSales',
       '売上高': 'netSales',
       '営業収益': 'netSales',
+      '売上収益': 'netSales',
       
-      // 営業利益
+      // 営業利益（より詳細なタクソノミ対応）
       'OperatingIncome': 'operatingIncome',
+      'OperatingIncomeSummaryOfBusinessResults': 'operatingIncome',
       'OperatingProfit': 'operatingIncome',
+      'OperatingIncomeLoss': 'operatingIncome',
+      'ProfitLossFromOperatingActivities': 'operatingIncome',
       '営業利益': 'operatingIncome',
+      '営業損益': 'operatingIncome',
       
-      // 総資産
+      // 当期純利益（親会社株主帰属）
+      'ProfitLossAttributableToOwnersOfParent': 'netIncome',
+      'ProfitLossAttributableToOwnersOfParentSummaryOfBusinessResults': 'netIncome', // Zenn記事より
+      'NetIncome': 'netIncome',
+      'NetIncomeLoss': 'netIncome',
+      '親会社株主に帰属する当期純利益': 'netIncome',
+      '当期純利益': 'netIncome',
+      
+      // 総資産（連結・単体対応）
       'Assets': 'totalAssets',
       'TotalAssets': 'totalAssets',
       'AssetsTotal': 'totalAssets',
+      'AssetsTotalConsolidatedAndNonConsolidated': 'totalAssets',
       '資産合計': 'totalAssets',
       '総資産': 'totalAssets',
+      '資産の部合計': 'totalAssets',
       
-      // 現金及び預金
+      // 現金及び預金（より詳細対応）
       'CashAndCashEquivalents': 'cashAndEquivalents',
       'CashAndDeposits': 'cashAndEquivalents',
       'Cash': 'cashAndEquivalents',
+      'CashAndCashEquivalentsConsolidated': 'cashAndEquivalents',
       '現金及び預金': 'cashAndEquivalents',
       '現金及び現金同等物': 'cashAndEquivalents',
+      'キャッシュ・アンド・キャッシュ・エクイバレンツ': 'cashAndEquivalents',
       
-      // 株主資本
+      // 株主資本（より正確な区分）
       'ShareholdersEquity': 'shareholdersEquity',
       'Equity': 'shareholdersEquity',
       'NetAssets': 'shareholdersEquity',
+      'ShareholdersEquityConsolidated': 'shareholdersEquity',
+      'TotalShareholdersEquity': 'shareholdersEquity',
       '株主資本': 'shareholdersEquity',
       '純資産': 'shareholdersEquity',
+      '株主資本合計': 'shareholdersEquity',
+      '純資産合計': 'shareholdersEquity',
       
-      // 有利子負債
+      // 有利子負債（詳細分類対応）
       'InterestBearingDebt': 'interestBearingDebt',
       'Debt': 'interestBearingDebt',
       'BorrowingsAndBonds': 'interestBearingDebt',
+      'TotalInterestBearingDebt': 'interestBearingDebt',
+      'ShortTermBorrowings': 'interestBearingDebt',
+      'LongTermBorrowings': 'interestBearingDebt',
+      'BondsPayable': 'interestBearingDebt',
       '有利子負債': 'interestBearingDebt',
-      '借入金': 'interestBearingDebt'
+      '借入金': 'interestBearingDebt',
+      '短期借入金': 'interestBearingDebt',
+      '長期借入金': 'interestBearingDebt',
+      '社債': 'interestBearingDebt',
+      
+      // 追加項目（ROIC計算に有用）
+      'GrossProfit': 'grossProfit',
+      'GrossProfitSummaryOfBusinessResults': 'grossProfit',
+      '売上総利益': 'grossProfit',
+      
+      'SellingGeneralAndAdministrativeExpenses': 'sellingAdminExpenses',
+      '販売費及び一般管理費': 'sellingAdminExpenses',
+      
+      'InterestIncome': 'interestIncome',
+      'InterestIncomeOperatingRevenues': 'interestIncome',
+      '受取利息': 'interestIncome',
+      
+      // 税率計算用
+      'IncomeTaxes': 'incomeTaxes',
+      'IncomeTaxExpense': 'incomeTaxes',
+      '法人税等': 'incomeTaxes'
     };
     
     // 完全一致を最初に試す
@@ -1319,14 +1397,83 @@ class SimpleXbrlParser {
       return mappings[elementName];
     }
     
-    // 部分一致を試す
+    // 部分一致を試す（より柔軟なマッチング）
     for (const [key, value] of Object.entries(mappings)) {
       if (elementName.includes(key) || key.includes(elementName)) {
         return value;
       }
     }
     
+    // 個別企業タクソノミ対応（Zenn記事参考）
+    // 三菱電機など大手企業の個別タクソノミパターン
+    const individualTaxonomyPatterns = [
+      // 売上高パターン
+      { pattern: /(NetSales|Revenue|Sales).*Summary/i, field: 'netSales' },
+      { pattern: /売上.*高/i, field: 'netSales' },
+      { pattern: /営業.*収益/i, field: 'netSales' },
+      
+      // 営業利益パターン
+      { pattern: /(Operating|営業).*(Income|利益|Profit)/i, field: 'operatingIncome' },
+      
+      // 総資産パターン
+      { pattern: /(Total|総|合計).*(Assets|資産)/i, field: 'totalAssets' },
+      { pattern: /資産.*合計/i, field: 'totalAssets' },
+      
+      // 現金パターン
+      { pattern: /(Cash|現金).*(Deposit|預金|Equivalent)/i, field: 'cashAndEquivalents' },
+      
+      // 株主資本パターン
+      { pattern: /(Shareholders|株主).*(Equity|資本)/i, field: 'shareholdersEquity' },
+      { pattern: /(Net|純).*(Assets|資産)/i, field: 'shareholdersEquity' },
+      
+      // 有利子負債パターン
+      { pattern: /(Interest|有利子).*(Debt|負債|Bearing)/i, field: 'interestBearingDebt' },
+      { pattern: /(Borrowing|借入|Loan)/i, field: 'interestBearingDebt' },
+      { pattern: /(Bond|社債)/i, field: 'interestBearingDebt' }
+    ];
+    
+    // パターンマッチングで個別タクソノミに対応
+    for (const { pattern, field } of individualTaxonomyPatterns) {
+      if (pattern.test(elementName)) {
+        console.log(`個別タクソノミマッチ: ${elementName} → ${field}`);
+        return field;
+      }
+    }
+    
     return null;
+  }
+
+  /**
+   * コンテキストの優先度を計算（Zenn記事参考）
+   */
+  calculateContextPriority(context, contextPriority) {
+    let priority = 10; // ベース優先度
+    
+    const contextLower = context.toLowerCase();
+    
+    // 各キーワードの存在をチェックして優先度を加算
+    Object.entries(contextPriority).forEach(([keyword, points]) => {
+      if (contextLower.includes(keyword)) {
+        priority += points;
+      }
+    });
+    
+    // 連結データを最優先
+    if (contextLower.includes('consolidated') || contextLower.includes('連結')) {
+      priority += 200;
+    }
+    
+    // 年次データを優先（四半期より）
+    if (contextLower.includes('annual') || contextLower.includes('年度') || contextLower.includes('年次')) {
+      priority += 100;
+    }
+    
+    // 当期データを優先
+    if (contextLower.includes('current') || contextLower.includes('当期') || contextLower.includes('2025') || contextLower.includes('2024')) {
+      priority += 50;
+    }
+    
+    return priority;
   }
 
   /**
