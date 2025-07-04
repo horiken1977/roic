@@ -11,6 +11,10 @@
       "maxDuration": 60,
       "memory": 1024
     },
+    "api/edinet/simple-financial.js": {
+      "maxDuration": 30,
+      "memory": 512
+    },
     "api/vercel/logs.js": {
       "maxDuration": 20,
       "memory": 512
