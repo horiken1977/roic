@@ -1,0 +1,81 @@
+{
+  "testInfo": {
+    "totalCompanies": 1000,
+    "actualTested": 996,
+    "concurrentRequests": 5,
+    "testDuration": "291秒",
+    "averageResponseTime": "440ms"
+  },
+  "results": {
+    "successCount": 0,
+    "failureCount": 996,
+    "successRate": "0.0%"
+  },
+  "errorBreakdown": {
+    "HTTP_500": 996
+  },
+  "sampleSuccessfulCompanies": [],
+  "sampleFailedCompanies": [
+    {
+      "edinetCode": "E90978",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 540
+    },
+    {
+      "edinetCode": "E99612",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 1056
+    },
+    {
+      "edinetCode": "E25725",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 1109
+    },
+    {
+      "edinetCode": "E84335",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 1100
+    },
+    {
+      "edinetCode": "E80912",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 1133
+    },
+    {
+      "edinetCode": "E76084",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 434
+    },
+    {
+      "edinetCode": "E48264",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 434
+    },
+    {
+      "edinetCode": "E65147",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 434
+    },
+    {
+      "edinetCode": "E34899",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 435
+    },
+    {
+      "edinetCode": "E25062",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 436
+    }
+  ],
+  "dataSourceBreakdown": {}
+}

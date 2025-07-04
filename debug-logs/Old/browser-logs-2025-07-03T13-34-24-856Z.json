@@ -1,0 +1,380 @@
+{
+  "metadata": {
+    "exportTime": "2025-07-03T13:34:24.856Z",
+    "url": "https://horiken1977.github.io/roic/companies/",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+    "logCount": 25
+  },
+  "logs": [
+    {
+      "timestamp": "2025-07-03T13:33:44.620Z",
+      "level": "info",
+      "message": "🎯 ログキャプチャ開始 - F12ログが自動取得されます",
+      "args": [
+        "🎯 ログキャプチャ開始 - F12ログが自動取得されます"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:33:46.770Z",
+      "level": "log",
+      "message": "Testing: https://roic-horikens-projects.vercel.app/api/health",
+      "args": [
+        "Testing: https://roic-horikens-projects.vercel.app/api/health"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:33:55.931Z",
+      "level": "log",
+      "message": "Searching for: 三菱電機",
+      "args": [
+        "Searching for:",
+        "三菱電機"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:33:55.931Z",
+      "level": "log",
+      "message": "複数API経由でリアルタイム検索（最優先）",
+      "args": [
+        "複数API経由でリアルタイム検索（最優先）"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:33:55.931Z",
+      "level": "log",
+      "message": "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies",
+      "args": [
+        "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:02.355Z",
+      "level": "log",
+      "message": "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel",
+      "args": [
+        "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:02.356Z",
+      "level": "log",
+      "message": "Search response: {\n  \"success\": true,\n  \"data\": [\n    {\n      \"edinetCode\": \"E01739\",\n      \"companyName\": \"三菱電機株式会社\",\n      \"tickerSymbol\": \"65030\",\n      \"industry\": \"製造業\",\n      \"hasRecentData\": true,\n      \"lastDocument\": {\n        \"docId\": \"S100W0EM\",\n        \"docTypeCode\": \"120\",\n        \"periodEnd\": \"2025-03-31\",\n        \"submitDateTime\": \"2025-06-20 12:44\"\n      }\n    }\n  ],\n  \"source\": \"edinet_api_vercel\",\n  \"message\": \"1件の企業が見つかりました（EDINET API v2 - リアルタイム）\"\n}",
+      "args": [
+        "Search response:",
+        {
+          "success": true,
+          "data": [
+            {
+              "edinetCode": "E01739",
+              "companyName": "三菱電機株式会社",
+              "tickerSymbol": "65030",
+              "industry": "製造業",
+              "hasRecentData": true,
+              "lastDocument": {
+                "docId": "S100W0EM",
+                "docTypeCode": "120",
+                "periodEnd": "2025-03-31",
+                "submitDateTime": "2025-06-20 12:44"
+              }
+            }
+          ],
+          "source": "edinet_api_vercel",
+          "message": "1件の企業が見つかりました（EDINET API v2 - リアルタイム）"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:08.151Z",
+      "level": "log",
+      "message": "Fetching financial data for: 三菱電機株式会社",
+      "args": [
+        "Fetching financial data for:",
+        "三菱電機株式会社"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:08.151Z",
+      "level": "log",
+      "message": "最新書類の年度を使用: 2025年度 (期間終了: 2025-03-31)",
+      "args": [
+        "最新書類の年度を使用: 2025年度 (期間終了: 2025-03-31)"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:08.151Z",
+      "level": "log",
+      "message": "書類ID: S100W0EM",
+      "args": [
+        "書類ID: S100W0EM"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:08.419Z",
+      "level": "log",
+      "message": "GitHub Actions静的データを使用",
+      "args": [
+        "GitHub Actions静的データを使用"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:08.663Z",
+      "level": "log",
+      "message": "Vercel Functions経由でリアルタイム財務データ取得",
+      "args": [
+        "Vercel Functions経由でリアルタイム財務データ取得"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:08.663Z",
+      "level": "log",
+      "message": "指定docIDを使用: S100W0EM",
+      "args": [
+        "指定docIDを使用: S100W0EM"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "Vercel Functions財務データ成功: edinet_xbrl_realtime",
+      "args": [
+        "Vercel Functions財務データ成功:",
+        "edinet_xbrl_realtime"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "Financial data response: {\n  \"success\": true,\n  \"data\": {\n    \"fiscalYear\": 2025,\n    \"companyName\": \"企業名未取得\",\n    \"netSales\": null,\n    \"operatingIncome\": null,\n    \"ordinaryIncome\": null,\n    \"interestIncome\": null,\n    \"grossProfit\": null,\n    \"sellingAdminExpenses\": null,\n    \"totalAssets\": null,\n    \"cashAndEquivalents\": null,\n    \"shareholdersEquity\": null,\n    \"interestBearingDebt\": null,\n    \"accountsPayable\": null,\n    \"accruedExpenses\": null,\n    \"leaseExpense\": null,\n    \"leaseDebt\": null,\n    \"taxRate\": 0.3,\n    \"debug\": {\n      \"xbrlSize\": 188370,\n      \"xbrlSample\": \"PK\\u0003\\u0004\\u0014\\u0000\\b\\b\\b\\u0000v��Z\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000D\\u0000\\u0000\\u0000XBRL_TO_CSV/jpaud-aai-cc-001_E01739-000_2025-03-31_01_2025-06-20.csv�<\\rl\\u0014י��8�\\u001fB�r4-V�\\u0004�8w�\\tw�\\u0006�]\\b�\\u0003���wm��\\u0006\\u0016{Y��k�`l\\u0013�1gS�ڻ�6\\u001bـS�\\u0012�UOJԨ�R\\u0011ګ�^�\\\\еɩP\\\"��\\\\�'��K�r�Eq����7o�����\\u0007\\u0012�v��μ}?���{oSWoW�\\u0007�z�*��ەy���w:\\u0017U��sp\\u0005^�g�4�\\u0002��{�W\\u0003�;���߾0R�;\\t\\u000b*������c������^~�O8\\u000b?����Ux�鋕�+�\",\n      \"tagCount\": 436,\n      \"numericTagCount\": 1,\n      \"isXml\": false,\n      \"extractedValueCount\": 2,\n      \"timestamp\": \"2025-07-03T13:34:11.941Z\"\n    },\n    \"edinetCode\": \"E01739\",\n    \"dataSource\": \"edinet_xbrl_realtime\",\n    \"lastUpdated\": \"2025-07-03T13:34:11.942Z\"\n  },\n  \"source\": \"edinet_xbrl_realtime\",\n  \"message\": \"2025年度の財務データ（指定docID: S100W0EM、2項目抽出）\"\n}",
+      "args": [
+        "Financial data response:",
+        {
+          "success": true,
+          "data": {
+            "fiscalYear": 2025,
+            "companyName": "企業名未取得",
+            "netSales": null,
+            "operatingIncome": null,
+            "ordinaryIncome": null,
+            "interestIncome": null,
+            "grossProfit": null,
+            "sellingAdminExpenses": null,
+            "totalAssets": null,
+            "cashAndEquivalents": null,
+            "shareholdersEquity": null,
+            "interestBearingDebt": null,
+            "accountsPayable": null,
+            "accruedExpenses": null,
+            "leaseExpense": null,
+            "leaseDebt": null,
+            "taxRate": 0.3,
+            "debug": {
+              "xbrlSize": 188370,
+              "xbrlSample": "PK\u0003\u0004\u0014\u0000\b\b\b\u0000v��Z\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000D\u0000\u0000\u0000XBRL_TO_CSV/jpaud-aai-cc-001_E01739-000_2025-03-31_01_2025-06-20.csv�<\rl\u0014י��8�\u001fB�r4-V�\u0004�8w�\tw�\u0006�]\b�\u0003���wm��\u0006\u0016{Y��k�`l\u0013�1gS�ڻ�6\u001bـS�\u0012�UOJԨ�R\u0011ګ�^�\\еɩP\"��\\�'��K�r�Eq����7o�����\u0007\u0012�v��μ}?���{oSWoW�\u0007�z�*��ەy���w:\u0017U��sp\u0005^�g�4�\u0002��{�W\u0003�;���߾0R�;\t\u000b*������c������^~�O8\u000b?����Ux�鋕�+�",
+              "tagCount": 436,
+              "numericTagCount": 1,
+              "isXml": false,
+              "extractedValueCount": 2,
+              "timestamp": "2025-07-03T13:34:11.941Z"
+            },
+            "edinetCode": "E01739",
+            "dataSource": "edinet_xbrl_realtime",
+            "lastUpdated": "2025-07-03T13:34:11.942Z"
+          },
+          "source": "edinet_xbrl_realtime",
+          "message": "2025年度の財務データ（指定docID: S100W0EM、2項目抽出）"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "Response data keys: [\n  \"fiscalYear\",\n  \"companyName\",\n  \"netSales\",\n  \"operatingIncome\",\n  \"ordinaryIncome\",\n  \"interestIncome\",\n  \"grossProfit\",\n  \"sellingAdminExpenses\",\n  \"totalAssets\",\n  \"cashAndEquivalents\",\n  \"shareholdersEquity\",\n  \"interestBearingDebt\",\n  \"accountsPayable\",\n  \"accruedExpenses\",\n  \"leaseExpense\",\n  \"leaseDebt\",\n  \"taxRate\",\n  \"debug\",\n  \"edinetCode\",\n  \"dataSource\",\n  \"lastUpdated\"\n]",
+      "args": [
+        "Response data keys:",
+        [
+          "fiscalYear",
+          "companyName",
+          "netSales",
+          "operatingIncome",
+          "ordinaryIncome",
+          "interestIncome",
+          "grossProfit",
+          "sellingAdminExpenses",
+          "totalAssets",
+          "cashAndEquivalents",
+          "shareholdersEquity",
+          "interestBearingDebt",
+          "accountsPayable",
+          "accruedExpenses",
+          "leaseExpense",
+          "leaseDebt",
+          "taxRate",
+          "debug",
+          "edinetCode",
+          "dataSource",
+          "lastUpdated"
+        ]
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "=== XBRL Debug Info ===",
+      "args": [
+        "=== XBRL Debug Info ==="
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "XBRL Size: 188370",
+      "args": [
+        "XBRL Size:",
+        188370
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "Is XML: false",
+      "args": [
+        "Is XML:",
+        false
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "Tag Count: 436",
+      "args": [
+        "Tag Count:",
+        436
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "Numeric Tag Count: 1",
+      "args": [
+        "Numeric Tag Count:",
+        1
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "Extracted Value Count: 2",
+      "args": [
+        "Extracted Value Count:",
+        2
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "XBRL Sample: PK\u0003\u0004\u0014\u0000\b\b\b\u0000v��Z\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000D\u0000\u0000\u0000XBRL_TO_CSV/jpaud-aai-cc-001_E01739-000_2025-03-31_01_2025-06-20.csv�<\rl\u0014י��8�\u001fB�r4-V�\u0004�8w�\tw�\u0006�]\b�\u0003���wm��\u0006\u0016{Y��k�`l\u0013�1gS�ڻ�6\u001bـS�\u0012�UOJԨ�R\u0011ګ�^�\\еɩP\"��\\�'��K�r�Eq����7o�����\u0007\u0012�v��μ}?���{oSWoW�\u0007�z�*��ەy���w:\u0017U��sp\u0005^�g�4�\u0002��{�W\u0003�;���߾0R�;\t\u000b*������c������^~�O8\u000b?����Ux�鋕�+�",
+      "args": [
+        "XBRL Sample:",
+        "PK\u0003\u0004\u0014\u0000\b\b\b\u0000v��Z\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000D\u0000\u0000\u0000XBRL_TO_CSV/jpaud-aai-cc-001_E01739-000_2025-03-31_01_2025-06-20.csv�<\rl\u0014י��8�\u001fB�r4-V�\u0004�8w�\tw�\u0006�]\b�\u0003���wm��\u0006\u0016{Y��k�`l\u0013�1gS�ڻ�6\u001bـS�\u0012�UOJԨ�R\u0011ګ�^�\\еɩP\"��\\�'��K�r�Eq����7o�����\u0007\u0012�v��μ}?���{oSWoW�\u0007�z�*��ەy���w:\u0017U��sp\u0005^�g�4�\u0002��{�W\u0003�;���߾0R�;\t\u000b*������c������^~�O8\u000b?����Ux�鋕�+�"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.042Z",
+      "level": "log",
+      "message": "Converted financial data: {\n  \"netSales\": 0,\n  \"operatingIncome\": 0,\n  \"grossProfit\": 0,\n  \"sellingAdminExpenses\": 0,\n  \"interestIncome\": 0,\n  \"taxRate\": 0.3,\n  \"totalAssets\": 0,\n  \"cashAndEquivalents\": 0,\n  \"shareholdersEquity\": 0,\n  \"interestBearingDebt\": 0,\n  \"accountsPayable\": 0,\n  \"accruedExpenses\": 0,\n  \"leaseExpense\": 0,\n  \"leaseDebt\": 0\n}",
+      "args": [
+        "Converted financial data:",
+        {
+          "netSales": 0,
+          "operatingIncome": 0,
+          "grossProfit": 0,
+          "sellingAdminExpenses": 0,
+          "interestIncome": 0,
+          "taxRate": 0.3,
+          "totalAssets": 0,
+          "cashAndEquivalents": 0,
+          "shareholdersEquity": 0,
+          "interestBearingDebt": 0,
+          "accountsPayable": 0,
+          "accruedExpenses": 0,
+          "leaseExpense": 0,
+          "leaseDebt": 0
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T13:34:12.043Z",
+      "level": "log",
+      "message": "ROIC results: {\n  \"basic\": {\n    \"roic\": 0,\n    \"nopat\": 0,\n    \"investedCapital\": 0,\n    \"calculationMethod\": \"basic\",\n    \"breakdown\": {\n      \"営業利益\": 0,\n      \"税率\": 0.3,\n      \"NOPAT\": 0,\n      \"総資産\": 0,\n      \"現金等\": 0,\n      \"投下資本\": 0\n    }\n  },\n  \"detailed\": {\n    \"roic\": 0,\n    \"nopat\": 0,\n    \"investedCapital\": 0,\n    \"calculationMethod\": \"detailed\",\n    \"breakdown\": {\n      \"営業利益\": 0,\n      \"受取利息\": 0,\n      \"調整営業利益\": 0,\n      \"NOPAT\": 0,\n      \"株主資本\": 0,\n      \"有利子負債\": 0,\n      \"投下資本\": 0\n    }\n  },\n  \"asset\": {\n    \"roic\": 0,\n    \"nopat\": 0,\n    \"investedCapital\": 0,\n    \"calculationMethod\": \"asset\",\n    \"breakdown\": {\n      \"営業利益\": 0,\n      \"受取利息\": 0,\n      \"NOPAT\": 0,\n      \"総資産\": 0,\n      \"買掛金\": 0,\n      \"未払金\": 0,\n      \"無利子負債\": 0,\n      \"投下資本\": 0\n    }\n  },\n  \"modified\": {\n    \"roic\": 0,\n    \"nopat\": 0,\n    \"investedCapital\": 0,\n    \"calculationMethod\": \"modified\",\n    \"breakdown\": {\n      \"営業利益\": 0,\n      \"受取利息\": 0,\n      \"調整営業利益\": 0,\n      \"NOPAT\": 0,\n      \"株主資本\": 0,\n      \"有利子負債\": 0,\n      \"投下資本\": 0,\n      \"リース費用\": 0,\n      \"リース債務\": 0,\n      \"修正NOPAT\": 0,\n      \"修正投下資本\": 0\n    }\n  }\n}",
+      "args": [
+        "ROIC results:",
+        {
+          "basic": {
+            "roic": 0,
+            "nopat": 0,
+            "investedCapital": 0,
+            "calculationMethod": "basic",
+            "breakdown": {
+              "営業利益": 0,
+              "税率": 0.3,
+              "NOPAT": 0,
+              "総資産": 0,
+              "現金等": 0,
+              "投下資本": 0
+            }
+          },
+          "detailed": {
+            "roic": 0,
+            "nopat": 0,
+            "investedCapital": 0,
+            "calculationMethod": "detailed",
+            "breakdown": {
+              "営業利益": 0,
+              "受取利息": 0,
+              "調整営業利益": 0,
+              "NOPAT": 0,
+              "株主資本": 0,
+              "有利子負債": 0,
+              "投下資本": 0
+            }
+          },
+          "asset": {
+            "roic": 0,
+            "nopat": 0,
+            "investedCapital": 0,
+            "calculationMethod": "asset",
+            "breakdown": {
+              "営業利益": 0,
+              "受取利息": 0,
+              "NOPAT": 0,
+              "総資産": 0,
+              "買掛金": 0,
+              "未払金": 0,
+              "無利子負債": 0,
+              "投下資本": 0
+            }
+          },
+          "modified": {
+            "roic": 0,
+            "nopat": 0,
+            "investedCapital": 0,
+            "calculationMethod": "modified",
+            "breakdown": {
+              "営業利益": 0,
+              "受取利息": 0,
+              "調整営業利益": 0,
+              "NOPAT": 0,
+              "株主資本": 0,
+              "有利子負債": 0,
+              "投下資本": 0,
+              "リース費用": 0,
+              "リース債務": 0,
+              "修正NOPAT": 0,
+              "修正投下資本": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

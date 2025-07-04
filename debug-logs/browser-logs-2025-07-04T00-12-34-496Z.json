@@ -1,0 +1,606 @@
+{
+  "metadata": {
+    "exportTime": "2025-07-04T00:12:34.496Z",
+    "url": "https://horiken1977.github.io/roic/companies/",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+    "logCount": 57
+  },
+  "logs": [
+    {
+      "timestamp": "2025-07-04T00:10:43.594Z",
+      "level": "info",
+      "message": "🎯 ログキャプチャ開始 - F12ログが自動取得されます",
+      "args": [
+        "🎯 ログキャプチャ開始 - F12ログが自動取得されます"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:10:45.472Z",
+      "level": "log",
+      "message": "Testing: https://roic-horikens-projects.vercel.app/api/health",
+      "args": [
+        "Testing: https://roic-horikens-projects.vercel.app/api/health"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:10:52.259Z",
+      "level": "log",
+      "message": "Searching for: 三菱商事",
+      "args": [
+        "Searching for:",
+        "三菱商事"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:10:52.259Z",
+      "level": "log",
+      "message": "複数API経由でリアルタイム検索（最優先）",
+      "args": [
+        "複数API経由でリアルタイム検索（最優先）"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:10:52.259Z",
+      "level": "log",
+      "message": "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies",
+      "args": [
+        "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:10:57.096Z",
+      "level": "log",
+      "message": "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel",
+      "args": [
+        "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:10:57.097Z",
+      "level": "log",
+      "message": "Search response: {\n  \"success\": true,\n  \"data\": [\n    {\n      \"edinetCode\": \"E02529\",\n      \"companyName\": \"三菱商事株式会社\",\n      \"tickerSymbol\": \"80580\",\n      \"industry\": \"製造業\",\n      \"hasRecentData\": true,\n      \"lastDocument\": {\n        \"docId\": \"S100VYM1\",\n        \"docTypeCode\": \"120\",\n        \"periodEnd\": \"2025-03-31\",\n        \"submitDateTime\": \"2025-06-18 14:06\"\n      }\n    }\n  ],\n  \"source\": \"edinet_api_vercel\",\n  \"message\": \"1件の企業が見つかりました（EDINET API v2 - リアルタイム）\"\n}",
+      "args": [
+        "Search response:",
+        {
+          "success": true,
+          "data": [
+            {
+              "edinetCode": "E02529",
+              "companyName": "三菱商事株式会社",
+              "tickerSymbol": "80580",
+              "industry": "製造業",
+              "hasRecentData": true,
+              "lastDocument": {
+                "docId": "S100VYM1",
+                "docTypeCode": "120",
+                "periodEnd": "2025-03-31",
+                "submitDateTime": "2025-06-18 14:06"
+              }
+            }
+          ],
+          "source": "edinet_api_vercel",
+          "message": "1件の企業が見つかりました（EDINET API v2 - リアルタイム）"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:01.505Z",
+      "level": "log",
+      "message": "Fetching financial data for: 三菱商事株式会社",
+      "args": [
+        "Fetching financial data for:",
+        "三菱商事株式会社"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:01.505Z",
+      "level": "log",
+      "message": "最新書類の年度を使用: 2025年度 (期間終了: 2025-03-31)",
+      "args": [
+        "最新書類の年度を使用: 2025年度 (期間終了: 2025-03-31)"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:01.505Z",
+      "level": "log",
+      "message": "書類ID: S100VYM1",
+      "args": [
+        "書類ID: S100VYM1"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:01.757Z",
+      "level": "log",
+      "message": "GitHub Actions静的データを使用",
+      "args": [
+        "GitHub Actions静的データを使用"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:01.999Z",
+      "level": "log",
+      "message": "Vercel Functions経由でリアルタイム財務データ取得",
+      "args": [
+        "Vercel Functions経由でリアルタイム財務データ取得"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:01.999Z",
+      "level": "log",
+      "message": "指定docIDを使用: S100VYM1",
+      "args": [
+        "指定docIDを使用: S100VYM1"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:02.727Z",
+      "level": "warn",
+      "message": "Vercel Functions財務データエラー: {}",
+      "args": [
+        "Vercel Functions財務データエラー:",
+        {}
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:02.727Z",
+      "level": "log",
+      "message": "フォールバック - 最小限のサンプル財務データを使用",
+      "args": [
+        "フォールバック - 最小限のサンプル財務データを使用"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:03.528Z",
+      "level": "log",
+      "message": "Financial data response: {\n  \"success\": false,\n  \"error\": \"COMPANY_NOT_FOUND\",\n  \"message\": \"この企業の財務データは利用できません\"\n}",
+      "args": [
+        "Financial data response:",
+        {
+          "success": false,
+          "error": "COMPANY_NOT_FOUND",
+          "message": "この企業の財務データは利用できません"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:03.528Z",
+      "level": "log",
+      "message": "Response data keys: []",
+      "args": [
+        "Response data keys:",
+        []
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:12.883Z",
+      "level": "log",
+      "message": "Searching for: 日本航空",
+      "args": [
+        "Searching for:",
+        "日本航空"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:12.883Z",
+      "level": "log",
+      "message": "複数API経由でリアルタイム検索（最優先）",
+      "args": [
+        "複数API経由でリアルタイム検索（最優先）"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:12.883Z",
+      "level": "log",
+      "message": "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies",
+      "args": [
+        "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:18.236Z",
+      "level": "log",
+      "message": "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel",
+      "args": [
+        "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:18.236Z",
+      "level": "log",
+      "message": "Search response: {\n  \"success\": true,\n  \"data\": [\n    {\n      \"edinetCode\": \"E04272\",\n      \"companyName\": \"日本航空株式会社\",\n      \"tickerSymbol\": \"92010\",\n      \"industry\": \"製造業\",\n      \"hasRecentData\": true,\n      \"lastDocument\": {\n        \"docId\": \"S100W1KL\",\n        \"docTypeCode\": \"120\",\n        \"periodEnd\": \"2025-03-31\",\n        \"submitDateTime\": \"2025-06-23 15:30\"\n      }\n    },\n    {\n      \"edinetCode\": \"E01828\",\n      \"companyName\": \"日本航空電子工業株式会社\",\n      \"tickerSymbol\": \"68070\",\n      \"industry\": \"電気機器\",\n      \"hasRecentData\": true,\n      \"lastDocument\": {\n        \"docId\": \"S100VXL0\",\n        \"docTypeCode\": \"120\",\n        \"periodEnd\": \"2025-03-31\",\n        \"submitDateTime\": \"2025-06-18 15:34\"\n      }\n    }\n  ],\n  \"source\": \"edinet_api_vercel\",\n  \"message\": \"2件の企業が見つかりました（EDINET API v2 - リアルタイム）\"\n}",
+      "args": [
+        "Search response:",
+        {
+          "success": true,
+          "data": [
+            {
+              "edinetCode": "E04272",
+              "companyName": "日本航空株式会社",
+              "tickerSymbol": "92010",
+              "industry": "製造業",
+              "hasRecentData": true,
+              "lastDocument": {
+                "docId": "S100W1KL",
+                "docTypeCode": "120",
+                "periodEnd": "2025-03-31",
+                "submitDateTime": "2025-06-23 15:30"
+              }
+            },
+            {
+              "edinetCode": "E01828",
+              "companyName": "日本航空電子工業株式会社",
+              "tickerSymbol": "68070",
+              "industry": "電気機器",
+              "hasRecentData": true,
+              "lastDocument": {
+                "docId": "S100VXL0",
+                "docTypeCode": "120",
+                "periodEnd": "2025-03-31",
+                "submitDateTime": "2025-06-18 15:34"
+              }
+            }
+          ],
+          "source": "edinet_api_vercel",
+          "message": "2件の企業が見つかりました（EDINET API v2 - リアルタイム）"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:24.368Z",
+      "level": "log",
+      "message": "Fetching financial data for: 日本航空株式会社",
+      "args": [
+        "Fetching financial data for:",
+        "日本航空株式会社"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:24.368Z",
+      "level": "log",
+      "message": "最新書類の年度を使用: 2025年度 (期間終了: 2025-03-31)",
+      "args": [
+        "最新書類の年度を使用: 2025年度 (期間終了: 2025-03-31)"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:24.368Z",
+      "level": "log",
+      "message": "書類ID: S100W1KL",
+      "args": [
+        "書類ID: S100W1KL"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:24.384Z",
+      "level": "log",
+      "message": "GitHub Actions静的データを使用",
+      "args": [
+        "GitHub Actions静的データを使用"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:24.384Z",
+      "level": "log",
+      "message": "Vercel Functions経由でリアルタイム財務データ取得",
+      "args": [
+        "Vercel Functions経由でリアルタイム財務データ取得"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:24.384Z",
+      "level": "log",
+      "message": "指定docIDを使用: S100W1KL",
+      "args": [
+        "指定docIDを使用: S100W1KL"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:25.041Z",
+      "level": "warn",
+      "message": "Vercel Functions財務データエラー: {}",
+      "args": [
+        "Vercel Functions財務データエラー:",
+        {}
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:25.041Z",
+      "level": "log",
+      "message": "フォールバック - 最小限のサンプル財務データを使用",
+      "args": [
+        "フォールバック - 最小限のサンプル財務データを使用"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:25.843Z",
+      "level": "log",
+      "message": "Financial data response: {\n  \"success\": false,\n  \"error\": \"COMPANY_NOT_FOUND\",\n  \"message\": \"この企業の財務データは利用できません\"\n}",
+      "args": [
+        "Financial data response:",
+        {
+          "success": false,
+          "error": "COMPANY_NOT_FOUND",
+          "message": "この企業の財務データは利用できません"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:25.843Z",
+      "level": "log",
+      "message": "Response data keys: []",
+      "args": [
+        "Response data keys:",
+        []
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:42.687Z",
+      "level": "log",
+      "message": "Searching for: NTT",
+      "args": [
+        "Searching for:",
+        "NTT"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:42.687Z",
+      "level": "log",
+      "message": "複数API経由でリアルタイム検索（最優先）",
+      "args": [
+        "複数API経由でリアルタイム検索（最優先）"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:42.687Z",
+      "level": "log",
+      "message": "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies",
+      "args": [
+        "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:48.437Z",
+      "level": "log",
+      "message": "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel",
+      "args": [
+        "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:48.437Z",
+      "level": "log",
+      "message": "Search response: {\n  \"success\": true,\n  \"data\": [],\n  \"source\": \"edinet_api_vercel\",\n  \"message\": \"0件の企業が見つかりました（EDINET API v2 - リアルタイム）\"\n}",
+      "args": [
+        "Search response:",
+        {
+          "success": true,
+          "data": [],
+          "source": "edinet_api_vercel",
+          "message": "0件の企業が見つかりました（EDINET API v2 - リアルタイム）"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:58.766Z",
+      "level": "log",
+      "message": "Searching for: 集英社",
+      "args": [
+        "Searching for:",
+        "集英社"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:58.766Z",
+      "level": "log",
+      "message": "複数API経由でリアルタイム検索（最優先）",
+      "args": [
+        "複数API経由でリアルタイム検索（最優先）"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:11:58.766Z",
+      "level": "log",
+      "message": "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies",
+      "args": [
+        "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:04.509Z",
+      "level": "log",
+      "message": "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel",
+      "args": [
+        "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:04.509Z",
+      "level": "log",
+      "message": "Search response: {\n  \"success\": true,\n  \"data\": [],\n  \"source\": \"edinet_api_vercel\",\n  \"message\": \"0件の企業が見つかりました（EDINET API v2 - リアルタイム）\"\n}",
+      "args": [
+        "Search response:",
+        {
+          "success": true,
+          "data": [],
+          "source": "edinet_api_vercel",
+          "message": "0件の企業が見つかりました（EDINET API v2 - リアルタイム）"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:15.060Z",
+      "level": "log",
+      "message": "Searching for: インターネット",
+      "args": [
+        "Searching for:",
+        "インターネット"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:15.060Z",
+      "level": "log",
+      "message": "複数API経由でリアルタイム検索（最優先）",
+      "args": [
+        "複数API経由でリアルタイム検索（最優先）"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:15.060Z",
+      "level": "log",
+      "message": "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies",
+      "args": [
+        "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:20.542Z",
+      "level": "log",
+      "message": "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel",
+      "args": [
+        "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:20.542Z",
+      "level": "log",
+      "message": "Search response: {\n  \"success\": true,\n  \"data\": [\n    {\n      \"edinetCode\": \"E05480\",\n      \"companyName\": \"株式会社インターネットイニシアティブ\",\n      \"tickerSymbol\": \"37740\",\n      \"industry\": \"製造業\",\n      \"hasRecentData\": true,\n      \"lastDocument\": {\n        \"docId\": \"S100W7DL\",\n        \"docTypeCode\": \"120\",\n        \"periodEnd\": \"2025-03-31\",\n        \"submitDateTime\": \"2025-06-30 10:34\"\n      }\n    },\n    {\n      \"edinetCode\": \"E33005\",\n      \"companyName\": \"株式会社インターネットインフィニティー\",\n      \"tickerSymbol\": \"65450\",\n      \"industry\": \"製造業\",\n      \"hasRecentData\": true,\n      \"lastDocument\": {\n        \"docId\": \"S100W4X4\",\n        \"docTypeCode\": \"120\",\n        \"periodEnd\": \"2025-03-31\",\n        \"submitDateTime\": \"2025-06-25 16:23\"\n      }\n    },\n    {\n      \"edinetCode\": \"E05518\",\n      \"companyName\": \"さくらインターネット株式会社\",\n      \"tickerSymbol\": \"37780\",\n      \"industry\": \"製造業\",\n      \"hasRecentData\": true,\n      \"lastDocument\": {\n        \"docId\": \"S100VW98\",\n        \"docTypeCode\": \"120\",\n        \"periodEnd\": \"2025-03-31\",\n        \"submitDateTime\": \"2025-06-16 09:02\"\n      }\n    }\n  ],\n  \"source\": \"edinet_api_vercel\",\n  \"message\": \"3件の企業が見つかりました（EDINET API v2 - リアルタイム）\"\n}",
+      "args": [
+        "Search response:",
+        {
+          "success": true,
+          "data": [
+            {
+              "edinetCode": "E05480",
+              "companyName": "株式会社インターネットイニシアティブ",
+              "tickerSymbol": "37740",
+              "industry": "製造業",
+              "hasRecentData": true,
+              "lastDocument": {
+                "docId": "S100W7DL",
+                "docTypeCode": "120",
+                "periodEnd": "2025-03-31",
+                "submitDateTime": "2025-06-30 10:34"
+              }
+            },
+            {
+              "edinetCode": "E33005",
+              "companyName": "株式会社インターネットインフィニティー",
+              "tickerSymbol": "65450",
+              "industry": "製造業",
+              "hasRecentData": true,
+              "lastDocument": {
+                "docId": "S100W4X4",
+                "docTypeCode": "120",
+                "periodEnd": "2025-03-31",
+                "submitDateTime": "2025-06-25 16:23"
+              }
+            },
+            {
+              "edinetCode": "E05518",
+              "companyName": "さくらインターネット株式会社",
+              "tickerSymbol": "37780",
+              "industry": "製造業",
+              "hasRecentData": true,
+              "lastDocument": {
+                "docId": "S100VW98",
+                "docTypeCode": "120",
+                "periodEnd": "2025-03-31",
+                "submitDateTime": "2025-06-16 09:02"
+              }
+            }
+          ],
+          "source": "edinet_api_vercel",
+          "message": "3件の企業が見つかりました（EDINET API v2 - リアルタイム）"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:27.190Z",
+      "level": "log",
+      "message": "Fetching financial data for: 株式会社インターネットインフィニティー",
+      "args": [
+        "Fetching financial data for:",
+        "株式会社インターネットインフィニティー"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:27.190Z",
+      "level": "log",
+      "message": "最新書類の年度を使用: 2025年度 (期間終了: 2025-03-31)",
+      "args": [
+        "最新書類の年度を使用: 2025年度 (期間終了: 2025-03-31)"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:27.190Z",
+      "level": "log",
+      "message": "書類ID: S100W4X4",
+      "args": [
+        "書類ID: S100W4X4"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:27.199Z",
+      "level": "log",
+      "message": "GitHub Actions静的データを使用",
+      "args": [
+        "GitHub Actions静的データを使用"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:27.199Z",
+      "level": "log",
+      "message": "Vercel Functions経由でリアルタイム財務データ取得",
+      "args": [
+        "Vercel Functions経由でリアルタイム財務データ取得"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:27.199Z",
+      "level": "log",
+      "message": "指定docIDを使用: S100W4X4",
+      "args": [
+        "指定docIDを使用: S100W4X4"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:27.681Z",
+      "level": "warn",
+      "message": "Vercel Functions財務データエラー: {}",
+      "args": [
+        "Vercel Functions財務データエラー:",
+        {}
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:27.681Z",
+      "level": "log",
+      "message": "フォールバック - 最小限のサンプル財務データを使用",
+      "args": [
+        "フォールバック - 最小限のサンプル財務データを使用"
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:28.482Z",
+      "level": "log",
+      "message": "Financial data response: {\n  \"success\": false,\n  \"error\": \"COMPANY_NOT_FOUND\",\n  \"message\": \"この企業の財務データは利用できません\"\n}",
+      "args": [
+        "Financial data response:",
+        {
+          "success": false,
+          "error": "COMPANY_NOT_FOUND",
+          "message": "この企業の財務データは利用できません"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-04T00:12:28.482Z",
+      "level": "log",
+      "message": "Response data keys: []",
+      "args": [
+        "Response data keys:",
+        []
+      ]
+    }
+  ]
+}

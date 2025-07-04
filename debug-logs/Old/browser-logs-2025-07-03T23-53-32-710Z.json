@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "exportTime": "2025-07-03T23:53:32.710Z",
+    "url": "https://horiken1977.github.io/roic/companies/",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+    "logCount": 16
+  },
+  "logs": [
+    {
+      "timestamp": "2025-07-03T23:52:49.999Z",
+      "level": "info",
+      "message": "🎯 ログキャプチャ開始 - F12ログが自動取得されます",
+      "args": [
+        "🎯 ログキャプチャ開始 - F12ログが自動取得されます"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:02.611Z",
+      "level": "log",
+      "message": "Searching for: 三井物産",
+      "args": [
+        "Searching for:",
+        "三井物産"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:02.611Z",
+      "level": "log",
+      "message": "複数API経由でリアルタイム検索（最優先）",
+      "args": [
+        "複数API経由でリアルタイム検索（最優先）"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:02.612Z",
+      "level": "log",
+      "message": "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies",
+      "args": [
+        "API試行: https://roic-horikens-projects.vercel.app/api/edinet/companies"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:09.332Z",
+      "level": "log",
+      "message": "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel",
+      "args": [
+        "API成功: https://roic-horikens-projects.vercel.app/api - edinet_api_vercel"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:09.332Z",
+      "level": "log",
+      "message": "Search response: {\n  \"success\": true,\n  \"data\": [\n    {\n      \"edinetCode\": \"E02513\",\n      \"companyName\": \"三井物産株式会社\",\n      \"tickerSymbol\": \"80310\",\n      \"industry\": \"製造業\",\n      \"hasRecentData\": true,\n      \"lastDocument\": {\n        \"docId\": \"S100VYNR\",\n        \"docTypeCode\": \"120\",\n        \"periodEnd\": \"2025-03-31\",\n        \"submitDateTime\": \"2025-06-17 13:37\"\n      }\n    }\n  ],\n  \"source\": \"edinet_api_vercel\",\n  \"message\": \"1件の企業が見つかりました（EDINET API v2 - リアルタイム）\"\n}",
+      "args": [
+        "Search response:",
+        {
+          "success": true,
+          "data": [
+            {
+              "edinetCode": "E02513",
+              "companyName": "三井物産株式会社",
+              "tickerSymbol": "80310",
+              "industry": "製造業",
+              "hasRecentData": true,
+              "lastDocument": {
+                "docId": "S100VYNR",
+                "docTypeCode": "120",
+                "periodEnd": "2025-03-31",
+                "submitDateTime": "2025-06-17 13:37"
+              }
+            }
+          ],
+          "source": "edinet_api_vercel",
+          "message": "1件の企業が見つかりました（EDINET API v2 - リアルタイム）"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:16.347Z",
+      "level": "log",
+      "message": "Fetching financial data for: 三井物産株式会社",
+      "args": [
+        "Fetching financial data for:",
+        "三井物産株式会社"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:16.347Z",
+      "level": "log",
+      "message": "最新書類の年度を使用: 2025年度 (期間終了: 2025-03-31)",
+      "args": [
+        "最新書類の年度を使用: 2025年度 (期間終了: 2025-03-31)"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:16.347Z",
+      "level": "log",
+      "message": "書類ID: S100VYNR",
+      "args": [
+        "書類ID: S100VYNR"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:16.585Z",
+      "level": "log",
+      "message": "GitHub Actions静的データを使用",
+      "args": [
+        "GitHub Actions静的データを使用"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:16.836Z",
+      "level": "log",
+      "message": "Vercel Functions経由でリアルタイム財務データ取得",
+      "args": [
+        "Vercel Functions経由でリアルタイム財務データ取得"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:16.836Z",
+      "level": "log",
+      "message": "指定docIDを使用: S100VYNR",
+      "args": [
+        "指定docIDを使用: S100VYNR"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:17.460Z",
+      "level": "warn",
+      "message": "Vercel Functions財務データエラー: {}",
+      "args": [
+        "Vercel Functions財務データエラー:",
+        {}
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:17.460Z",
+      "level": "log",
+      "message": "フォールバック - 最小限のサンプル財務データを使用",
+      "args": [
+        "フォールバック - 最小限のサンプル財務データを使用"
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:18.262Z",
+      "level": "log",
+      "message": "Financial data response: {\n  \"success\": false,\n  \"error\": \"COMPANY_NOT_FOUND\",\n  \"message\": \"この企業の財務データは利用できません\"\n}",
+      "args": [
+        "Financial data response:",
+        {
+          "success": false,
+          "error": "COMPANY_NOT_FOUND",
+          "message": "この企業の財務データは利用できません"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-03T23:53:18.262Z",
+      "level": "log",
+      "message": "Response data keys: []",
+      "args": [
+        "Response data keys:",
+        []
+      ]
+    }
+  ]
+}
