@@ -1,0 +1,41 @@
+{
+  "unit": {
+    "passed": 0,
+    "failed": 0,
+    "total": 0,
+    "coverage": 14.07,
+    "lastRun": "2025-07-04T03:48:33.250Z"
+  },
+  "e2e": {
+    "passed": 0,
+    "failed": 0,
+    "total": 0,
+    "lastRun": null
+  },
+  "integration": {
+    "passed": 0,
+    "failed": 0,
+    "total": 0,
+    "lastRun": null
+  },
+  "performance": {
+    "passed": 0,
+    "failed": 0,
+    "total": 0,
+    "lastRun": "2025-07-04T03:48:37.462Z"
+  },
+  "security": {
+    "passed": 1,
+    "failed": 0,
+    "total": 1,
+    "lastRun": "2025-07-04T03:48:41.351Z"
+  },
+  "build": {
+    "status": "unknown",
+    "lastRun": null
+  },
+  "deployment": {
+    "status": "unknown",
+    "lastRun": null
+  }
+}

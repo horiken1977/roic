@@ -23,6 +23,8 @@
     "start-automation": "npm run centralized-manager",
     "auto-commit": "node scripts/auto-commit-push.js",
     "auto-all": "concurrently \"npm run centralized-manager\" \"npm run auto-commit\"",
+    "dialogue-recorder": "node scripts/auto-dialogue-recorder.js",
+    "dialogue-manual": "node scripts/auto-dialogue-recorder.js --manual",
     "setup": "cd frontend && npm install && cd .. && npm install"
   },
   "dependencies": {

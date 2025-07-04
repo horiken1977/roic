@@ -1,494 +1,890 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>テスト仕様書 - ROIC分析アプリケーション</title>
+    <title>ROIC分析アプリケーション テスト仕様書</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; margin: 0; padding: 0; background: #f5f5f5; }
-        .header { background: #24292e; color: white; padding: 20px 0; margin-bottom: 30px; }
-        .header-content { max-width: 1200px; margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { margin: 0; font-size: 24px; }
-        .nav { display: flex; gap: 20px; }
-        .nav a { color: white; text-decoration: none; padding: 5px 10px; border-radius: 4px; transition: background 0.2s; }
-        .nav a:hover { background: rgba(255,255,255,0.1); }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h2, h3, h4 { color: #333; }
-        h2 { border-bottom: 2px solid #e1e4e8; padding-bottom: 10px; margin-top: 30px; }
-        .status-completed { color: #28a745; font-weight: bold; }
-        .status-progress { color: #ffc107; font-weight: bold; }
-        .status-pending { color: #6c757d; font-weight: bold; }
-        .status-failed { color: #dc3545; font-weight: bold; }
-        code { background: #f6f8fa; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
-        pre { background: #f6f8fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background: #f6f8fa; font-weight: bold; }
-        tr:nth-child(even) { background: #fafafa; }
-        .progress-bar { width: 100%; background: #e9ecef; border-radius: 4px; height: 20px; margin: 5px 0; }
-        .progress-fill { background: #28a745; height: 100%; border-radius: 4px; color: white; text-align: center; line-height: 20px; font-size: 12px; }
-        .test-result { background: #f8f9fa; border-radius: 5px; padding: 15px; margin: 15px 0; border-left: 4px solid #007bff; }
-        .error-box { background: #fff5f5; border: 1px solid #feb2b2; border-radius: 5px; padding: 15px; margin: 15px 0; }
-        .success-box { background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 5px; padding: 15px; margin: 15px 0; }
-        .update-time { color: #666; font-style: italic; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e1e4e8; text-align: center; }
-        .timeline { margin: 20px 0; }
-        .timeline-item { display: flex; align-items: center; margin: 10px 0; }
-        .timeline-date { width: 150px; font-weight: bold; }
-        .timeline-content { flex: 1; padding-left: 20px; border-left: 2px solid #ddd; }
+        
+        :root {
+            --primary-color: #3182ce;
+            --accent-color: #4299e1;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --error-color: #f56565;
+            --bg-color: #f7fafc;
+            --text-color: #2d3748;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .last-update {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .section {
+            margin: 32px 0;
+        }
+        
+        .section h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+        }
+        
+        .content {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            line-height: 1.7;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .suite-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .suite-stats {
+                margin-top: 8px;
+            }
+        }
+    
+        .test-suite {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .suite-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .suite-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .suite-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-passed { color: #22543d; }
+        .stat-failed { color: #c53030; }
+        .stat-total { color: #4a5568; }
+        .coverage-badge {
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .test-item {
+            background: #f7fafc;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #e2e8f0;
+        }
+        .test-item.passed {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+        .test-item.failed {
+            border-left-color: #f56565;
+            background: #fffafa;
+        }
+        .real-time-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4299e1;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <h1>テスト仕様書</h1>
-            <nav class="nav">
-                <a href="/">トップ</a>
-                <a href="/functional-spec.html">機能設計書</a>
-                <a href="/environment-design.html">環境設計書</a>
-                <a href="/test-docs/test-spec.html">テスト仕様書</a>
-            </nav>
-        </div>
+    <div class="real-time-indicator pulse">
+        🔄 リアルタイム更新中
     </div>
 
     <div class="container">
-        <h2>📊 テスト進捗管理表</h2>
-        <table>
-            <tr>
-                <th style="width: 30%">テスト項目</th>
-                <th style="width: 15%">種別</th>
-                <th style="width: 15%">ステータス</th>
-                <th style="width: 10%">進捗</th>
-                <th style="width: 30%">次のアクション</th>
-            </tr>
-            <tr>
-                <td>ユニットテスト（UI）</td>
-                <td>単体テスト</td>
-                <td><span class="status-completed">✅ 完了</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%">100%</div>
-                    </div>
-                </td>
-                <td>維持・保守</td>
-            </tr>
-            <tr>
-                <td>ROIC計算ロジックテスト</td>
-                <td>単体テスト</td>
-                <td><span class="status-completed">✅ 完了</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%">100%</div>
-                    </div>
-                </td>
-                <td>35テストケース・100%カバレッジ達成</td>
-            </tr>
-            <tr>
-                <td>EDINET API連携テスト</td>
-                <td>統合テスト</td>
-                <td><span class="status-completed">✅ 完了</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%">100%</div>
-                    </div>
-                </td>
-                <td>1000社テスト完了</td>
-            </tr>
-            <tr>
-                <td>E2Eテスト</td>
-                <td>E2E</td>
-                <td><span class="status-pending">⏳ 未実施</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%">0%</div>
-                    </div>
-                </td>
-                <td>Playwright/Cypress導入</td>
-            </tr>
-            <tr>
-                <td>パフォーマンステスト</td>
-                <td>非機能</td>
-                <td><span class="status-pending">⏳ 未実施</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%">0%</div>
-                    </div>
-                </td>
-                <td>負荷テストツール選定</td>
-            </tr>
-        </table>
+        <header class="header">
+            <h1>ROIC分析アプリケーション テスト仕様書</h1>
+            <div class="last-update">最終更新: 2025/7/4 12:48:28</div>
+        </header>
 
-        <h2>🎯 EDINET 1000社テスト結果レポート</h2>
-        
-        <div class="success-box">
-            <h3>テスト概要</h3>
-            <ul>
-                <li><strong>実施日時</strong>: 2025年7月4日 12:04 JST</li>
-                <li><strong>テスト対象</strong>: ランダムに生成された1000社のEDINETコード</li>
-                <li><strong>API エンドポイント</strong>: https://roic-horikens-projects.vercel.app/api/edinet/simple-financial</li>
-                <li><strong>結果</strong>: <span class="status-completed">✅ 100% 成功（999/999社）</span></li>
-            </ul>
-        </div>
-
-        <h3>📈 テスト統計</h3>
-        <table>
-            <tr>
-                <th>指標</th>
-                <th>値</th>
-            </tr>
-            <tr>
-                <td>総テスト企業数</td>
-                <td>999社（重複除去後）</td>
-            </tr>
-            <tr>
-                <td>成功数</td>
-                <td><span class="status-completed">999社</span></td>
-            </tr>
-            <tr>
-                <td>失敗数</td>
-                <td><span class="status-completed">0社</span></td>
-            </tr>
-            <tr>
-                <td>成功率</td>
-                <td><span class="status-completed">100.0%</span></td>
-            </tr>
-            <tr>
-                <td>総実行時間</td>
-                <td>380秒（6分20秒）</td>
-            </tr>
-            <tr>
-                <td>平均応答時間</td>
-                <td>323ms</td>
-            </tr>
-        </table>
-
-        <h3>🏢 企業規模分布</h3>
-        <table>
-            <tr>
-                <th>企業規模</th>
-                <th>EDINETコード範囲</th>
-                <th>企業数</th>
-                <th>割合</th>
-            </tr>
-            <tr>
-                <td>大企業</td>
-                <td>E00001 - E04999</td>
-                <td>33社</td>
-                <td>3.3%</td>
-            </tr>
-            <tr>
-                <td>中企業</td>
-                <td>E05000 - E14999</td>
-                <td>112社</td>
-                <td>11.2%</td>
-            </tr>
-            <tr>
-                <td>小企業</td>
-                <td>E15000+</td>
-                <td>854社</td>
-                <td>85.5%</td>
-            </tr>
-        </table>
-
-        <h2>🔧 エラー対処履歴</h2>
-        
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-date">2025/07/04 10:00</div>
-                <div class="timeline-content">
-                    <h4>初期テスト実行</h4>
-                    <div class="error-box">
-                        <strong>問題</strong>: 全1000社でHTTP 500エラー発生<br>
-                        <strong>エラー率</strong>: 100%<br>
-                        <strong>原因</strong>: generateUniversalFinancialData関数がtryブロック内で定義されており、エラー時にアクセス不可
+        <div class="section">
+            <h2>テストスイート実行状況</h2>
+            
+            <div class="test-suite">
+                <div class="suite-header">
+                    <div class="suite-name">Unit Tests (0 files)</div>
+                    <div class="suite-stats">
+                        <div class="stat-item stat-passed">
+                            ✅ 0
+                        </div>
+                        <div class="stat-item stat-failed">
+                            ❌ 0
+                        </div>
+                        <div class="stat-item stat-total">
+                            📊 0 total
+                        </div>
+                        {{#if coverage}}
+                        <div class="coverage-badge">14.07% カバレッジ</div>
+                        {{/if}}
                     </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: {{#if tests}}{{#divide passed tests}}{{/divide}}{{else}}0{{/if}}%"></div>
+                </div>
+                
+                <div style="margin-top: 8px; font-size: 12px; color: #718096;">
+                    成功率: {{#if tests}}{{#percentage passed tests}}{{/percentage}}{{else}}0{{/if}}%
                 </div>
             </div>
             
-            <div class="timeline-item">
-                <div class="timeline-date">2025/07/04 10:30</div>
-                <div class="timeline-content">
-                    <h4>第1次修正</h4>
-                    <p><strong>対処内容</strong>:</p>
-                    <ul>
-                        <li>generateUniversalFinancialData関数をグローバルスコープに移動</li>
-                        <li>エラーハンドリングに緊急フォールバックデータを追加</li>
-                    </ul>
-                    <div class="error-box">
-                        <strong>結果</strong>: 依然として全社でHTTP 500エラー継続
+            <div class="test-suite">
+                <div class="suite-header">
+                    <div class="suite-name">E2E Tests (0 files)</div>
+                    <div class="suite-stats">
+                        <div class="stat-item stat-passed">
+                            ✅ 0
+                        </div>
+                        <div class="stat-item stat-failed">
+                            ❌ 0
+                        </div>
+                        <div class="stat-item stat-total">
+                            📊 0 total
+                        </div>
+                        {{#if coverage}}
+                        <div class="coverage-badge">{{coverage}}% カバレッジ</div>
+                        {{/if}}
                     </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: {{#if tests}}{{#divide passed tests}}{{/divide}}{{else}}0{{/if}}%"></div>
+                </div>
+                
+                <div style="margin-top: 8px; font-size: 12px; color: #718096;">
+                    成功率: {{#if tests}}{{#percentage passed tests}}{{/percentage}}{{else}}0{{/if}}%
                 </div>
             </div>
             
-            <div class="timeline-item">
-                <div class="timeline-date">2025/07/04 11:00</div>
-                <div class="timeline-content">
-                    <h4>第2次修正 - シンプルAPI実装</h4>
-                    <p><strong>対処内容</strong>:</p>
-                    <ul>
-                        <li>新規エンドポイント <code>/api/edinet/simple-financial.js</code> を作成</li>
-                        <li>複雑なロジックを排除し、シンプルな実装に変更</li>
-                        <li>3段階の企業規模判定（大・中・小）</li>
-                        <li>絶対確実な緊急フォールバック機構</li>
-                    </ul>
-                    <div class="success-box">
-                        <strong>結果</strong>: 5社のサンプルテストで100%成功
+        </div>
+
+        <div class="section">
+            <h2>詳細進捗状況</h2>
+            <div class="test-grid">
+                
+                <div class="test-item passed">
+                    <strong>コンポーネントテスト</strong>
+                    <div>React コンポーネントのユニットテスト</div>
+                    <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+                        0/0 完了 (0%)
                     </div>
                 </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-date">2025/07/04 11:30</div>
-                <div class="timeline-content">
-                    <h4>Vercel設定更新</h4>
-                    <p><strong>対処内容</strong>:</p>
-                    <ul>
-                        <li>vercel.jsonにsimple-financial.jsの設定追加</li>
-                        <li>メモリ: 512MB、タイムアウト: 30秒</li>
-                    </ul>
-                    <div class="error-box">
-                        <strong>問題</strong>: HTTP 404エラー発生<br>
-                        <strong>原因</strong>: Vercel Functionsの設定漏れ
+                
+                <div class="test-item passed">
+                    <strong>E2Eシナリオテスト</strong>
+                    <div>ユーザージャーニーの検証</div>
+                    <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+                        0/0 完了 (0%)
                     </div>
                 </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-date">2025/07/04 12:00</div>
-                <div class="timeline-content">
-                    <h4>最終テスト実行</h4>
-                    <div class="success-box">
-                        <strong>結果</strong>: 🎉 1000社テストで100%成功達成！<br>
-                        <strong>パフォーマンス</strong>: 平均応答時間323ms<br>
-                        <strong>安定性</strong>: エラー0件、タイムアウト0件
+                
+                <div class="test-item passed">
+                    <strong>パフォーマンステスト</strong>
+                    <div>応答時間とスループットの検証</div>
+                    <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+                        0/0 完了 (0%)
                     </div>
                 </div>
+                
+                <div class="test-item passed">
+                    <strong>セキュリティテスト</strong>
+                    <div>脆弱性とセキュリティホールの検証</div>
+                    <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+                        1/1 完了 (100%)
+                    </div>
+                </div>
+                
             </div>
         </div>
 
-        <h2>📋 実装済みテストコード</h2>
-        
-        <h3>シンプルAPIテストスクリプト</h3>
-        <pre><code>// test-1000-simple.js
-const TOTAL_COMPANIES = 1000;
-const CONCURRENT_REQUESTS = 3; // 同時リクエスト数（安定化のため削減）
-const API_BASE_URL = 'https://roic-horikens-projects.vercel.app/api';
-
-async function fetchSimpleFinancialData(edinetCode, fiscalYear = 2023) {
-    const url = `${API_BASE_URL}/edinet/simple-financial?edinetCode=${edinetCode}&fiscalYear=${fiscalYear}`;
-    // HTTPリクエスト実行
-}
-
-// ランダムEDINETコード生成
-function generateRandomEdinetCode() {
-    const codeNumber = Math.floor(Math.random() * 99999) + 1;
-    return `E${codeNumber.toString().padStart(5, '0')}`;
-}</code></pre>
-
-        <h3>財務データ生成ロジック</h3>
-        <pre><code>// 企業規模推定
-const codeNum = parseInt(edinetCode.replace('E', ''));
-let scale = 'small';
-if (codeNum < 5000) scale = 'large';
-else if (codeNum < 15000) scale = 'medium';
-
-// 規模別基準値
-const baseValues = {
-    large: { netSales: 1000000000000, operatingIncome: 80000000000 },
-    medium: { netSales: 200000000000, operatingIncome: 15000000000 },
-    small: { netSales: 50000000000, operatingIncome: 3000000000 }
-};</code></pre>
-
-        <h2>🧪 ROIC計算ロジック ユニットテスト結果</h2>
-        
-        <div class="success-box">
-            <h3>テスト概要</h3>
-            <ul>
-                <li><strong>実施日時</strong>: 2025年7月4日 14:30 JST</li>
-                <li><strong>テスト対象</strong>: ROIC計算ロジック（4つの計算方式）</li>
-                <li><strong>テストファイル</strong>: frontend/src/utils/__tests__/roicCalculations.test.ts</li>
-                <li><strong>結果</strong>: <span class="status-completed">✅ 35テストケース全て成功</span></li>
-                <li><strong>カバレッジ</strong>: <span class="status-completed">✅ 100%（Statement/Branch/Function/Line）</span></li>
-            </ul>
+        <div class="section">
+            <h2>テスト仕様詳細</h2>
+            <div class="content">
+                {<p><h1>ROIC分析アプリケーション テスト仕様書</h1></p><p><h2>📋 文書情報</h2></p><p>| 項目 | 内容 |</p></p>
+<p>|------|------|</p></p>
+<p>| 文書名 | ROIC分析アプリケーション テスト仕様書 |</p></p>
+<p>| バージョン | 1.0 |</p></p>
+<p>| 作成日 | 2025年7月1日 |</p></p>
+<p>| 更新日 | 2025年7月1日 |</p></p>
+<p>| 関連文書 | テスト計画書 v1.0 |</p><p><h2>🎯 テスト仕様概要</h2></p><p>このドキュメントは、ROIC分析アプリケーションの具体的なテストケース、テストデータ、期待結果を定義します。</p><p><h2>🧪 フロントエンド テスト仕様</h2></p><p><h3>1. ホームページ (/) テスト</h3></p><p>#### テストケース: HP-001 基本表示テスト</p></p>
+<p><code></code>`typescript</p></p>
+<p>describe('Homepage Display Tests', () => {</p></p>
+<p>  test('HP-001: Should display main heading and description', async () => {</p></p>
+<p>    // Given: ユーザーがホームページにアクセス</p></p>
+<p>    render(<HomePage />)</p></p>
+<p>    </p></p>
+<p>    // When: ページが読み込まれる</p></p>
+<p>    </p></p>
+<p>    // Then: メインタイトルが表示される</p></p>
+<p>    expect(screen.getByRole('heading', { name: /ROIC分析アプリケーション/i })).toBeInTheDocument()</p></p>
+<p>    </p></p>
+<p>    // And: 説明文が表示される</p></p>
+<p>    expect(screen.getByText(/日系上場企業のROIC/i)).toBeInTheDocument()</p></p>
+<p>    </p></p>
+<p>    // And: 主要機能リストが表示される</p></p>
+<p>    expect(screen.getByText('ROIC自動計算（4つの計算方式対応）')).toBeInTheDocument()</p></p>
+<p>    expect(screen.getByText('企業検索・フィルタリング機能')).toBeInTheDocument()</p></p>
+<p>    expect(screen.getByText('業界内比較・ランキング表示')).toBeInTheDocument()</p></p>
+<p>    expect(screen.getByText('トレンドチャート・可視化')).toBeInTheDocument()</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p>#### テストケース: HP-002 ナビゲーションテスト</p></p>
+<p><code></code>`typescript</p></p>
+<p>test('HP-002: Should navigate to correct pages via navigation links', async () => {</p></p>
+<p>  // Given: ホームページが表示されている</p></p>
+<p>  render(<RootLayout><HomePage /></RootLayout>)</p></p>
+<p>  </p></p>
+<p>  // When: 企業検索リンクをクリック</p></p>
+<p>  const companiesLink = screen.getByRole('link', { name: /企業検索/i })</p></p>
+<p>  await userEvent.click(companiesLink)</p></p>
+<p>  </p></p>
+<p>  // Then: 企業検索ページに遷移する</p></p>
+<p>  expect(window.location.pathname).toBe('/companies')</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p><h3>2. 企業検索ページ (/companies) テスト</h3></p><p>#### テストケース: CS-001 検索フォーム基本機能</p></p>
+<p><code></code>`typescript</p></p>
+<p>describe('Company Search Form Tests', () => {</p></p>
+<p>  test('CS-001: Should accept search input and trigger search', async () => {</p></p>
+<p>    // Given: 企業検索ページが表示されている</p></p>
+<p>    render(<CompaniesPage />)</p></p>
+<p>    </p></p>
+<p>    // When: 検索フィールドに企業名を入力</p></p>
+<p>    const searchInput = screen.getByPlaceholderText('企業名で検索...')</p></p>
+<p>    await userEvent.type(searchInput, 'トヨタ自動車')</p></p>
+<p>    </p></p>
+<p>    // Then: 入力値が正しく表示される</p></p>
+<p>    expect(searchInput).toHaveValue('トヨタ自動車')</p></p>
+<p>    </p></p>
+<p>    // When: 検索ボタンをクリック</p></p>
+<p>    const searchButton = screen.getByRole('button', { name: '検索' })</p></p>
+<p>    await userEvent.click(searchButton)</p></p>
+<p>    </p></p>
+<p>    // Then: 検索APIが呼び出される (モック確認)</p></p>
+<p>    expect(mockSearchAPI).toHaveBeenCalledWith({</p></p>
+<p>      name: 'トヨタ自動車',</p></p>
+<p>      page: 1,</p></p>
+<p>      limit: 20</p></p>
+<p>    })</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p>#### テストケース: CS-002 フィルタリング機能</p></p>
+<p><code></code>`typescript</p></p>
+<p>test('CS-002: Should filter companies by industry and market', async () => {</p></p>
+<p>  // Given: 企業検索ページが表示されている</p></p>
+<p>  render(<CompaniesPage />)</p></p>
+<p>  </p></p>
+<p>  // When: 業界フィルターを選択</p></p>
+<p>  const industrySelect = screen.getByDisplayValue('業界を選択')</p></p>
+<p>  await userEvent.selectOptions(industrySelect, 'manufacturing')</p></p>
+<p>  </p></p>
+<p>  // And: 市場フィルターを選択</p></p>
+<p>  const marketSelect = screen.getByDisplayValue('市場を選択')</p></p>
+<p>  await userEvent.selectOptions(marketSelect, 'prime')</p></p>
+<p>  </p></p>
+<p>  // And: 検索を実行</p></p>
+<p>  const searchButton = screen.getByRole('button', { name: '検索' })</p></p>
+<p>  await userEvent.click(searchButton)</p></p>
+<p>  </p></p>
+<p>  // Then: フィルター条件付きで検索APIが呼び出される</p></p>
+<p>  expect(mockSearchAPI).toHaveBeenCalledWith({</p></p>
+<p>    name: '',</p></p>
+<p>    industry: 'manufacturing',</p></p>
+<p>    market: 'prime',</p></p>
+<p>    page: 1,</p></p>
+<p>    limit: 20</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p>#### テストケース: CS-003 検索結果表示</p></p>
+<p><code></code>`typescript</p></p>
+<p>test('CS-003: Should display search results correctly', async () => {</p></p>
+<p>  // Given: 検索結果のモックデータが設定されている</p></p>
+<p>  const mockResults = [</p></p>
+<p>    {</p></p>
+<p>      id: '1',</p></p>
+<p>      name: 'トヨタ自動車株式会社',</p></p>
+<p>      ticker_symbol: '7203',</p></p>
+<p>      industry: '輸送用機器',</p></p>
+<p>      market: 'プライム市場'</p></p>
+<p>    },</p></p>
+<p>    {</p></p>
+<p>      id: '2', </p></p>
+<p>      name: '本田技研工業株式会社',</p></p>
+<p>      ticker_symbol: '7267',</p></p>
+<p>      industry: '輸送用機器',</p></p>
+<p>      market: 'プライム市場'</p></p>
+<p>    }</p></p>
+<p>  ]</p></p>
+<p>  mockSearchAPI.mockResolvedValueOnce({ data: mockResults })</p></p>
+<p>  </p></p>
+<p>  // When: 検索を実行</p></p>
+<p>  render(<CompaniesPage />)</p></p>
+<p>  const searchButton = screen.getByRole('button', { name: '検索' })</p></p>
+<p>  await userEvent.click(searchButton)</p></p>
+<p>  </p></p>
+<p>  // Then: 検索結果が表示される</p></p>
+<p>  await waitFor(() => {</p></p>
+<p>    expect(screen.getByText('トヨタ自動車株式会社')).toBeInTheDocument()</p></p>
+<p>    expect(screen.getByText('本田技研工業株式会社')).toBeInTheDocument()</p></p>
+<p>    expect(screen.getByText('7203')).toBeInTheDocument()</p></p>
+<p>    expect(screen.getByText('7267')).toBeInTheDocument()</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p><h3>3. ROICダッシュボード (/dashboard) テスト</h3></p><p>#### テストケース: DB-001 統計情報表示</p></p>
+<p><code></code>`typescript</p></p>
+<p>describe('ROIC Dashboard Tests', () => {</p></p>
+<p>  test('DB-001: Should display statistics cards with correct data', async () => {</p></p>
+<p>    // Given: ダッシュボードデータのモックが設定されている</p></p>
+<p>    const mockStats = {</p></p>
+<p>      totalCompanies: 3847,</p></p>
+<p>      averageROIC: 8.5,</p></p>
+<p>      lastUpdated: '2025/07/01'</p></p>
+<p>    }</p></p>
+<p>    mockDashboardAPI.mockResolvedValueOnce({ data: mockStats })</p></p>
+<p>    </p></p>
+<p>    // When: ダッシュボードページが読み込まれる</p></p>
+<p>    render(<DashboardPage />)</p></p>
+<p>    </p></p>
+<p>    // Then: 統計情報が正しく表示される</p></p>
+<p>    await waitFor(() => {</p></p>
+<p>      expect(screen.getByText('3,847')).toBeInTheDocument()</p></p>
+<p>      expect(screen.getByText('8.5%')).toBeInTheDocument()</p></p>
+<p>      expect(screen.getByText('2025/07/01')).toBeInTheDocument()</p></p>
+<p>    })</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p>#### テストケース: DB-002 ROIC上位企業テーブル</p></p>
+<p><code></code>`typescript</p></p>
+<p>test('DB-002: Should display top ROIC companies table', async () => {</p></p>
+<p>  // Given: 上位企業データのモックが設定されている</p></p>
+<p>  const mockTopCompanies = [</p></p>
+<p>    { rank: 1, name: 'サンプル企業A', industry: 'テクノロジー', roic: 25.3 },</p></p>
+<p>    { rank: 2, name: 'サンプル企業B', industry: 'ヘルスケア', roic: 22.1 },</p></p>
+<p>    { rank: 3, name: 'サンプル企業C', industry: '消費財', roic: 19.8 }</p></p>
+<p>  ]</p></p>
+<p>  mockTopCompaniesAPI.mockResolvedValueOnce({ data: mockTopCompanies })</p></p>
+<p>  </p></p>
+<p>  // When: ダッシュボードページが読み込まれる</p></p>
+<p>  render(<DashboardPage />)</p></p>
+<p>  </p></p>
+<p>  // Then: テーブルヘッダーが表示される</p></p>
+<p>  expect(screen.getByText('順位')).toBeInTheDocument()</p></p>
+<p>  expect(screen.getByText('企業名')).toBeInTheDocument()</p></p>
+<p>  expect(screen.getByText('業界')).toBeInTheDocument()</p></p>
+<p>  expect(screen.getByText('ROIC')).toBeInTheDocument()</p></p>
+<p>  </p></p>
+<p>  // And: 企業データが正しく表示される</p></p>
+<p>  await waitFor(() => {</p></p>
+<p>    expect(screen.getByText('サンプル企業A')).toBeInTheDocument()</p></p>
+<p>    expect(screen.getByText('25.3%')).toBeInTheDocument()</p></p>
+<p>    expect(screen.getByText('テクノロジー')).toBeInTheDocument()</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p><h2>🔧 バックエンド API テスト仕様</h2></p><p><h3>1. 企業検索API テスト</h3></p><p>#### テストケース: API-001 企業一覧取得</p></p>
+<p><code></code>`typescript</p></p>
+<p>describe('Companies API Tests', () => {</p></p>
+<p>  test('API-001: GET /api/companies should return companies list', async () => {</p></p>
+<p>    // Given: データベースに企業データが存在する</p></p>
+<p>    await seedDatabase([</p></p>
+<p>      { name: 'トヨタ自動車', ticker_symbol: '7203', industry: '輸送用機器' },</p></p>
+<p>      { name: 'ソニーグループ', ticker_symbol: '6758', industry: '電気機器' }</p></p>
+<p>    ])</p></p>
+<p>    </p></p>
+<p>    // When: 企業一覧APIを呼び出す</p></p>
+<p>    const response = await request(app)</p></p>
+<p>      .get('/api/companies')</p></p>
+<p>      .expect(200)</p></p>
+<p>    </p></p>
+<p>    // Then: 正しい形式でデータが返される</p></p>
+<p>    expect(response.body).toMatchObject({</p></p>
+<p>      success: true,</p></p>
+<p>      data: expect.arrayContaining([</p></p>
+<p>        expect.objectContaining({</p></p>
+<p>          name: 'トヨタ自動車',</p></p>
+<p>          ticker_symbol: '7203',</p></p>
+<p>          industry: '輸送用機器'</p></p>
+<p>        })</p></p>
+<p>      ])</p></p>
+<p>    })</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p>#### テストケース: API-002 企業検索（クエリパラメータ）</p></p>
+<p><code></code>`typescript</p></p>
+<p>test('API-002: GET /api/companies with search parameters', async () => {</p></p>
+<p>  // Given: 複数の企業データが存在する</p></p>
+<p>  await seedDatabase([</p></p>
+<p>    { name: 'トヨタ自動車', industry: '輸送用機器', market: 'prime' },</p></p>
+<p>    { name: 'ソニーグループ', industry: '電気機器', market: 'prime' },</p></p>
+<p>    { name: 'スタートアップA', industry: 'テクノロジー', market: 'growth' }</p></p>
+<p>  ])</p></p>
+<p>  </p></p>
+<p>  // When: 業界フィルターで検索</p></p>
+<p>  const response = await request(app)</p></p>
+<p>    .get('/api/companies')</p></p>
+<p>    .query({ industry: '輸送用機器', market: 'prime' })</p></p>
+<p>    .expect(200)</p></p>
+<p>  </p></p>
+<p>  // Then: フィルター条件に合致する企業のみ返される</p></p>
+<p>  expect(response.body.data).toHaveLength(1)</p></p>
+<p>  expect(response.body.data[0].name).toBe('トヨタ自動車')</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p><h3>2. ROIC計算API テスト</h3></p><p>#### テストケース: API-003 ROIC計算</p></p>
+<p><code></code>`typescript</p></p>
+<p>describe('ROIC Calculation API Tests', () => {</p></p>
+<p>  test('API-003: POST /api/roic/calculate/:id should calculate ROIC correctly', async () => {</p></p>
+<p>    // Given: 企業の財務データが存在する</p></p>
+<p>    const companyId = 'company-123'</p></p>
+<p>    await seedFinancialData(companyId, {</p></p>
+<p>      fiscal_year: 2023,</p></p>
+<p>      revenue: 100000000000, // 10兆円</p></p>
+<p>      operating_income: 5000000000, // 5000億円</p></p>
+<p>      total_assets: 50000000000, // 5兆円</p></p>
+<p>      total_debt: 20000000000 // 2兆円</p></p>
+<p>    })</p></p>
+<p>    </p></p>
+<p>    // When: ROIC計算APIを呼び出す</p></p>
+<p>    const response = await request(app)</p></p>
+<p>      .post(<code>/api/roic/calculate/${companyId}</code>)</p></p>
+<p>      .send({ </p></p>
+<p>        fiscal_year: 2023,</p></p>
+<p>        calculation_method: 'standard'</p></p>
+<p>      })</p></p>
+<p>      .expect(200)</p></p>
+<p>    </p></p>
+<p>    // Then: 正しくROICが計算される</p></p>
+<p>    expect(response.body).toMatchObject({</p></p>
+<p>      success: true,</p></p>
+<p>      data: expect.objectContaining({</p></p>
+<p>        company_id: companyId,</p></p>
+<p>        fiscal_year: 2023,</p></p>
+<p>        roic_percentage: expect.any(Number),</p></p>
+<p>        calculation_method: 'standard'</p></p>
+<p>      })</p></p>
+<p>    })</p></p>
+<p>    </p></p>
+<p>    // And: ROIC値が妥当な範囲内である</p></p>
+<p>    expect(response.body.data.roic_percentage).toBeGreaterThan(0)</p></p>
+<p>    expect(response.body.data.roic_percentage).toBeLessThan(100)</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p>#### テストケース: API-004 計算方式別ROIC</p></p>
+<p><code></code>`typescript</p></p>
+<p>test('API-004: Different calculation methods should yield different results', async () => {</p></p>
+<p>  const companyId = 'company-123'</p></p>
+<p>  </p></p>
+<p>  // When: 異なる計算方式でROICを計算</p></p>
+<p>  const standardResponse = await request(app)</p></p>
+<p>    .post(<code>/api/roic/calculate/${companyId}</code>)</p></p>
+<p>    .send({ calculation_method: 'standard' })</p></p>
+<p>  </p></p>
+<p>  const adjustedResponse = await request(app)</p></p>
+<p>    .post(<code>/api/roic/calculate/${companyId}</code>)</p></p>
+<p>    .send({ calculation_method: 'adjusted' })</p></p>
+<p>  </p></p>
+<p>  // Then: 異なる結果が返される</p></p>
+<p>  expect(standardResponse.body.data.roic_percentage)</p></p>
+<p>    .not.toBe(adjustedResponse.body.data.roic_percentage)</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p><h2>🎭 E2Eテスト仕様</h2></p><p><h3>シナリオ: E2E-001 完全なユーザージャーニー</h3></p></p>
+<p><code></code>`typescript</p></p>
+<p>describe('Complete User Journey E2E Tests', () => {</p></p>
+<p>  test('E2E-001: User should be able to search companies and view ROIC data', async ({ page }) => {</p></p>
+<p>    // Given: アプリケーションが正常に起動している</p></p>
+<p>    await page.goto('http://localhost:3000')</p></p>
+<p>    </p></p>
+<p>    // When: ホームページからダッシュボードに移動</p></p>
+<p>    await page.click('text=ダッシュボード')</p></p>
+<p>    </p></p>
+<p>    // Then: ダッシュボードが表示される</p></p>
+<p>    await expect(page.locator('h1')).toContainText('ROICダッシュボード')</p></p>
+<p>    </p></p>
+<p>    // When: 企業検索ページに移動</p></p>
+<p>    await page.click('text=企業検索')</p></p>
+<p>    </p></p>
+<p>    // Then: 検索ページが表示される</p></p>
+<p>    await expect(page.locator('h1')).toContainText('企業検索')</p></p>
+<p>    </p></p>
+<p>    // When: 企業名を検索</p></p>
+<p>    await page.fill('input[placeholder="企業名で検索..."]', 'トヨタ')</p></p>
+<p>    await page.click('button:has-text("検索")')</p></p>
+<p>    </p></p>
+<p>    // Then: 検索結果が表示される</p></p>
+<p>    await expect(page.locator('[data-testid="search-results"]')).toBeVisible()</p></p>
+<p>    </p></p>
+<p>    // When: 企業詳細をクリック</p></p>
+<p>    await page.click('text=トヨタ自動車')</p></p>
+<p>    </p></p>
+<p>    // Then: 企業詳細ページが表示される</p></p>
+<p>    await expect(page.locator('[data-testid="roic-value"]')).toBeVisible()</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p><h3>シナリオ: E2E-002 パフォーマンステスト</h3></p></p>
+<p><code></code>`typescript</p></p>
+<p>test('E2E-002: Application should load within performance thresholds', async ({ page }) => {</p></p>
+<p>  // Given: パフォーマンス測定を開始</p></p>
+<p>  const startTime = Date.now()</p></p>
+<p>  </p></p>
+<p>  // When: ホームページにアクセス</p></p>
+<p>  await page.goto('http://localhost:3000')</p></p>
+<p>  </p></p>
+<p>  // Then: 2秒以内に読み込みが完了する</p></p>
+<p>  await expect(page.locator('h1')).toBeVisible()</p></p>
+<p>  const loadTime = Date.now() - startTime</p></p>
+<p>  expect(loadTime).toBeLessThan(2000)</p></p>
+<p>  </p></p>
+<p>  // When: 企業検索を実行</p></p>
+<p>  await page.goto('http://localhost:3000/companies')</p></p>
+<p>  await page.fill('input[placeholder="企業名で検索..."]', 'ト')</p></p>
+<p>  </p></p>
+<p>  const searchStartTime = Date.now()</p></p>
+<p>  await page.click('button:has-text("検索")')</p></p>
+<p>  </p></p>
+<p>  // Then: 検索結果が1秒以内に表示される</p></p>
+<p>  await expect(page.locator('[data-testid="search-results"]')).toBeVisible()</p></p>
+<p>  const searchTime = Date.now() - searchStartTime</p></p>
+<p>  expect(searchTime).toBeLessThan(1000)</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p><h2>📊 パフォーマンステスト仕様</h2></p><p><h3>負荷テストシナリオ: PERF-001</h3></p></p>
+<p><code></code>`yaml</p></p>
+<p><h1>Artillery.io設定</h1></p></p>
+<p>config:</p></p>
+<p>  target: 'http://localhost:3000'</p></p>
+<p>  phases:</p></p>
+<p>    - duration: 60</p></p>
+<p>      arrivalRate: 10  # 10 users per second</p></p>
+<p>    - duration: 120</p></p>
+<p>      arrivalRate: 50  # 50 users per second</p></p>
+<p>    - duration: 60</p></p>
+<p>      arrivalRate: 100 # 100 users per second</p><p>scenarios:</p></p>
+<p>  - name: "Homepage Load Test"</p></p>
+<p>    weight: 30</p></p>
+<p>    flow:</p></p>
+<p>      - get:</p></p>
+<p>          url: "/"</p></p>
+<p>          </p></p>
+<p>  - name: "Company Search Test"</p></p>
+<p>    weight: 50</p></p>
+<p>    flow:</p></p>
+<p>      - get:</p></p>
+<p>          url: "/companies"</p></p>
+<p>      - post:</p></p>
+<p>          url: "/api/companies/search"</p></p>
+<p>          json:</p></p>
+<p>            name: "{{ $randomString() }}"</p></p>
+<p>            </p></p>
+<p>  - name: "ROIC Dashboard Test"</p></p>
+<p>    weight: 20</p></p>
+<p>    flow:</p></p>
+<p>      - get:</p></p>
+<p>          url: "/dashboard"</p></p>
+<p>      - get:</p></p>
+<p>          url: "/api/roic/rankings"</p></p>
+<p><code></code>`</p><p><h3>パフォーマンス期待値</h3></p></p>
+<p><code></code>`typescript</p></p>
+<p>describe('Performance Expectations', () => {</p></p>
+<p>  test('PERF-001: Response time should meet SLA requirements', () => {</p></p>
+<p>    const expectations = {</p></p>
+<p>      homepage: { maxResponseTime: 2000, target: 1500 },</p></p>
+<p>      search: { maxResponseTime: 1000, target: 500 },</p></p>
+<p>      roicCalculation: { maxResponseTime: 3000, target: 2000 },</p></p>
+<p>      dashboard: { maxResponseTime: 2000, target: 1000 }</p></p>
+<p>    }</p></p>
+<p>    </p></p>
+<p>    // テスト実行後に上記期待値と実測値を比較</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p><h2>🔒 セキュリティテスト仕様</h2></p><p><h3>セキュリティテストケース: SEC-001</h3></p></p>
+<p><code></code>`typescript</p></p>
+<p>describe('Security Tests', () => {</p></p>
+<p>  test('SEC-001: Should prevent SQL injection attacks', async () => {</p></p>
+<p>    // Given: SQLインジェクション攻撃パターン</p></p>
+<p>    const maliciousInputs = [</p></p>
+<p>      "'; DROP TABLE companies; --",</p></p>
+<p>      "1' OR '1'='1",</p></p>
+<p>      "admin'/*",</p></p>
+<p>      "' UNION SELECT * FROM users --"</p></p>
+<p>    ]</p></p>
+<p>    </p></p>
+<p>    // When: 各攻撃パターンで検索API呼び出し</p></p>
+<p>    for (const input of maliciousInputs) {</p></p>
+<p>      const response = await request(app)</p></p>
+<p>        .get('/api/companies/search')</p></p>
+<p>        .query({ name: input })</p></p>
+<p>      </p></p>
+<p>      // Then: 攻撃が成功せず、通常のレスポンスが返される</p></p>
+<p>      expect(response.status).toBeLessThan(500)</p></p>
+<p>      expect(response.body).not.toContainEqual(</p></p>
+<p>        expect.objectContaining({ </p></p>
+<p>          error: expect.stringContaining('SQL') </p></p>
+<p>        })</p></p>
+<p>      )</p></p>
+<p>    }</p></p>
+<p>  })</p></p>
+<p>  </p></p>
+<p>  test('SEC-002: Should validate input parameters', async () => {</p></p>
+<p>    // When: 無効なパラメータでAPI呼び出し</p></p>
+<p>    const response = await request(app)</p></p>
+<p>      .get('/api/companies')</p></p>
+<p>      .query({ </p></p>
+<p>        page: -1,</p></p>
+<p>        limit: 10000,</p></p>
+<p>        industry: '<script>alert("xss")</script>'</p></p>
+<p>      })</p></p>
+<p>    </p></p>
+<p>    // Then: 適切なバリデーションエラーが返される</p></p>
+<p>    expect(response.status).toBe(400)</p></p>
+<p>    expect(response.body.error).toContain('Validation error')</p></p>
+<p>  })</p></p>
+<p>})</p></p>
+<p><code></code>`</p><p><h2>🔧 テストデータ仕様</h2></p><p><h3>マスターテストデータ</h3></p></p>
+<p><code></code>`typescript</p></p>
+<p>export const testCompanies = [</p></p>
+<p>  {</p></p>
+<p>    id: 'toyota-7203',</p></p>
+<p>    name: 'トヨタ自動車株式会社',</p></p>
+<p>    ticker_symbol: '7203',</p></p>
+<p>    industry: '輸送用機器',</p></p>
+<p>    market: 'プライム市場',</p></p>
+<p>    founded_year: 1937,</p></p>
+<p>    employee_count: 366283,</p></p>
+<p>    website: 'https://toyota.jp',</p></p>
+<p>    is_active: true</p></p>
+<p>  },</p></p>
+<p>  {</p></p>
+<p>    id: 'sony-6758',</p></p>
+<p>    name: 'ソニーグループ株式会社',</p></p>
+<p>    ticker_symbol: '6758',</p></p>
+<p>    industry: '電気機器',</p></p>
+<p>    market: 'プライム市場',</p></p>
+<p>    founded_year: 1946,</p></p>
+<p>    employee_count: 109700,</p></p>
+<p>    website: 'https://sony.com',</p></p>
+<p>    is_active: true</p></p>
+<p>  }</p></p>
+<p>]</p><p>export const testFinancialData = [</p></p>
+<p>  {</p></p>
+<p>    company_id: 'toyota-7203',</p></p>
+<p>    fiscal_year: 2023,</p></p>
+<p>    fiscal_period: 'annual',</p></p>
+<p>    revenue: 31174600000000, // 31.17兆円</p></p>
+<p>    operating_income: 3085200000000, // 3.08兆円</p></p>
+<p>    net_income: 2449800000000, // 2.44兆円</p></p>
+<p>    total_assets: 36552300000000, // 36.55兆円</p></p>
+<p>    total_equity: 16004900000000, // 16.00兆円</p></p>
+<p>    total_debt: 15555100000000, // 15.55兆円</p></p>
+<p>    filing_date: '2023-06-14'</p></p>
+<p>  }</p></p>
+<p>]</p></p>
+<p><code></code>`</p><p><h3>動的テストデータ生成</h3></p></p>
+<p><code></code>`typescript</p></p>
+<p>export class TestDataFactory {</p></p>
+<p>  static generateCompany(overrides = {}) {</p></p>
+<p>    return {</p></p>
+<p>      id: faker.datatype.uuid(),</p></p>
+<p>      name: faker.company.name() + '株式会社',</p></p>
+<p>      ticker_symbol: faker.datatype.number({ min: 1000, max: 9999 }).toString(),</p></p>
+<p>      industry: faker.helpers.arrayElement([</p></p>
+<p>        '輸送用機器', '電気機器', '機械', '化学', '食料品'</p></p>
+<p>      ]),</p></p>
+<p>      market: faker.helpers.arrayElement([</p></p>
+<p>        'プライム市場', 'スタンダード市場', 'グロース市場'</p></p>
+<p>      ]),</p></p>
+<p>      founded_year: faker.datatype.number({ min: 1950, max: 2020 }),</p></p>
+<p>      employee_count: faker.datatype.number({ min: 100, max: 500000 }),</p></p>
+<p>      is_active: true,</p></p>
+<p>      ...overrides</p></p>
+<p>    }</p></p>
+<p>  }</p></p>
+<p>  </p></p>
+<p>  static generateFinancialData(companyId, overrides = {}) {</p></p>
+<p>    return {</p></p>
+<p>      company_id: companyId,</p></p>
+<p>      fiscal_year: 2023,</p></p>
+<p>      fiscal_period: 'annual',</p></p>
+<p>      revenue: faker.datatype.number({ min: 1000000000, max: 10000000000000 }),</p></p>
+<p>      operating_income: faker.datatype.number({ min: 100000000, max: 1000000000000 }),</p></p>
+<p>      net_income: faker.datatype.number({ min: 50000000, max: 500000000000 }),</p></p>
+<p>      total_assets: faker.datatype.number({ min: 1000000000, max: 50000000000000 }),</p></p>
+<p>      total_equity: faker.datatype.number({ min: 500000000, max: 20000000000000 }),</p></p>
+<p>      total_debt: faker.datatype.number({ min: 100000000, max: 20000000000000 }),</p></p>
+<p>      filing_date: faker.date.recent().toISOString().split('T')[0],</p></p>
+<p>      ...overrides</p></p>
+<p>    }</p></p>
+<p>  }</p></p>
+<p>}</p></p>
+<p><code></code>`</p><p><h2>📈 テスト結果レポート仕様</h2></p><p><h3>自動生成レポート形式</h3></p></p>
+<p><code></code>`typescript</p></p>
+<p>interface TestReport {</p></p>
+<p>  testSuite: string</p></p>
+<p>  executionDate: string</p></p>
+<p>  environment: 'development' | 'staging' | 'production'</p></p>
+<p>  summary: {</p></p>
+<p>    totalTests: number</p></p>
+<p>    passed: number</p></p>
+<p>    failed: number</p></p>
+<p>    skipped: number</p></p>
+<p>    duration: number</p></p>
+<p>    coverage: {</p></p>
+<p>      statements: number</p></p>
+<p>      branches: number</p></p>
+<p>      functions: number</p></p>
+<p>      lines: number</p></p>
+<p>    }</p></p>
+<p>  }</p></p>
+<p>  results: TestResult[]</p></p>
+<p>  performance: {</p></p>
+<p>    averageResponseTime: number</p></p>
+<p>    p95ResponseTime: number</p></p>
+<p>    throughput: number</p></p>
+<p>    errorRate: number</p></p>
+<p>  }</p></p>
+<p>  security: {</p></p>
+<p>    vulnerabilities: SecurityIssue[]</p></p>
+<p>    score: number</p></p>
+<p>  }</p></p>
+<p>}</p></p>
+<p><code></code>`</p><p>---</p><p><h2>📞 連絡先・更新履歴</h2></p><p>| バージョン | 更新日 | 更新内容 | 更新者 |</p></p>
+<p>|------------|--------|----------|--------|</p></p>
+<p>| 1.0 | 2025/7/1 | 初版作成 | 開発チーム |</p><p><strong>※ この仕様書は機能追加に応じて自動更新されます</strong></p></p>}
+            </div>
         </div>
 
-        <h3>📈 テスト統計</h3>
-        <table>
-            <tr>
-                <th>指標</th>
-                <th>値</th>
-            </tr>
-            <tr>
-                <td>総テストケース数</td>
-                <td>35ケース</td>
-            </tr>
-            <tr>
-                <td>成功数</td>
-                <td><span class="status-completed">35ケース</span></td>
-            </tr>
-            <tr>
-                <td>失敗数</td>
-                <td><span class="status-completed">0ケース</span></td>
-            </tr>
-            <tr>
-                <td>Statement Coverage</td>
-                <td><span class="status-completed">100%</span></td>
-            </tr>
-            <tr>
-                <td>Branch Coverage</td>
-                <td><span class="status-completed">100%</span></td>
-            </tr>
-            <tr>
-                <td>Function Coverage</td>
-                <td><span class="status-completed">100%</span></td>
-            </tr>
-            <tr>
-                <td>Line Coverage</td>
-                <td><span class="status-completed">100%</span></td>
-            </tr>
-        </table>
-
-        <h3>🎯 テスト内容詳細</h3>
-        <table>
-            <tr>
-                <th>計算方式</th>
-                <th>テストケース数</th>
-                <th>検証内容</th>
-                <th>ステータス</th>
-            </tr>
-            <tr>
-                <td>基本方式</td>
-                <td>4ケース</td>
-                <td>標準計算・投下資本0・マイナス営業利益・内訳確認</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-            <tr>
-                <td>詳細方式</td>
-                <td>3ケース</td>
-                <td>受取利息含む計算・投下資本構成・調整項目</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-            <tr>
-                <td>アセット方式</td>
-                <td>3ケース</td>
-                <td>総資産ベース・無利子負債控除・計算精度</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-            <tr>
-                <td>修正方式</td>
-                <td>3ケース</td>
-                <td>IFRS16リース調整・未定義値処理・効果確認</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-            <tr>
-                <td>統合機能</td>
-                <td>3ケース</td>
-                <td>全方式一括計算・差異確認・リース効果</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-            <tr>
-                <td>エッジケース</td>
-                <td>3ケース</td>
-                <td>ゼロ値・極小値・極大値処理</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-            <tr>
-                <td>フォーマット機能</td>
-                <td>4ケース</td>
-                <td>百分率・通貨・特殊値・小数点処理</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-            <tr>
-                <td>評価レベル</td>
-                <td>6ケース</td>
-                <td>4段階評価・境界値・マイナス値</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-            <tr>
-                <td>計算精度</td>
-                <td>2ケース</td>
-                <td>微小差検出・税率100%処理</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-            <tr>
-                <td>実データシナリオ</td>
-                <td>2ケース</td>
-                <td>トヨタ類似・IT企業類似データ</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-            <tr>
-                <td>サンプルデータ</td>
-                <td>2ケース</td>
-                <td>サンプル企業データ整合性確認</td>
-                <td><span class="status-completed">✅ 全て成功</span></td>
-            </tr>
-        </table>
-
-        <h3>🔍 重要な検証ポイント</h3>
-        <div class="test-result">
-            <h4>計算精度の検証</h4>
-            <ul>
-                <li>小数点以下4桁の計算精度を確保</li>
-                <li>微小な入力差が適切に出力に反映される</li>
-                <li>税率100%など極端なケースも正確に処理</li>
-            </ul>
-        </div>
-
-        <div class="test-result">
-            <h4>エラーハンドリングの検証</h4>
-            <ul>
-                <li>投下資本が0の場合、ROICは0として安全に処理</li>
-                <li>営業利益がマイナスでも正しく計算される</li>
-                <li>未定義のリース項目は0として適切に扱われる</li>
-            </ul>
-        </div>
-
-        <div class="test-result">
-            <h4>実データシナリオの検証</h4>
-            <ul>
-                <li>トヨタ自動車類似データ: 自動車業界の一般的範囲内でROIC計算</li>
-                <li>IT企業類似データ: 高ROICを示す業界特性を正確に反映</li>
-                <li>業界別の特徴的な財務構造に対応</li>
-            </ul>
-        </div>
-
-        <h2>🎯 今後の課題と改善点</h2>
-        
-        <table>
-            <tr>
-                <th>優先度</th>
-                <th>課題</th>
-                <th>改善案</th>
-                <th>期限</th>
-            </tr>
-            <tr>
-                <td><span class="status-failed">高</span></td>
-                <td>ROIC計算ロジックのユニットテスト未実装</td>
-                <td>4つの計算方式の正確性テスト作成</td>
-                <td>2025/07/10</td>
-            </tr>
-            <tr>
-                <td><span class="status-progress">中</span></td>
-                <td>実際のEDINET APIとの連携</td>
-                <td>本番APIキー取得後、段階的移行</td>
-                <td>2025/07/20</td>
-            </tr>
-            <tr>
-                <td><span class="status-pending">低</span></td>
-                <td>E2Eテスト環境構築</td>
-                <td>Playwright導入、CI/CD統合</td>
-                <td>2025/08/01</td>
-            </tr>
-        </table>
-
-        <div class="update-time">
-            最終自動更新: 2025/07/04 15:00:00<br>
-            🤖 この文書は自動的に更新されます
-        </div>
+        <footer class="footer">
+            <p>このドキュメントは自動生成・更新されています。テスト実行と連動してリアルタイムで更新されます。</p>
+        </footer>
     </div>
-    
+
     <script>
-        // Auto-refresh every 60 seconds
-        setTimeout(() => window.location.reload(), 60000);
+        // リアルタイム更新
+        setInterval(() => {
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDoc = parser.parseFromString(html, 'text/html');
+                    
+                    // 統計情報のみ更新
+                    const newStats = newDoc.querySelectorAll('.suite-stats, .progress-bar');
+                    const currentStats = document.querySelectorAll('.suite-stats, .progress-bar');
+                    
+                    newStats.forEach((newStat, index) => {
+                        if (currentStats[index]) {
+                            currentStats[index].innerHTML = newStat.innerHTML;
+                        }
+                    });
+                })
+                .catch(err => console.log('Update failed:', err));
+        }, 10000); // 10秒ごと
+
+        // バックグラウンドテスト結果の監視
+        if ('WebSocket' in window) {
+            const ws = new WebSocket('ws://localhost:3001/test-updates');
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'test-results') {
+                    location.reload();
+                }
+            };
+        }
     </script>
 </body>
 </html>
+    
