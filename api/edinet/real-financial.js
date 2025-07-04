@@ -307,6 +307,8 @@ async function extractFinancialData(xbrlContent, edinetCode, fiscalYear) {
       
       // 売上高 (IFRS対応)
       netSales: extractNumericValue(facts, [
+        'TotalNetRevenuesIFRS',
+        'SalesOfProductsIFRS',
         'OperatingRevenuesIFRSKeyFinancialData',
         'RevenueIFRS', 
         'NetSales',
@@ -318,6 +320,7 @@ async function extractFinancialData(xbrlContent, edinetCode, fiscalYear) {
       
       // 営業利益 (IFRS対応)
       operatingIncome: extractNumericValue(facts, [
+        'OperatingProfitLossIFRS',
         'ProfitLossFromOperatingActivitiesIFRS',
         'OperatingIncomeIFRS',
         'ProfitLossBeforeTaxIFRSSummaryOfBusinessResults',
@@ -325,13 +328,13 @@ async function extractFinancialData(xbrlContent, edinetCode, fiscalYear) {
         'OperatingProfit'
       ], currentPeriodContextId),
       
-      // 総資産 (IFRS対応)
+      // 総資産 (IFRS対応) - Instantコンテキスト使用
       totalAssets: extractNumericValue(facts, [
-        'TotalAssetsIFRSSummaryOfBusinessResults',
         'AssetsIFRS',
+        'TotalAssetsIFRSSummaryOfBusinessResults',
         'Assets',
         'TotalAssets'
-      ], currentPeriodContextId),
+      ], 'CurrentYearInstant'),
       
       // 現金及び現金同等物 (IFRS対応)
       cashAndEquivalents: extractNumericValue(facts, [
@@ -524,7 +527,11 @@ function extractNumericValue(facts, possibleKeys, contextId) {
   for (const key of possibleKeys) {
     // 完全一致を試す
     if (facts[key]) {
-      const fact = facts[key].find(f => f.contextRef === contextId);
+      const fact = facts[key].find(f => {
+        // contextRefが配列の場合に対応
+        const refValue = Array.isArray(f.contextRef) ? f.contextRef[0] : f.contextRef;
+        return refValue === contextId;
+      });
       if (fact && fact.value) {
         const value = parseFloat(fact.value.replace(/,/g, ''));
         console.log(`✅ 完全一致発見: ${key} = ${value}`);
@@ -535,7 +542,11 @@ function extractNumericValue(facts, possibleKeys, contextId) {
     // 部分一致を試す
     for (const [factKey, factValues] of Object.entries(facts)) {
       if (factKey.includes(key)) {
-        const fact = factValues.find(f => f.contextRef === contextId);
+        const fact = factValues.find(f => {
+          // contextRefが配列の場合に対応
+          const refValue = Array.isArray(f.contextRef) ? f.contextRef[0] : f.contextRef;
+          return refValue === contextId;
+        });
         if (fact && fact.value) {
           const value = parseFloat(fact.value.replace(/,/g, ''));
           console.log(`✅ 部分一致発見: ${factKey} = ${value}`);
@@ -550,7 +561,10 @@ function extractNumericValue(facts, possibleKeys, contextId) {
   const availableContexts = new Set();
   for (const [factKey, factValues] of Object.entries(facts)) {
     if (possibleKeys.some(key => factKey.includes(key))) {
-      factValues.forEach(f => availableContexts.add(f.contextRef));
+      factValues.forEach(f => {
+        const refValue = Array.isArray(f.contextRef) ? f.contextRef[0] : f.contextRef;
+        availableContexts.add(refValue);
+      });
     }
   }
   console.log(`利用可能なコンテキスト: ${Array.from(availableContexts).join(', ')}`);
