@@ -4,7 +4,7 @@
     "failed": 0,
     "total": 0,
     "coverage": 14.07,
-    "lastRun": "2025-07-04T03:48:33.250Z"
+    "lastRun": "2025-07-04T05:06:32.390Z"
   },
   "e2e": {
     "passed": 0,
@@ -22,13 +22,13 @@
     "passed": 0,
     "failed": 0,
     "total": 0,
-    "lastRun": "2025-07-04T03:48:37.462Z"
+    "lastRun": "2025-07-04T05:06:36.395Z"
   },
   "security": {
     "passed": 1,
     "failed": 0,
     "total": 1,
-    "lastRun": "2025-07-04T03:48:41.351Z"
+    "lastRun": "2025-07-04T05:06:39.235Z"
   },
   "build": {
     "status": "unknown",
