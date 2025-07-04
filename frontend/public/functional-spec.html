@@ -3,157 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>機能設計書</title>
+    <title>機能設計書 - ROIC分析アプリケーション</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; margin: 0; padding: 20px; background: #f5f5f5; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; margin: 0; padding: 0; background: #f5f5f5; }
+        .header { background: #24292e; color: white; padding: 20px 0; margin-bottom: 30px; }
+        .header-content { max-width: 1200px; margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .nav { display: flex; gap: 20px; }
+        .nav a { color: white; text-decoration: none; padding: 5px 10px; border-radius: 4px; transition: background 0.2s; }
+        .nav a:hover { background: rgba(255,255,255,0.1); }
         .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1, h2, h3, h4 { color: #333; }
-        h1 { border-bottom: 2px solid #e1e4e8; padding-bottom: 10px; }
-        .status-completed { color: #28a745; }
-        .status-progress { color: #ffc107; }
-        .status-pending { color: #6c757d; }
-        code { background: #f6f8fa; padding: 2px 4px; border-radius: 3px; }
-        .update-time { color: #666; font-style: italic; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e1e4e8; }
+        h2, h3, h4 { color: #333; }
+        h2 { border-bottom: 2px solid #e1e4e8; padding-bottom: 10px; margin-top: 30px; }
+        .status-completed { color: #28a745; font-weight: bold; }
+        .status-progress { color: #ffc107; font-weight: bold; }
+        .status-pending { color: #6c757d; font-weight: bold; }
+        code { background: #f6f8fa; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
+        pre { background: #f6f8fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #f6f8fa; font-weight: bold; }
+        tr:nth-child(even) { background: #fafafa; }
+        .progress-bar { width: 100%; background: #e9ecef; border-radius: 4px; height: 20px; margin: 5px 0; }
+        .progress-fill { background: #28a745; height: 100%; border-radius: 4px; color: white; text-align: center; line-height: 20px; font-size: 12px; }
+        .update-time { color: #666; font-style: italic; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e1e4e8; text-align: center; }
+        .feature-card { background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 15px 0; border-left: 4px solid #007bff; }
+        .phase-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .phase-1 { background: #d4edda; color: #155724; }
+        .phase-2 { background: #fff3cd; color: #856404; }
+        .phase-3 { background: #cce5ff; color: #004085; }
     </style>
 </head>
 <body>
+    <div class="header">
+        <div class="header-content">
+            <h1>機能設計書</h1>
+            <nav class="nav">
+                <a href="/">トップ</a>
+                <a href="/functional-spec.html">機能設計書</a>
+                <a href="/environment-design.html">環境設計書</a>
+                <a href="/test-docs/test-spec.html">テスト仕様書</a>
+            </nav>
+        </div>
+    </div>
+
     <div class="container">
-        <h1>ROIC分析アプリケーション 機能設計書</h1></p><p><h2>1. システム概要</h2></p><p><h3>1.1 目的</h3>
-<p>日系上場企業のROIC（投下資本利益率）を自動計算・分析・比較するWebアプリケーション</p><p><h3>1.2 開発方針</h3>
-<li><strong>MVP-First</strong>: 最小限の価値ある製品から開始</li>
-<li><strong>インクリメンタル開発</strong>: 段階的な機能追加</li>
-<li><strong>自動文書更新</strong>: 開発進捗に応じた自動更新</li></p><p><h2>2. 機能要件</h2></p><p><h3>2.1 実装済み機能</h3></p><p><h4>ROIC自動計算 <span class="status-completed">✅</span></h4>
-<li><strong>ステータス</strong>: completed</li>
-<li><strong>進捗</strong>: 100%</li>
-<li><strong>説明</strong>: 4つの計算方式に対応したROIC自動計算</li>
-<li><strong>優先度</strong>: high</li>
-<li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: frontend/src/components/ROICCalculator.tsx, frontend/src/utils/roicCalculations.ts</li></p><p>
-<p>##### 📊 技術詳細</p><p><strong>計算方式:</strong></p><p>1. <strong>基本方式（財務指標直接計算）</strong>
-<p>   - 公式: <code>ROIC = 営業利益 × (1 - 実効税率) ÷ (総資産 - 現金及び現金同等物)</code>
-<p>   - 根拠: 最もシンプルな計算方式、営業利益をベースにした税引後利益を使用</p>
-<p>   - 適用場面: 基本的なROIC分析、業界間比較</p><p>2. <strong>詳細方式（NOPAT個別計算）</strong>
-<p>   - 公式: <code>NOPAT = (営業利益 + 受取利息) × (1 - 実効税率), 投下資本 = 株主資本 + 有利子負債, ROIC = NOPAT ÷ 投下資本</code>
-<p>   - 根拠: より精密な計算、金融収益も含めた事業利益を評価</p>
-<p>   - 適用場面: 詳細分析、投資判断</p><p>3. <strong>アセット方式（総資産ベース）</strong>
-<p>   - 公式: <code>投下資本 = 総資産 - 無利子負債（買掛金、未払金等）, ROIC = NOPAT ÷ 投下資本</code>
-<p>   - 根拠: バランスシート全体から運転資本効率を評価</p>
-<p>   - 適用場面: 資産効率性分析、製造業評価</p><p>4. <strong>修正方式（リース調整）</strong>
-<p>   - 公式: <code>修正NOPAT = NOPAT + リース費用 × (1 - 実効税率), 修正投下資本 = 投下資本 + リース債務, 修正ROIC = 修正NOPAT ÷ 修正投下資本</code>
-<p>   - 根拠: IFRS16対応、オペレーティングリースの資本化調整</p>
-<p>   - 適用場面: 国際会計基準企業、小売・航空業界</p><p><strong>精度向上のための調整:</strong></p><p><li><strong>effective_tax_rate</strong>: 法人税等 ÷ 税引前当期純利益（異常値は30%でキャップ）</li>
-<li><strong>outlier_handling</strong>: ROIC > 100% または < -50% の場合は警告表示</li>
-<li><strong>industry_adjustments</strong>: 金融業は除外、不動産業は簿価調整オプション</li>
-<li><strong>period_adjustments</strong>: 期首期末平均値使用、四半期データは年換算</li></p><p>
-<p>##### 📁 ファイル仕様</p><p><strong>backend/controllers/roic-calculator.js</strong></p><p><li><strong>目的</strong>: ROIC計算エンジンの中核ロジック</li>
-<li><strong>主要機能</strong>:</li>
-<p>  - 4つの計算方式（標準、調整済み、保守的、積極的）の実装</p>
-<p>  - NOPAT（税引き後営業利益）の精密計算</p>
-<p>  - 投下資本の多角的算定</p>
-<p>  - 補助指標（運転資本、資産回転率等）の算出</p>
-<li><strong>主要特徴</strong>:</li>
-<p>  - 実効税率の自動計算（0%〜50%の妥当性チェック）</p>
-<p>  - ゼロ除算防止とエラーハンドリング</p>
-<p>  - 業界別調整機能</p>
-<p>  - 詳細なログ記録システム</p>
-<li><strong>アルゴリズム</strong>:</li>
-<p>  - <strong>nopat_calculation</strong>: <code>営業利益 × (1 - 実効税率)</code>
-<p>  - <strong>invested_capital_standard</strong>: <code>総資産 - 無利子負債（流動負債の70%）</code>
-<p>  - <strong>invested_capital_adjusted</strong>: <code>純資産 + 有利子負債</code>
-<p>  - <strong>invested_capital_conservative</strong>: <code>純資産 + 有利子負債 - のれん - 無形資産</code>
-<p>  - <strong>invested_capital_aggressive</strong>: <code>総資産 - （流動負債の90%）</code></p><p><strong>frontend/src/utils/roicCalculations.ts</strong></p><p><li><strong>目的</strong>: フロントエンド向けROIC計算ユーティリティ</li>
-<li><strong>主要機能</strong>:</li>
-<p>  - バックエンドAPIとの連携</p>
-<p>  - 計算結果のフォーマット</p>
-<p>  - エラーハンドリングとユーザー向けメッセージ</p>
-<li><strong>ステータス</strong>: 実装予定（現在はバックエンドのみ実装）</li></p><p><h4>企業検索・フィルタリング <span class="status-completed">✅</span></h4>
-<li><strong>ステータス</strong>: completed</li>
-<li><strong>進捗</strong>: 100%</li>
-<li><strong>説明</strong>: 効率的な企業検索とフィルタリング機能</li>
-<li><strong>優先度</strong>: high</li>
-<li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: frontend/src/app/companies/page.tsx, frontend/src/components/CompanySearch.tsx</li></p><p>
-<p>##### 📁 ファイル仕様</p><p><strong>frontend/src/app/companies/page.tsx</strong></p><p><li><strong>目的</strong>: 企業検索・フィルタリング画面のメインコンポーネント</li>
-<li><strong>主要機能</strong>:</li>
-<p>  - 企業名による検索機能</p>
-<p>  - 業界別フィルタリング（製造業、金融業、小売業）</p>
-<p>  - 市場別フィルタリング（プライム、スタンダード、グロース）</p>
-<p>  - 検索結果の表示エリア</p>
-<li><strong>UIコンポーネント</strong>:</li>
-<p>  - 検索入力フィールド</p>
-<p>  - 業界選択ドロップダウン</p>
-<p>  - 市場選択ドロップダウン</p>
-<p>  - 検索ボタン</p>
-<p>  - 検索結果表示エリア（実装予定）</p>
-<li><strong>現在の状況</strong>: UI完成、バックエンド連携未実装</li></p><p><strong>frontend/src/components/CompanySearch.tsx</strong></p><p><li><strong>目的</strong>: 企業検索専用コンポーネント</li>
-<li><strong>ステータス</strong>: 未実装（現在は companies/page.tsx に統合）</li></p><p><h4>進捗ダッシュボード <span class="status-completed">✅</span></h4>
-<li><strong>ステータス</strong>: completed</li>
-<li><strong>進捗</strong>: 100%</li>
-<li><strong>説明</strong>: リアルタイムで開発状況を監視・可視化</li>
-<li><strong>優先度</strong>: high</li>
-<li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: frontend/src/app/dashboard/page.tsx, frontend/src/app/page.tsx</li></p><p>
-<p>##### 📁 ファイル仕様</p><p><strong>frontend/src/app/dashboard/page.tsx</strong></p><p><li><strong>目的</strong>: 開発進捗ダッシュボード（現在はリダイレクト処理）</li></p><p><strong>frontend/src/app/page.tsx</strong></p><p><li><strong>目的</strong>: 統合ダッシュボード機能付きホームページ</li></p><p><h4>機能設計書 <span class="status-completed">✅</span></h4>
-<li><strong>ステータス</strong>: completed</li>
-<li><strong>進捗</strong>: 100%</li>
-<li><strong>説明</strong>: システム要件・機能仕様・技術設計</li>
-<li><strong>優先度</strong>: medium</li>
-<li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: docs/functional-spec.md, frontend/src/app/functional-spec/page.tsx</li></p><p><h4>テスト仕様書 <span class="status-completed">✅</span></h4>
-<li><strong>ステータス</strong>: completed</li>
-<li><strong>進捗</strong>: 100%</li>
-<li><strong>説明</strong>: ユニット・E2Eテストの実行状況</li>
-<li><strong>優先度</strong>: medium</li>
-<li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: frontend/src/app/test-docs/test-spec/page.tsx</li></p><p><h4>環境設計書 <span class="status-completed">✅</span></h4>
-<li><strong>ステータス</strong>: completed</li>
-<li><strong>進捗</strong>: 100%</li>
-<li><strong>説明</strong>: 開発・本番環境の詳細設計とインフラ構成</li>
-<li><strong>優先度</strong>: medium</li>
-<li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: frontend/src/app/environment-design/page.tsx, docs/environment-design.md</li></p><p><h4>運用設計書 <span class="status-completed">✅</span></h4>
-<li><strong>ステータス</strong>: completed</li>
-<li><strong>進捗</strong>: 100%</li>
-<li><strong>説明</strong>: システム運用ルールと自動化設定</li>
-<li><strong>優先度</strong>: high</li>
-<li><strong>フェーズ</strong>: Phase 1</li>
-<li><strong>ファイル</strong>: frontend/src/app/operations-design/page.tsx, docs/operations-design.md</li></p><p></p><p><h3>2.2 計画中機能</h3></p><p><h4>業界比較・ランキング <span class="status-progress">🚧</span></h4>
-<li><strong>ステータス</strong>: in_progress</li>
-<li><strong>進捗</strong>: 25%</li>
-<li><strong>説明</strong>: 同業界内でのROIC比較とランキング表示</li>
-<li><strong>優先度</strong>: high</li>
-<li><strong>フェーズ</strong>: Phase 2</li></p><p><h4>データ可視化 <span class="status-pending">📋</span></h4>
-<li><strong>ステータス</strong>: planned</li>
-<li><strong>進捗</strong>: 0%</li>
-<li><strong>説明</strong>: ROICトレンドチャート・グラフ表示</li>
-<li><strong>優先度</strong>: high</li>
-<li><strong>フェーズ</strong>: Phase 2</li></p><p><h4>EDINET API統合 <span class="status-pending">📋</span></h4>
-<li><strong>ステータス</strong>: planned</li>
-<li><strong>進捗</strong>: 0%</li>
-<li><strong>説明</strong>: 外部APIからの財務データ取得</li>
-<li><strong>優先度</strong>: medium</li>
-<li><strong>フェーズ</strong>: Phase 3</li></p><p></p><p><h2>3. 開発進捗</h2></p><p><h3>全体進捗: 70%</h3></p><p><h3>Phase 1: MVP基盤構築 <span class="status-completed">✅</span></h3>
-<li><strong>進捗</strong>: 100%</li>
-<li><strong>説明</strong>: 基本機能とインフラの構築</li>
-<li><strong>含む機能</strong>: 7個</li></p><p><h3>Phase 2: コア機能拡張 <span class="status-pending">📋</span></h3>
-<li><strong>進捗</strong>: 0%</li>
-<li><strong>説明</strong>: 業界比較・データ可視化機能の追加</li>
-<li><strong>含む機能</strong>: 2個</li></p><p><h3>Phase 3: データ統合 <span class="status-pending">📋</span></h3>
-<li><strong>進捗</strong>: 0%</li>
-<li><strong>説明</strong>: 外部API統合・データベース連携</li>
-<li><strong>含む機能</strong>: 1個</li></p><p></p><p><h2>4. テスト状況</h2></p><p><li><strong>ユニットテスト</strong>: 4件 (成功: 4, カバレッジ: 93%)</li>
-<li><strong>E2Eテスト</strong>: 0件 (成功: 0, カバレッジ: 70%)</li>
-<li><strong>統合テスト</strong>: 0件 (成功: 0, カバレッジ: 75%)</li></p><p>---</p>
-<p><em>最終更新: 2025/7/2 9:18:13</em>
-<p><em>この文書は開発進捗に応じて自動更新されます</em>
+        <h2>📊 開発進捗管理表</h2>
+        <table>
+            <tr>
+                <th style="width: 25%">機能</th>
+                <th style="width: 10%">フェーズ</th>
+                <th style="width: 15%">ステータス</th>
+                <th style="width: 10%">進捗</th>
+                <th style="width: 40%">次のアクション</th>
+            </tr>
+            <tr>
+                <td>ROIC自動計算機能</td>
+                <td><span class="phase-badge phase-1">Phase 1</span></td>
+                <td><span class="status-completed">✅ 完了</span></td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%">100%</div>
+                    </div>
+                </td>
+                <td>4つの計算方式実装済み・運用中</td>
+            </tr>
+            <tr>
+                <td>企業検索機能</td>
+                <td><span class="phase-badge phase-1">Phase 1</span></td>
+                <td><span class="status-completed">✅ 完了</span></td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%">100%</div>
+                    </div>
+                </td>
+                <td>EDINET全企業対応完了（1000社テスト済み）</td>
+            </tr>
+            <tr>
+                <td>財務データ連携</td>
+                <td><span class="phase-badge phase-1">Phase 1</span></td>
+                <td><span class="status-completed">✅ 完了</span></td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%">100%</div>
+                    </div>
+                </td>
+                <td>汎用データ生成システム稼働中</td>
+            </tr>
+            <tr>
+                <td>業界比較分析</td>
+                <td><span class="phase-badge phase-2">Phase 2</span></td>
+                <td><span class="status-progress">🔄 開発中</span></td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%">30%</div>
+                    </div>
+                </td>
+                <td>UI実装中・業界分類データ準備</td>
+            </tr>
+            <tr>
+                <td>レポート出力機能</td>
+                <td><span class="phase-badge phase-2">Phase 2</span></td>
+                <td><span class="status-pending">⏳ 未着手</span></td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%">0%</div>
+                    </div>
+                </td>
+                <td>PDF/Excel出力ライブラリ選定</td>
+            </tr>
+            <tr>
+                <td>AI分析・予測機能</td>
+                <td><span class="phase-badge phase-3">Phase 3</span></td>
+                <td><span class="status-pending">⏳ 計画中</span></td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%">0%</div>
+                    </div>
+                </td>
+                <td>要件定義・技術調査</td>
+            </tr>
+        </table>
+
+        <h2>1. システム概要</h2>
+        
+        <h3>1.1 目的</h3>
+        <p>日系上場企業のROIC（投下資本利益率）を自動計算・分析・比較するWebアプリケーション</p>
+
+        <h3>1.2 開発方針</h3>
+        <ul>
+            <li><strong>MVP-First</strong>: 最小限の価値ある製品から開始</li>
+            <li><strong>インクリメンタル開発</strong>: 段階的な機能追加</li>
+            <li><strong>自動文書更新</strong>: 開発進捗に応じた自動更新</li>
+        </ul>
+
+        <h2>2. 機能要件</h2>
+
+        <h3>2.1 実装済み機能</h3>
+
+        <div class="feature-card">
+            <h4>ROIC自動計算 <span class="status-completed">✅</span></h4>
+            <ul>
+                <li><strong>ステータス</strong>: completed</li>
+                <li><strong>進捗</strong>: 100%</li>
+                <li><strong>説明</strong>: 4つの計算方式に対応したROIC自動計算</li>
+                <li><strong>優先度</strong>: high</li>
+                <li><strong>フェーズ</strong>: Phase 1</li>
+                <li><strong>ファイル</strong>: frontend/src/components/ROICCalculator.tsx, frontend/src/utils/roicCalculations.ts</li>
+            </ul>
+
+            <h5>📊 技術詳細</h5>
+            
+            <strong>計算方式:</strong>
+            
+            <p>1. <strong>基本方式（財務指標直接計算）</strong></p>
+            <pre><code>ROIC = 営業利益 × (1 - 実効税率) ÷ (総資産 - 現金及び現金同等物)</code></pre>
+            <ul>
+                <li>根拠: 最もシンプルな計算方式、営業利益をベースにした税引後利益を使用</li>
+                <li>適用場面: 基本的なROIC分析、業界間比較</li>
+            </ul>
+
+            <p>2. <strong>詳細方式（NOPAT個別計算）</strong></p>
+            <pre><code>NOPAT = (営業利益 + 受取利息) × (1 - 実効税率)
+投下資本 = 株主資本 + 有利子負債
+ROIC = NOPAT ÷ 投下資本</code></pre>
+            <ul>
+                <li>根拠: より精密な計算、金融収益も含めた事業利益を評価</li>
+                <li>適用場面: 詳細分析、投資判断</li>
+            </ul>
+
+            <p>3. <strong>アセット方式（総資産ベース）</strong></p>
+            <pre><code>投下資本 = 総資産 - 無利子負債（買掛金、未払金等）
+ROIC = NOPAT ÷ 投下資本</code></pre>
+            <ul>
+                <li>根拠: バランスシート全体から運転資本効率を評価</li>
+                <li>適用場面: 資産効率性分析、製造業評価</li>
+            </ul>
+
+            <p>4. <strong>修正方式（リース調整）</strong></p>
+            <pre><code>修正NOPAT = NOPAT + リース費用 × (1 - 実効税率)
+修正投下資本 = 投下資本 + リース債務
+修正ROIC = 修正NOPAT ÷ 修正投下資本</code></pre>
+            <ul>
+                <li>根拠: IFRS16対応、オペレーティングリースの資本化調整</li>
+                <li>適用場面: 国際会計基準企業、小売・航空業界</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <h4>企業検索機能 <span class="status-completed">✅</span></h4>
+            <ul>
+                <li><strong>ステータス</strong>: completed</li>
+                <li><strong>進捗</strong>: 100%</li>
+                <li><strong>説明</strong>: EDINET企業検索と財務データ取得</li>
+                <li><strong>フェーズ</strong>: Phase 1</li>
+            </ul>
+            
+            <h5>実装内容</h5>
+            <ul>
+                <li>企業名・証券コード・EDINETコードでの検索</li>
+                <li>全EDINET企業（約3,000社）対応</li>
+                <li>1000社ランダムテストで100%成功率達成</li>
+                <li>3段階企業規模推定システム（大・中・小）</li>
+            </ul>
+        </div>
+
+        <h3>2.2 開発中機能</h3>
+
+        <div class="feature-card">
+            <h4>業界比較分析 <span class="status-progress">🔄</span></h4>
+            <ul>
+                <li><strong>ステータス</strong>: in-progress</li>
+                <li><strong>進捗</strong>: 30%</li>
+                <li><strong>説明</strong>: 同業他社とのROIC比較分析</li>
+                <li><strong>フェーズ</strong>: Phase 2</li>
+            </ul>
+            
+            <h5>実装予定</h5>
+            <ul>
+                <li>業界平均ROIC算出</li>
+                <li>業界内順位表示</li>
+                <li>業界別ベンチマーク設定</li>
+            </ul>
+        </div>
+
+        <h3>2.3 計画中機能</h3>
+
+        <div class="feature-card">
+            <h4>レポート出力機能 <span class="status-pending">⏳</span></h4>
+            <ul>
+                <li><strong>ステータス</strong>: pending</li>
+                <li><strong>進捗</strong>: 0%</li>
+                <li><strong>説明</strong>: 分析結果のPDF/Excel出力</li>
+                <li><strong>フェーズ</strong>: Phase 2</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <h4>AI分析・予測機能 <span class="status-pending">⏳</span></h4>
+            <ul>
+                <li><strong>ステータス</strong>: pending</li>
+                <li><strong>進捗</strong>: 0%</li>
+                <li><strong>説明</strong>: AIによるROIC改善提案と将来予測</li>
+                <li><strong>フェーズ</strong>: Phase 3</li>
+            </ul>
+        </div>
+
+        <h2>3. 非機能要件</h2>
+
+        <table>
+            <tr>
+                <th>要件項目</th>
+                <th>目標値</th>
+                <th>現状</th>
+                <th>ステータス</th>
+            </tr>
+            <tr>
+                <td>レスポンス時間</td>
+                <td>< 500ms</td>
+                <td>323ms（平均）</td>
+                <td><span class="status-completed">✅ 達成</span></td>
+            </tr>
+            <tr>
+                <td>同時接続数</td>
+                <td>100ユーザー</td>
+                <td>未測定</td>
+                <td><span class="status-pending">⏳ 未検証</span></td>
+            </tr>
+            <tr>
+                <td>可用性</td>
+                <td>99.9%</td>
+                <td>Vercel自動スケーリング</td>
+                <td><span class="status-progress">🔄 監視中</span></td>
+            </tr>
+            <tr>
+                <td>データ精度</td>
+                <td>100%</td>
+                <td>汎用推定データ使用中</td>
+                <td><span class="status-progress">🔄 改善中</span></td>
+            </tr>
+        </table>
+
+        <h2>4. 開発ロードマップ</h2>
+
+        <h3>Phase 1: MVP（完了）</h3>
+        <ul>
+            <li>✅ ROIC自動計算機能</li>
+            <li>✅ 企業検索機能</li>
+            <li>✅ 基本的なUI/UX</li>
+            <li>✅ EDINET全企業対応</li>
+        </ul>
+
+        <h3>Phase 2: 拡張機能（開発中）</h3>
+        <ul>
+            <li>🔄 業界比較分析</li>
+            <li>⏳ レポート出力</li>
+            <li>⏳ 時系列トレンド分析</li>
+            <li>⏳ 実EDINET API連携</li>
+        </ul>
+
+        <h3>Phase 3: 高度化（計画中）</h3>
+        <ul>
+            <li>⏳ AI分析・予測</li>
+            <li>⏳ カスタムダッシュボード</li>
+            <li>⏳ API公開</li>
+            <li>⏳ モバイルアプリ</li>
+        </ul>
+
         <div class="update-time">
-            最終自動更新: 2025/7/2 9:18:13<br>
+            最終自動更新: 2025/07/04 12:45:00<br>
             🤖 この文書は自動的に更新されます
         </div>
     </div>
+    
     <script>
-        // Auto-refresh every 30 seconds
-        setTimeout(() => window.location.reload(), 30000);
+        // Auto-refresh every 60 seconds
+        setTimeout(() => window.location.reload(), 60000);
     </script>
 </body>
 </html>

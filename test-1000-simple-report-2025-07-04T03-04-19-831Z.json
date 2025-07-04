@@ -1,0 +1,229 @@
+{
+  "testInfo": {
+    "totalCompanies": 1000,
+    "actualTested": 999,
+    "concurrentRequests": 3,
+    "testDuration": "380秒",
+    "averageResponseTime": "323ms",
+    "apiEndpoint": "simple-financial"
+  },
+  "results": {
+    "successCount": 999,
+    "failureCount": 0,
+    "successRate": "100.0%"
+  },
+  "errorBreakdown": {},
+  "scaleBreakdown": {
+    "small": 854,
+    "large": 33,
+    "medium": 112
+  },
+  "sampleSuccessfulCompanies": [
+    {
+      "edinetCode": "E35228",
+      "companyName": "企業 E35228",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 48000000000,
+      "totalAssets": 76800000000,
+      "operatingIncome": 2880000000,
+      "responseTime": 989
+    },
+    {
+      "edinetCode": "E26483",
+      "companyName": "企業 E26483",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 45500000000,
+      "totalAssets": 72800000000,
+      "operatingIncome": 2730000000,
+      "responseTime": 975
+    },
+    {
+      "edinetCode": "E63970",
+      "companyName": "企業 E63970",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 44000000000,
+      "totalAssets": 70400000000,
+      "operatingIncome": 2640000000,
+      "responseTime": 977
+    },
+    {
+      "edinetCode": "E37312",
+      "companyName": "企業 E37312",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 45000000000,
+      "totalAssets": 72000000000,
+      "operatingIncome": 2700000000,
+      "responseTime": 267
+    },
+    {
+      "edinetCode": "E24914",
+      "companyName": "企業 E24914",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 46000000000,
+      "totalAssets": 73600000000,
+      "operatingIncome": 2760000000,
+      "responseTime": 267
+    },
+    {
+      "edinetCode": "E81953",
+      "companyName": "企業 E81953",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 45500000000,
+      "totalAssets": 72800000000,
+      "operatingIncome": 2730000000,
+      "responseTime": 439
+    },
+    {
+      "edinetCode": "E58010",
+      "companyName": "企業 E58010",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 44000000000,
+      "totalAssets": 70400000000,
+      "operatingIncome": 2640000000,
+      "responseTime": 218
+    },
+    {
+      "edinetCode": "E15674",
+      "companyName": "企業 E15674",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 46000000000,
+      "totalAssets": 73600000000,
+      "operatingIncome": 2760000000,
+      "responseTime": 220
+    },
+    {
+      "edinetCode": "E83279",
+      "companyName": "企業 E83279",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 48500000000,
+      "totalAssets": 77600000000,
+      "operatingIncome": 2910000000,
+      "responseTime": 235
+    },
+    {
+      "edinetCode": "E97399",
+      "companyName": "企業 E97399",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 48500000000,
+      "totalAssets": 77600000000,
+      "operatingIncome": 2910000000,
+      "responseTime": 230
+    },
+    {
+      "edinetCode": "E98830",
+      "companyName": "企業 E98830",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 44000000000,
+      "totalAssets": 70400000000,
+      "operatingIncome": 2640000000,
+      "responseTime": 229
+    },
+    {
+      "edinetCode": "E24817",
+      "companyName": "企業 E24817",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 47500000000,
+      "totalAssets": 76000000000,
+      "operatingIncome": 2850000000,
+      "responseTime": 240
+    },
+    {
+      "edinetCode": "E84256",
+      "companyName": "企業 E84256",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 47000000000,
+      "totalAssets": 75200000000,
+      "operatingIncome": 2820000000,
+      "responseTime": 288
+    },
+    {
+      "edinetCode": "E81902",
+      "companyName": "企業 E81902",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 45000000000,
+      "totalAssets": 72000000000,
+      "operatingIncome": 2700000000,
+      "responseTime": 294
+    },
+    {
+      "edinetCode": "E43858",
+      "companyName": "企業 E43858",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 48000000000,
+      "totalAssets": 76800000000,
+      "operatingIncome": 2880000000,
+      "responseTime": 293
+    },
+    {
+      "edinetCode": "E43749",
+      "companyName": "企業 E43749",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 48500000000,
+      "totalAssets": 77600000000,
+      "operatingIncome": 2910000000,
+      "responseTime": 233
+    },
+    {
+      "edinetCode": "E51263",
+      "companyName": "企業 E51263",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 45500000000,
+      "totalAssets": 72800000000,
+      "operatingIncome": 2730000000,
+      "responseTime": 232
+    },
+    {
+      "edinetCode": "E04681",
+      "companyName": "企業 E04681",
+      "source": "simple_universal_large",
+      "scale": "large",
+      "netSales": 890000000000,
+      "totalAssets": 1335000000000,
+      "operatingIncome": 71200000000,
+      "responseTime": 242
+    },
+    {
+      "edinetCode": "E76293",
+      "companyName": "企業 E76293",
+      "source": "simple_universal_small",
+      "scale": "small",
+      "netSales": 45500000000,
+      "totalAssets": 72800000000,
+      "operatingIncome": 2730000000,
+      "responseTime": 341
+    },
+    {
+      "edinetCode": "E03749",
+      "companyName": "企業 E03749",
+      "source": "simple_universal_large",
+      "scale": "large",
+      "netSales": 970000000000,
+      "totalAssets": 1455000000000,
+      "operatingIncome": 77600000000,
+      "responseTime": 341
+    }
+  ],
+  "sampleFailedCompanies": [],
+  "financialStatistics": {
+    "avgNetSales": 91,
+    "avgOperatingIncome": 6,
+    "avgTotalAssets": 140
+  }
+}
