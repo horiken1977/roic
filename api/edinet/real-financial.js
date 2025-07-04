@@ -28,7 +28,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { edinetCode, fiscalYear } = req.query;
+    const { edinetCode, fiscalYear, debug } = req.query;
 
     if (!edinetCode || !fiscalYear) {
       return res.status(400).json({
@@ -83,6 +83,18 @@ module.exports = async function handler(req, res) {
         success: false,
         error: 'XBRLデータの取得に失敗しました',
         message: '財務データの取得中にエラーが発生しました'
+      });
+    }
+
+    // 4. デバッグモード判定
+    if (debug === 'true') {
+      // デバッグ情報を詳細出力
+      const debugInfo = await generateDebugInfo(xbrlData, edinetCode, year);
+      
+      return res.status(200).json({
+        success: true,
+        debug: debugInfo,
+        message: 'XBRL詳細デバッグ情報'
       });
     }
 
@@ -591,4 +603,148 @@ function calculateTaxRate(facts, contextId) {
   }
   
   return 0.3; // デフォルト30%
+}
+
+/**
+ * デバッグ情報生成
+ */
+async function generateDebugInfo(xbrlContent, edinetCode, fiscalYear) {
+  try {
+    // XMLをパース
+    const result = await parseStringPromise(xbrlContent, {
+      tagNameProcessors: [(name) => name.split(':').pop()],
+      ignoreAttrs: false,
+      mergeAttrs: true
+    });
+    
+    const xbrl = result.xbrl || result;
+    
+    // コンテキストとファクトを抽出
+    const contexts = extractContexts(xbrl);
+    const facts = extractFacts(xbrl);
+    
+    // 当期のコンテキストIDを特定
+    const currentPeriodContextId = findCurrentPeriodContext(contexts, fiscalYear);
+    
+    // 財務データ要素の検索
+    const salesElements = findFinancialElements(facts, ['Sales', 'Revenue', 'Operating']);
+    const profitElements = findFinancialElements(facts, ['Profit', 'Income', 'Operating']);
+    const assetElements = findFinancialElements(facts, ['Assets', 'Total']);
+    
+    return {
+      edinetCode,
+      fiscalYear,
+      xbrlStructure: {
+        rootElements: Object.keys(result),
+        xbrlChildCount: Object.keys(xbrl).length,
+        firstFewElements: Object.keys(xbrl).slice(0, 20)
+      },
+      contexts: {
+        total: Object.keys(contexts).length,
+        currentPeriodContextId: currentPeriodContextId,
+        availableContextIds: Object.keys(contexts).slice(0, 15),
+        currentPeriodContext: contexts[currentPeriodContextId]
+      },
+      facts: {
+        total: Object.keys(facts).length,
+        salesRelated: salesElements.slice(0, 10),
+        profitRelated: profitElements.slice(0, 10),
+        assetRelated: assetElements.slice(0, 10)
+      },
+      extractionTest: {
+        netSales: testValueExtraction(facts, [
+          'OperatingRevenuesIFRSKeyFinancialData',
+          'RevenueIFRS', 
+          'NetSales'
+        ], currentPeriodContextId),
+        operatingIncome: testValueExtraction(facts, [
+          'ProfitLossFromOperatingActivitiesIFRS',
+          'OperatingIncomeIFRS',
+          'ProfitLossBeforeTaxIFRSSummaryOfBusinessResults'
+        ], currentPeriodContextId),
+        totalAssets: testValueExtraction(facts, [
+          'TotalAssetsIFRSSummaryOfBusinessResults',
+          'AssetsIFRS',
+          'Assets'
+        ], currentPeriodContextId)
+      }
+    };
+    
+  } catch (error) {
+    return {
+      error: error.message,
+      stack: error.stack
+    };
+  }
+}
+
+/**
+ * 財務要素検索
+ */
+function findFinancialElements(facts, searchTerms) {
+  const elements = [];
+  
+  for (const [key, factArray] of Object.entries(facts)) {
+    if (searchTerms.some(term => key.toLowerCase().includes(term.toLowerCase()))) {
+      elements.push({
+        key: key,
+        count: factArray.length,
+        contexts: factArray.map(f => f.contextRef).slice(0, 3),
+        sampleValue: factArray[0]?.value
+      });
+    }
+  }
+  
+  return elements;
+}
+
+/**
+ * 値抽出テスト
+ */
+function testValueExtraction(facts, possibleKeys, contextId) {
+  const results = {
+    targetContext: contextId,
+    searchKeys: possibleKeys,
+    matches: [],
+    allAvailableContexts: new Set()
+  };
+  
+  for (const key of possibleKeys) {
+    // 完全一致
+    if (facts[key]) {
+      const contextRefs = facts[key].map(f => f.contextRef);
+      contextRefs.forEach(ref => results.allAvailableContexts.add(ref));
+      
+      const fact = facts[key].find(f => f.contextRef === contextId);
+      if (fact && fact.value) {
+        results.matches.push({
+          key: key,
+          value: fact.value,
+          contextRef: fact.contextRef,
+          matchType: 'exact'
+        });
+      }
+    }
+    
+    // 部分一致
+    for (const [factKey, factValues] of Object.entries(facts)) {
+      if (factKey.includes(key)) {
+        const contextRefs = factValues.map(f => f.contextRef);
+        contextRefs.forEach(ref => results.allAvailableContexts.add(ref));
+        
+        const fact = factValues.find(f => f.contextRef === contextId);
+        if (fact && fact.value) {
+          results.matches.push({
+            key: factKey,
+            value: fact.value,
+            contextRef: fact.contextRef,
+            matchType: 'partial'
+          });
+        }
+      }
+    }
+  }
+  
+  results.allAvailableContexts = Array.from(results.allAvailableContexts);
+  return results;
 }
