@@ -5,6 +5,85 @@
 const https = require('https');
 const SimpleXbrlParser = require('../utils/xbrl-parser');
 
+/**
+ * 汎用的な財務データ生成（全EDINET企業対応）
+ */
+function generateUniversalFinancialData(edinetCode, fiscalYear, companyName) {
+  // 企業規模を推定（EDINETコードと業界から）
+  const estimateCompanyScale = (code) => {
+    const codeNum = parseInt(code.replace('E', ''));
+    // 古いコード（小さい番号）ほど大企業の傾向
+    if (codeNum < 5000) return 'large';      // 大企業
+    if (codeNum < 15000) return 'medium';    // 中堅企業
+    return 'small';                          // 中小企業
+  };
+
+  const scale = estimateCompanyScale(edinetCode);
+  const seed = edinetCode.charCodeAt(edinetCode.length - 1);
+  const randomFactor = 0.8 + (seed % 40) / 100; // 0.8-1.2の範囲
+
+  // 規模別の基準値設定
+  const baseValues = {
+    large: {
+      netSales: 1000000000000,    // 1兆円
+      operatingIncome: 80000000000, // 800億円
+      totalAssets: 1500000000000,   // 1.5兆円
+      cashAndEquivalents: 200000000000, // 2000億円
+      shareholdersEquity: 600000000000, // 6000億円
+      interestBearingDebt: 300000000000 // 3000億円
+    },
+    medium: {
+      netSales: 200000000000,     // 2000億円
+      operatingIncome: 15000000000, // 150億円
+      totalAssets: 300000000000,    // 3000億円
+      cashAndEquivalents: 40000000000, // 400億円
+      shareholdersEquity: 120000000000, // 1200億円
+      interestBearingDebt: 60000000000  // 600億円
+    },
+    small: {
+      netSales: 50000000000,      // 500億円
+      operatingIncome: 3000000000,  // 30億円
+      totalAssets: 80000000000,     // 800億円
+      cashAndEquivalents: 10000000000, // 100億円
+      shareholdersEquity: 30000000000,  // 300億円
+      interestBearingDebt: 15000000000  // 150億円
+    }
+  };
+
+  const base = baseValues[scale];
+
+  return {
+    companyName: companyName || `企業 ${edinetCode}`,
+    edinetCode: edinetCode,
+    fiscalYear: fiscalYear,
+    
+    // 損益計算書項目
+    netSales: Math.floor(base.netSales * randomFactor),
+    operatingIncome: Math.floor(base.operatingIncome * randomFactor),
+    grossProfit: Math.floor(base.netSales * randomFactor * 0.25),
+    sellingAdminExpenses: Math.floor(base.operatingIncome * randomFactor * 2.5),
+    interestIncome: Math.floor(base.operatingIncome * randomFactor * 0.05),
+    
+    // 貸借対照表項目
+    totalAssets: Math.floor(base.totalAssets * randomFactor),
+    cashAndEquivalents: Math.floor(base.cashAndEquivalents * randomFactor),
+    shareholdersEquity: Math.floor(base.shareholdersEquity * randomFactor),
+    interestBearingDebt: Math.floor(base.interestBearingDebt * randomFactor),
+    accountsPayable: Math.floor(base.netSales * randomFactor * 0.08),
+    accruedExpenses: Math.floor(base.netSales * randomFactor * 0.05),
+    
+    // IFRS16対応項目
+    leaseExpense: Math.floor(base.operatingIncome * randomFactor * 0.15),
+    leaseDebt: Math.floor(base.totalAssets * randomFactor * 0.03),
+    
+    // メタデータ
+    taxRate: 0.30,
+    dataSource: `universal_estimation_${scale}`,
+    lastUpdated: new Date().toISOString(),
+    estimationNote: `${scale}企業規模に基づく推定データ`
+  };
+}
+
 export default async function handler(req, res) {
   // 完全なCORS ヘッダーを設定（関数の最初で設定）
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -218,82 +297,6 @@ export default async function handler(req, res) {
       // 1. EDINET APIから企業の最新書類を検索
       console.log(`書類検索開始: ${edinetCode} ${year}年度`);
       
-      // 汎用的な財務データ生成（全EDINET企業対応）
-      const generateUniversalFinancialData = (edinetCode, fiscalYear, companyName) => {
-        // 企業規模を推定（EDINETコードと業界から）
-        const estimateCompanyScale = (code) => {
-          const codeNum = parseInt(code.replace('E', ''));
-          // 古いコード（小さい番号）ほど大企業の傾向
-          if (codeNum < 5000) return 'large';      // 大企業
-          if (codeNum < 15000) return 'medium';    // 中堅企業
-          return 'small';                          // 中小企業
-        };
-
-        const scale = estimateCompanyScale(edinetCode);
-        const seed = edinetCode.charCodeAt(edinetCode.length - 1);
-        const randomFactor = 0.8 + (seed % 40) / 100; // 0.8-1.2の範囲
-
-        // 規模別の基準値設定
-        const baseValues = {
-          large: {
-            netSales: 1000000000000,    // 1兆円
-            operatingIncome: 80000000000, // 800億円
-            totalAssets: 1500000000000,   // 1.5兆円
-            cashAndEquivalents: 200000000000, // 2000億円
-            shareholdersEquity: 600000000000, // 6000億円
-            interestBearingDebt: 300000000000 // 3000億円
-          },
-          medium: {
-            netSales: 200000000000,     // 2000億円
-            operatingIncome: 15000000000, // 150億円
-            totalAssets: 300000000000,    // 3000億円
-            cashAndEquivalents: 40000000000, // 400億円
-            shareholdersEquity: 120000000000, // 1200億円
-            interestBearingDebt: 60000000000  // 600億円
-          },
-          small: {
-            netSales: 50000000000,      // 500億円
-            operatingIncome: 3000000000,  // 30億円
-            totalAssets: 80000000000,     // 800億円
-            cashAndEquivalents: 10000000000, // 100億円
-            shareholdersEquity: 30000000000,  // 300億円
-            interestBearingDebt: 15000000000  // 150億円
-          }
-        };
-
-        const base = baseValues[scale];
-
-        return {
-          companyName: companyName || `企業 ${edinetCode}`,
-          edinetCode: edinetCode,
-          fiscalYear: fiscalYear,
-          
-          // 損益計算書項目
-          netSales: Math.floor(base.netSales * randomFactor),
-          operatingIncome: Math.floor(base.operatingIncome * randomFactor),
-          grossProfit: Math.floor(base.netSales * randomFactor * 0.25),
-          sellingAdminExpenses: Math.floor(base.operatingIncome * randomFactor * 2.5),
-          interestIncome: Math.floor(base.operatingIncome * randomFactor * 0.05),
-          
-          // 貸借対照表項目
-          totalAssets: Math.floor(base.totalAssets * randomFactor),
-          cashAndEquivalents: Math.floor(base.cashAndEquivalents * randomFactor),
-          shareholdersEquity: Math.floor(base.shareholdersEquity * randomFactor),
-          interestBearingDebt: Math.floor(base.interestBearingDebt * randomFactor),
-          accountsPayable: Math.floor(base.netSales * randomFactor * 0.08),
-          accruedExpenses: Math.floor(base.netSales * randomFactor * 0.05),
-          
-          // IFRS16対応項目
-          leaseExpense: Math.floor(base.operatingIncome * randomFactor * 0.15),
-          leaseDebt: Math.floor(base.totalAssets * randomFactor * 0.03),
-          
-          // メタデータ
-          taxRate: 0.30,
-          dataSource: `universal_estimation_${scale}`,
-          lastUpdated: new Date().toISOString(),
-          estimationNote: `${scale}企業規模に基づく推定データ`
-        };
-      };
       
       // 特定の書類ID指定がある場合（クエリパラメータから）
       if (docId) {
