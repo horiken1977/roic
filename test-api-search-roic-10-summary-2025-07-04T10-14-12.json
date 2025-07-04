@@ -1,0 +1,68 @@
+{
+  "testInfo": {
+    "startTime": "2025-07-04T10:14:08.130Z",
+    "endTime": "2025-07-04T10:14:12.686Z",
+    "totalCompanies": 10,
+    "successCount": 0,
+    "errorCount": 10
+  },
+  "statistics": {
+    "avgResponseTime": 0,
+    "avgROIC": 0,
+    "maxROIC": 0,
+    "minROIC": null
+  },
+  "successfulCompanies": [],
+  "errors": [
+    {
+      "company": "トヨタ自動車株式会社",
+      "error": "検索失敗: ",
+      "timestamp": "2025-07-04T10:14:08.146Z"
+    },
+    {
+      "company": "本田技研工業株式会社",
+      "error": "検索失敗: ",
+      "timestamp": "2025-07-04T10:14:08.652Z"
+    },
+    {
+      "company": "日産自動車株式会社",
+      "error": "検索失敗: ",
+      "timestamp": "2025-07-04T10:14:09.156Z"
+    },
+    {
+      "company": "SUBARU株式会社",
+      "error": "検索失敗: ",
+      "timestamp": "2025-07-04T10:14:09.662Z"
+    },
+    {
+      "company": "スズキ株式会社",
+      "error": "検索失敗: ",
+      "timestamp": "2025-07-04T10:14:10.165Z"
+    },
+    {
+      "company": "マツダ株式会社",
+      "error": "検索失敗: ",
+      "timestamp": "2025-07-04T10:14:10.669Z"
+    },
+    {
+      "company": "日野自動車株式会社",
+      "error": "検索失敗: ",
+      "timestamp": "2025-07-04T10:14:11.173Z"
+    },
+    {
+      "company": "いすゞ自動車株式会社",
+      "error": "検索失敗: ",
+      "timestamp": "2025-07-04T10:14:11.677Z"
+    },
+    {
+      "company": "豊田自動織機株式会社",
+      "error": "検索失敗: ",
+      "timestamp": "2025-07-04T10:14:12.181Z"
+    },
+    {
+      "company": "株式会社デンソー",
+      "error": "検索失敗: ",
+      "timestamp": "2025-07-04T10:14:12.686Z"
+    }
+  ]
+}

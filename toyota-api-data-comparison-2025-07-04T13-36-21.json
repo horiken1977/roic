@@ -1,0 +1,279 @@
+{
+  "timestamp": "2025-07-04T13:36:11.792Z",
+  "company": "トヨタ自動車株式会社",
+  "edinetCode": "E02144",
+  "apiResponses": {
+    "financial": {
+      "2022": {
+        "success": false,
+        "error": "Request failed with status code 500"
+      },
+      "2023": {
+        "success": false,
+        "error": "Request failed with status code 500"
+      },
+      "2024": {
+        "success": false,
+        "error": "Request failed with status code 500"
+      }
+    },
+    "financial-safe": {
+      "2022": {
+        "success": true,
+        "companyName": "トヨタ自動車株式会社",
+        "netSales": 37154000000000,
+        "operatingIncome": 4940000000000,
+        "totalAssets": 67648000000000,
+        "cashAndEquivalents": 6200000000000,
+        "shareholdersEquity": 25712000000000,
+        "interestBearingDebt": 12800000000000,
+        "taxRate": 0.25,
+        "dataSource": "direct_data_realtime",
+        "estimationNote": "実企業財務データ（直接データ方式）",
+        "rawResponse": {
+          "success": true,
+          "data": {
+            "companyName": "トヨタ自動車株式会社",
+            "netSales": 37154000000000,
+            "operatingIncome": 4940000000000,
+            "totalAssets": 67648000000000,
+            "cashAndEquivalents": 6200000000000,
+            "shareholdersEquity": 25712000000000,
+            "interestBearingDebt": 12800000000000,
+            "grossProfit": 8200000000000,
+            "sellingAdminExpenses": 3260000000000,
+            "interestIncome": 180000000000,
+            "taxRate": 0.25,
+            "accountsPayable": 4200000000000,
+            "accruedExpenses": 2800000000000,
+            "leaseExpense": 120000000000,
+            "leaseDebt": 600000000000,
+            "edinetCode": "E02144",
+            "fiscalYear": 2022,
+            "dataSource": "direct_data_realtime",
+            "lastUpdated": "2025-07-04T13:36:15.939Z",
+            "estimationNote": "実企業財務データ（直接データ方式）"
+          },
+          "source": "direct_data_realtime",
+          "message": "2022年度の財務データ（トヨタ自動車株式会社実データ）"
+        }
+      },
+      "2023": {
+        "success": true,
+        "companyName": "トヨタ自動車株式会社",
+        "netSales": 37154000000000,
+        "operatingIncome": 4940000000000,
+        "totalAssets": 67648000000000,
+        "cashAndEquivalents": 6200000000000,
+        "shareholdersEquity": 25712000000000,
+        "interestBearingDebt": 12800000000000,
+        "taxRate": 0.25,
+        "dataSource": "direct_data_realtime",
+        "estimationNote": "実企業財務データ（直接データ方式）",
+        "rawResponse": {
+          "success": true,
+          "data": {
+            "companyName": "トヨタ自動車株式会社",
+            "netSales": 37154000000000,
+            "operatingIncome": 4940000000000,
+            "totalAssets": 67648000000000,
+            "cashAndEquivalents": 6200000000000,
+            "shareholdersEquity": 25712000000000,
+            "interestBearingDebt": 12800000000000,
+            "grossProfit": 8200000000000,
+            "sellingAdminExpenses": 3260000000000,
+            "interestIncome": 180000000000,
+            "taxRate": 0.25,
+            "accountsPayable": 4200000000000,
+            "accruedExpenses": 2800000000000,
+            "leaseExpense": 120000000000,
+            "leaseDebt": 600000000000,
+            "edinetCode": "E02144",
+            "fiscalYear": 2023,
+            "dataSource": "direct_data_realtime",
+            "lastUpdated": "2025-07-04T13:36:16.639Z",
+            "estimationNote": "実企業財務データ（直接データ方式）"
+          },
+          "source": "direct_data_realtime",
+          "message": "2023年度の財務データ（トヨタ自動車株式会社実データ）"
+        }
+      },
+      "2024": {
+        "success": true,
+        "companyName": "トヨタ自動車株式会社",
+        "netSales": 37154000000000,
+        "operatingIncome": 4940000000000,
+        "totalAssets": 67648000000000,
+        "cashAndEquivalents": 6200000000000,
+        "shareholdersEquity": 25712000000000,
+        "interestBearingDebt": 12800000000000,
+        "taxRate": 0.25,
+        "dataSource": "direct_data_realtime",
+        "estimationNote": "実企業財務データ（直接データ方式）",
+        "rawResponse": {
+          "success": true,
+          "data": {
+            "companyName": "トヨタ自動車株式会社",
+            "netSales": 37154000000000,
+            "operatingIncome": 4940000000000,
+            "totalAssets": 67648000000000,
+            "cashAndEquivalents": 6200000000000,
+            "shareholdersEquity": 25712000000000,
+            "interestBearingDebt": 12800000000000,
+            "grossProfit": 8200000000000,
+            "sellingAdminExpenses": 3260000000000,
+            "interestIncome": 180000000000,
+            "taxRate": 0.25,
+            "accountsPayable": 4200000000000,
+            "accruedExpenses": 2800000000000,
+            "leaseExpense": 120000000000,
+            "leaseDebt": 600000000000,
+            "edinetCode": "E02144",
+            "fiscalYear": 2024,
+            "dataSource": "direct_data_realtime",
+            "lastUpdated": "2025-07-04T13:36:17.340Z",
+            "estimationNote": "実企業財務データ（直接データ方式）"
+          },
+          "source": "direct_data_realtime",
+          "message": "2024年度の財務データ（トヨタ自動車株式会社実データ）"
+        }
+      }
+    },
+    "simple-financial": {
+      "2022": {
+        "success": true,
+        "companyName": "企業 E02144",
+        "netSales": 920000000000,
+        "operatingIncome": 73600000000,
+        "totalAssets": 1380000000000,
+        "cashAndEquivalents": 207000000000,
+        "shareholdersEquity": 552000000000,
+        "interestBearingDebt": 276000000000,
+        "taxRate": 0.3,
+        "dataSource": "simple_universal_large",
+        "estimationNote": "large企業規模（シンプル版）",
+        "rawResponse": {
+          "success": true,
+          "data": {
+            "companyName": "企業 E02144",
+            "edinetCode": "E02144",
+            "fiscalYear": 2022,
+            "netSales": 920000000000,
+            "operatingIncome": 73600000000,
+            "grossProfit": 230000000000,
+            "sellingAdminExpenses": 184000000000,
+            "interestIncome": 3680000000,
+            "totalAssets": 1380000000000,
+            "cashAndEquivalents": 207000000000,
+            "shareholdersEquity": 552000000000,
+            "interestBearingDebt": 276000000000,
+            "accountsPayable": 73600000000,
+            "accruedExpenses": 46000000000,
+            "leaseExpense": 11040000000,
+            "leaseDebt": 41400000000,
+            "taxRate": 0.3,
+            "dataSource": "simple_universal_large",
+            "lastUpdated": "2025-07-04T13:36:18.427Z",
+            "estimationNote": "large企業規模（シンプル版）"
+          },
+          "source": "simple_universal_large",
+          "message": "2022年度の財務データ（シンプル汎用生成 - large企業規模）"
+        }
+      },
+      "2023": {
+        "success": true,
+        "companyName": "企業 E02144",
+        "netSales": 920000000000,
+        "operatingIncome": 73600000000,
+        "totalAssets": 1380000000000,
+        "cashAndEquivalents": 207000000000,
+        "shareholdersEquity": 552000000000,
+        "interestBearingDebt": 276000000000,
+        "taxRate": 0.3,
+        "dataSource": "simple_universal_large",
+        "estimationNote": "large企業規模（シンプル版）",
+        "rawResponse": {
+          "success": true,
+          "data": {
+            "companyName": "企業 E02144",
+            "edinetCode": "E02144",
+            "fiscalYear": 2023,
+            "netSales": 920000000000,
+            "operatingIncome": 73600000000,
+            "grossProfit": 230000000000,
+            "sellingAdminExpenses": 184000000000,
+            "interestIncome": 3680000000,
+            "totalAssets": 1380000000000,
+            "cashAndEquivalents": 207000000000,
+            "shareholdersEquity": 552000000000,
+            "interestBearingDebt": 276000000000,
+            "accountsPayable": 73600000000,
+            "accruedExpenses": 46000000000,
+            "leaseExpense": 11040000000,
+            "leaseDebt": 41400000000,
+            "taxRate": 0.3,
+            "dataSource": "simple_universal_large",
+            "lastUpdated": "2025-07-04T13:36:19.127Z",
+            "estimationNote": "large企業規模（シンプル版）"
+          },
+          "source": "simple_universal_large",
+          "message": "2023年度の財務データ（シンプル汎用生成 - large企業規模）"
+        }
+      },
+      "2024": {
+        "success": true,
+        "companyName": "企業 E02144",
+        "netSales": 920000000000,
+        "operatingIncome": 73600000000,
+        "totalAssets": 1380000000000,
+        "cashAndEquivalents": 207000000000,
+        "shareholdersEquity": 552000000000,
+        "interestBearingDebt": 276000000000,
+        "taxRate": 0.3,
+        "dataSource": "simple_universal_large",
+        "estimationNote": "large企業規模（シンプル版）",
+        "rawResponse": {
+          "success": true,
+          "data": {
+            "companyName": "企業 E02144",
+            "edinetCode": "E02144",
+            "fiscalYear": 2024,
+            "netSales": 920000000000,
+            "operatingIncome": 73600000000,
+            "grossProfit": 230000000000,
+            "sellingAdminExpenses": 184000000000,
+            "interestIncome": 3680000000,
+            "totalAssets": 1380000000000,
+            "cashAndEquivalents": 207000000000,
+            "shareholdersEquity": 552000000000,
+            "interestBearingDebt": 276000000000,
+            "accountsPayable": 73600000000,
+            "accruedExpenses": 46000000000,
+            "leaseExpense": 11040000000,
+            "leaseDebt": 41400000000,
+            "taxRate": 0.3,
+            "dataSource": "simple_universal_large",
+            "lastUpdated": "2025-07-04T13:36:19.811Z",
+            "estimationNote": "large企業規模（シンプル版）"
+          },
+          "source": "simple_universal_large",
+          "message": "2024年度の財務データ（シンプル汎用生成 - large企業規模）"
+        }
+      }
+    },
+    "financial-1000": {
+      "2022": {
+        "success": false,
+        "error": "Request failed with status code 404"
+      },
+      "2023": {
+        "success": false,
+        "error": "Request failed with status code 404"
+      },
+      "2024": {
+        "success": false,
+        "error": "Request failed with status code 404"
+      }
+    }
+  }
+}

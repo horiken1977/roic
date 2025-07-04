@@ -1,0 +1,68 @@
+{
+  "testInfo": {
+    "startTime": "2025-07-04T10:16:31.024Z",
+    "endTime": "2025-07-04T10:16:37.828Z",
+    "totalCompanies": 10,
+    "successCount": 0,
+    "errorCount": 10
+  },
+  "statistics": {
+    "avgResponseTime": 0,
+    "avgROIC": 0,
+    "maxROIC": 0,
+    "minROIC": null
+  },
+  "successfulCompanies": [],
+  "errors": [
+    {
+      "company": "トヨタ自動車株式会社",
+      "error": "検索失敗: Request failed with status code 404",
+      "timestamp": "2025-07-04T10:16:32.658Z"
+    },
+    {
+      "company": "本田技研工業株式会社",
+      "error": "検索失敗: Request failed with status code 404",
+      "timestamp": "2025-07-04T10:16:33.244Z"
+    },
+    {
+      "company": "日産自動車株式会社",
+      "error": "検索失敗: Request failed with status code 404",
+      "timestamp": "2025-07-04T10:16:33.832Z"
+    },
+    {
+      "company": "SUBARU株式会社",
+      "error": "検索失敗: Request failed with status code 404",
+      "timestamp": "2025-07-04T10:16:34.407Z"
+    },
+    {
+      "company": "スズキ株式会社",
+      "error": "検索失敗: Request failed with status code 404",
+      "timestamp": "2025-07-04T10:16:34.987Z"
+    },
+    {
+      "company": "マツダ株式会社",
+      "error": "検索失敗: Request failed with status code 404",
+      "timestamp": "2025-07-04T10:16:35.558Z"
+    },
+    {
+      "company": "日野自動車株式会社",
+      "error": "検索失敗: Request failed with status code 404",
+      "timestamp": "2025-07-04T10:16:36.125Z"
+    },
+    {
+      "company": "いすゞ自動車株式会社",
+      "error": "検索失敗: Request failed with status code 404",
+      "timestamp": "2025-07-04T10:16:36.684Z"
+    },
+    {
+      "company": "豊田自動織機株式会社",
+      "error": "検索失敗: Request failed with status code 404",
+      "timestamp": "2025-07-04T10:16:37.258Z"
+    },
+    {
+      "company": "株式会社デンソー",
+      "error": "検索失敗: Request failed with status code 404",
+      "timestamp": "2025-07-04T10:16:37.828Z"
+    }
+  ]
+}

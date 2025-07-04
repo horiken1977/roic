@@ -1,0 +1,7 @@
+エンドポイント,年度,企業名,売上高(百万円),営業利益(百万円),総資産(百万円),データソース,備考
+financial-safe,2022,トヨタ自動車株式会社,37154000,4940000,67648000,direct_data_realtime,実企業財務データ（直接データ方式）
+financial-safe,2023,トヨタ自動車株式会社,37154000,4940000,67648000,direct_data_realtime,実企業財務データ（直接データ方式）
+financial-safe,2024,トヨタ自動車株式会社,37154000,4940000,67648000,direct_data_realtime,実企業財務データ（直接データ方式）
+simple-financial,2022,企業 E02144,920000,73600,1380000,simple_universal_large,large企業規模（シンプル版）
+simple-financial,2023,企業 E02144,920000,73600,1380000,simple_universal_large,large企業規模（シンプル版）
+simple-financial,2024,企業 E02144,920000,73600,1380000,simple_universal_large,large企業規模（シンプル版）

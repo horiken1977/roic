@@ -1,0 +1,227 @@
+{
+  "testInfo": {
+    "testType": "EDINET API Real Data Integration Test",
+    "totalCompanies": 7,
+    "fiscalYear": 2023,
+    "testDuration": "15秒",
+    "averageResponseTime": "396ms"
+  },
+  "results": {
+    "successCount": 7,
+    "failureCount": 0,
+    "successRate": "100.0%"
+  },
+  "dataQuality": {
+    "xbrlData": 0,
+    "estimatedData": 0,
+    "errorData": 0,
+    "xbrlPercentage": "0.0%"
+  },
+  "roicAnalysis": {
+    "calculated": 7,
+    "validRange": 7,
+    "extremeValues": 0,
+    "calculationRate": "100.0%"
+  },
+  "detailedResults": [
+    {
+      "edinetCode": "E02144",
+      "companyName": "トヨタ自動車",
+      "expectedScale": "large",
+      "responseTime": 634,
+      "dataSource": {
+        "type": "unknown",
+        "quality": "medium"
+      },
+      "validation": {
+        "valid": true,
+        "issues": [],
+        "score": 100
+      },
+      "roic": {
+        "roic": 6.029488347871371,
+        "nopat": 3705000000000,
+        "investedCapital": 61448000000000,
+        "valid": true,
+        "issues": []
+      },
+      "rawData": {
+        "netSales": 37154000000000,
+        "operatingIncome": 4940000000000,
+        "totalAssets": 67648000000000,
+        "dataSource": "direct_data_realtime"
+      }
+    },
+    {
+      "edinetCode": "E04425",
+      "companyName": "ソフトバンクグループ",
+      "expectedScale": "large",
+      "responseTime": 405,
+      "dataSource": {
+        "type": "unknown",
+        "quality": "medium"
+      },
+      "validation": {
+        "valid": true,
+        "issues": [],
+        "score": 100
+      },
+      "roic": {
+        "roic": -0.7904306220095694,
+        "nopat": -330400000000,
+        "investedCapital": 41800000000000,
+        "valid": true,
+        "issues": []
+      },
+      "rawData": {
+        "netSales": 6204000000000,
+        "operatingIncome": -472000000000,
+        "totalAssets": 46300000000000,
+        "dataSource": "direct_data_realtime"
+      }
+    },
+    {
+      "edinetCode": "E02166",
+      "companyName": "ソニーグループ",
+      "expectedScale": "large",
+      "responseTime": 597,
+      "dataSource": {
+        "type": "unknown",
+        "quality": "medium"
+      },
+      "validation": {
+        "valid": true,
+        "issues": [],
+        "score": 100
+      },
+      "roic": {
+        "roic": 3.741778319123021,
+        "nopat": 921600000000,
+        "investedCapital": 24630000000000,
+        "valid": true,
+        "issues": []
+      },
+      "rawData": {
+        "netSales": 13950000000000,
+        "operatingIncome": 1280000000000,
+        "totalAssets": 26580000000000,
+        "dataSource": "direct_data_realtime"
+      }
+    },
+    {
+      "edinetCode": "E03814",
+      "companyName": "セブン&アイ・ホールディングス",
+      "expectedScale": "medium",
+      "responseTime": 257,
+      "dataSource": {
+        "type": "unknown",
+        "quality": "medium"
+      },
+      "validation": {
+        "valid": true,
+        "issues": [
+          "売上規模が期待範囲外: 11568億円"
+        ],
+        "score": 85
+      },
+      "roic": {
+        "roic": 3.6689655172413786,
+        "nopat": 265999999999.99997,
+        "investedCapital": 7250000000000,
+        "valid": true,
+        "issues": []
+      },
+      "rawData": {
+        "netSales": 11568000000000,
+        "operatingIncome": 380000000000,
+        "totalAssets": 8200000000000,
+        "dataSource": "direct_data_realtime"
+      }
+    },
+    {
+      "edinetCode": "E04430",
+      "companyName": "ファーストリテイリング",
+      "expectedScale": "medium",
+      "responseTime": 243,
+      "dataSource": {
+        "type": "unknown",
+        "quality": "medium"
+      },
+      "validation": {
+        "valid": true,
+        "issues": [],
+        "score": 100
+      },
+      "roic": {
+        "roic": 28.87578947368421,
+        "nopat": 274320000000,
+        "investedCapital": 950000000000,
+        "valid": true,
+        "issues": []
+      },
+      "rawData": {
+        "netSales": 2766000000000,
+        "operatingIncome": 381000000000,
+        "totalAssets": 2150000000000,
+        "dataSource": "direct_data_realtime"
+      }
+    },
+    {
+      "edinetCode": "E03577",
+      "companyName": "三菱UFJフィナンシャル・グループ",
+      "expectedScale": "large",
+      "responseTime": 407,
+      "dataSource": {
+        "type": "unknown",
+        "quality": "medium"
+      },
+      "validation": {
+        "valid": true,
+        "issues": [],
+        "score": 100
+      },
+      "roic": {
+        "roic": 0.4560810810810811,
+        "nopat": 1350000000000,
+        "investedCapital": 296000000000000,
+        "valid": true,
+        "issues": []
+      },
+      "rawData": {
+        "netSales": 7200000000000,
+        "operatingIncome": 1800000000000,
+        "totalAssets": 381000000000000,
+        "dataSource": "direct_data_realtime"
+      }
+    },
+    {
+      "edinetCode": "E03571",
+      "companyName": "三井住友フィナンシャルグループ",
+      "expectedScale": "large",
+      "responseTime": 231,
+      "dataSource": {
+        "type": "unknown",
+        "quality": "medium"
+      },
+      "validation": {
+        "valid": true,
+        "issues": [],
+        "score": 100
+      },
+      "roic": {
+        "roic": 0.5729166666666666,
+        "nopat": 1237500000000,
+        "investedCapital": 216000000000000,
+        "valid": true,
+        "issues": []
+      },
+      "rawData": {
+        "netSales": 6850000000000,
+        "operatingIncome": 1650000000000,
+        "totalAssets": 278000000000000,
+        "dataSource": "direct_data_realtime"
+      }
+    }
+  ],
+  "failures": []
+}

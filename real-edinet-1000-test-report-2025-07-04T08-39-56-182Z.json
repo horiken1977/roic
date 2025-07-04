@@ -1,0 +1,480 @@
+{
+  "testInfo": {
+    "testType": "EDINET API Real Data Integration Test - 1000 Companies",
+    "totalCompanies": 993,
+    "knownCompanies": 30,
+    "randomCompanies": 963,
+    "fiscalYear": 2023,
+    "testDuration": "291秒",
+    "averageResponseTime": "450ms"
+  },
+  "results": {
+    "successCount": 993,
+    "failureCount": 0,
+    "successRate": "100.0%"
+  },
+  "dataQuality": {
+    "realData": 7,
+    "estimatedData": 986,
+    "errorData": 0,
+    "realDataPercentage": "0.7%"
+  },
+  "roicAnalysis": {
+    "calculated": 993,
+    "validRange": 993,
+    "extremeValues": 0,
+    "calculationRate": "100.0%",
+    "byIndustry": {
+      "その他": {
+        "count": 974,
+        "totalROIC": 3201.5914757481482,
+        "avgROIC": 3.287054903232185
+      },
+      "製薬": {
+        "count": 3,
+        "totalROIC": 13.176470588235295,
+        "avgROIC": 4.392156862745098
+      },
+      "通信": {
+        "count": 4,
+        "totalROIC": 12.386039966225725,
+        "avgROIC": 3.0965099915564314
+      },
+      "金融": {
+        "count": 2,
+        "totalROIC": 1.0289977477477477,
+        "avgROIC": 0.5144988738738738
+      },
+      "電機": {
+        "count": 3,
+        "totalROIC": 12.526092044613218,
+        "avgROIC": 4.1753640148710724
+      },
+      "商社": {
+        "count": 3,
+        "totalROIC": 13.176470588235295,
+        "avgROIC": 4.392156862745098
+      },
+      "自動車": {
+        "count": 3,
+        "totalROIC": 14.813802073361568,
+        "avgROIC": 4.937934024453856
+      },
+      "小売": {
+        "count": 1,
+        "totalROIC": 3.6689655172413786,
+        "avgROIC": 3.6689655172413786
+      }
+    }
+  },
+  "scaleBreakdown": {
+    "large": 64,
+    "medium": 106,
+    "small": 823
+  },
+  "topPerformers": [
+    {
+      "edinetCode": "E04430",
+      "companyName": "株式会社ファーストリテイリング",
+      "scale": "medium",
+      "industry": "その他",
+      "dataSource": "real",
+      "roic": 28.87578947368421,
+      "netSales": 2766000000000,
+      "responseTime": 292
+    },
+    {
+      "edinetCode": "E02144",
+      "companyName": "トヨタ自動車株式会社",
+      "scale": "large",
+      "industry": "自動車",
+      "dataSource": "real",
+      "roic": 6.029488347871371,
+      "netSales": 37154000000000,
+      "responseTime": 283
+    },
+    {
+      "edinetCode": "E04502",
+      "companyName": "企業 E04502",
+      "scale": "large",
+      "industry": "製薬",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 900000000000,
+      "responseTime": 276
+    },
+    {
+      "edinetCode": "E01593",
+      "companyName": "企業 E01593",
+      "scale": "large",
+      "industry": "通信",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 910000000000,
+      "responseTime": 277
+    },
+    {
+      "edinetCode": "E02473",
+      "companyName": "企業 E02473",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 910000000000,
+      "responseTime": 336
+    },
+    {
+      "edinetCode": "E02269",
+      "companyName": "企業 E02269",
+      "scale": "medium",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 970000000000,
+      "responseTime": 235
+    },
+    {
+      "edinetCode": "E02474",
+      "companyName": "企業 E02474",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 920000000000,
+      "responseTime": 239
+    },
+    {
+      "edinetCode": "E02830",
+      "companyName": "企業 E02830",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 880000000000,
+      "responseTime": 239
+    },
+    {
+      "edinetCode": "E03735",
+      "companyName": "企業 E03735",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 930000000000,
+      "responseTime": 228
+    },
+    {
+      "edinetCode": "E01798",
+      "companyName": "企業 E01798",
+      "scale": "large",
+      "industry": "電機",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 960000000000,
+      "responseTime": 225
+    },
+    {
+      "edinetCode": "E04093",
+      "companyName": "企業 E04093",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 910000000000,
+      "responseTime": 240
+    },
+    {
+      "edinetCode": "E02491",
+      "companyName": "企業 E02491",
+      "scale": "large",
+      "industry": "商社",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 890000000000,
+      "responseTime": 316
+    },
+    {
+      "edinetCode": "E00815",
+      "companyName": "企業 E00815",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 930000000000,
+      "responseTime": 475
+    },
+    {
+      "edinetCode": "E00002",
+      "companyName": "企業 E00002",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 900000000000,
+      "responseTime": 216
+    },
+    {
+      "edinetCode": "E00444",
+      "companyName": "企業 E00444",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 920000000000,
+      "responseTime": 244
+    },
+    {
+      "edinetCode": "E02497",
+      "companyName": "企業 E02497",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 950000000000,
+      "responseTime": 253
+    },
+    {
+      "edinetCode": "E00682",
+      "companyName": "企業 E00682",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 900000000000,
+      "responseTime": 259
+    },
+    {
+      "edinetCode": "E00476",
+      "companyName": "企業 E00476",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 940000000000,
+      "responseTime": 243
+    },
+    {
+      "edinetCode": "E00499",
+      "companyName": "企業 E00499",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 970000000000,
+      "responseTime": 266
+    },
+    {
+      "edinetCode": "E02383",
+      "companyName": "企業 E02383",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 910000000000,
+      "responseTime": 266
+    }
+  ],
+  "largestCompanies": [
+    {
+      "edinetCode": "E02144",
+      "companyName": "トヨタ自動車株式会社",
+      "scale": "large",
+      "industry": "自動車",
+      "dataSource": "real",
+      "roic": 6.029488347871371,
+      "netSales": 37154000000000,
+      "responseTime": 283
+    },
+    {
+      "edinetCode": "E02166",
+      "companyName": "ソニーグループ株式会社",
+      "scale": "large",
+      "industry": "電機",
+      "dataSource": "real",
+      "roic": 3.741778319123021,
+      "netSales": 13950000000000,
+      "responseTime": 240
+    },
+    {
+      "edinetCode": "E03814",
+      "companyName": "株式会社セブン&アイ・ホールディングス",
+      "scale": "medium",
+      "industry": "小売",
+      "dataSource": "real",
+      "roic": 3.6689655172413786,
+      "netSales": 11568000000000,
+      "responseTime": 263
+    },
+    {
+      "edinetCode": "E03577",
+      "companyName": "株式会社三菱UFJフィナンシャル・グループ",
+      "scale": "large",
+      "industry": "金融",
+      "dataSource": "real",
+      "roic": 0.4560810810810811,
+      "netSales": 7200000000000,
+      "responseTime": 2099
+    },
+    {
+      "edinetCode": "E03571",
+      "companyName": "株式会社三井住友フィナンシャルグループ",
+      "scale": "large",
+      "industry": "金融",
+      "dataSource": "real",
+      "roic": 0.5729166666666666,
+      "netSales": 6850000000000,
+      "responseTime": 403
+    },
+    {
+      "edinetCode": "E04425",
+      "companyName": "ソフトバンクグループ株式会社",
+      "scale": "large",
+      "industry": "通信",
+      "dataSource": "real",
+      "roic": -0.7904306220095694,
+      "netSales": 6204000000000,
+      "responseTime": 1640
+    },
+    {
+      "edinetCode": "E04430",
+      "companyName": "株式会社ファーストリテイリング",
+      "scale": "medium",
+      "industry": "その他",
+      "dataSource": "real",
+      "roic": 28.87578947368421,
+      "netSales": 2766000000000,
+      "responseTime": 292
+    },
+    {
+      "edinetCode": "E02269",
+      "companyName": "企業 E02269",
+      "scale": "medium",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 970000000000,
+      "responseTime": 235
+    },
+    {
+      "edinetCode": "E00499",
+      "companyName": "企業 E00499",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 970000000000,
+      "responseTime": 266
+    },
+    {
+      "edinetCode": "E01809",
+      "companyName": "企業 E01809",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 970000000000,
+      "responseTime": 249
+    },
+    {
+      "edinetCode": "E03539",
+      "companyName": "企業 E03539",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 970000000000,
+      "responseTime": 234
+    },
+    {
+      "edinetCode": "E01739",
+      "companyName": "企業 E01739",
+      "scale": "large",
+      "industry": "電機",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 970000000000,
+      "responseTime": 261
+    },
+    {
+      "edinetCode": "E00459",
+      "companyName": "企業 E00459",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 970000000000,
+      "responseTime": 1392
+    },
+    {
+      "edinetCode": "E00309",
+      "companyName": "企業 E00309",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 970000000000,
+      "responseTime": 243
+    },
+    {
+      "edinetCode": "E02229",
+      "companyName": "企業 E02229",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 970000000000,
+      "responseTime": 235
+    },
+    {
+      "edinetCode": "E01798",
+      "companyName": "企業 E01798",
+      "scale": "large",
+      "industry": "電機",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 960000000000,
+      "responseTime": 225
+    },
+    {
+      "edinetCode": "E00778",
+      "companyName": "企業 E00778",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 960000000000,
+      "responseTime": 266
+    },
+    {
+      "edinetCode": "E04208",
+      "companyName": "企業 E04208",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 960000000000,
+      "responseTime": 221
+    },
+    {
+      "edinetCode": "E00048",
+      "companyName": "企業 E00048",
+      "scale": "large",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 960000000000,
+      "responseTime": 231
+    },
+    {
+      "edinetCode": "E02768",
+      "companyName": "企業 E02768",
+      "scale": "medium",
+      "industry": "その他",
+      "dataSource": "estimated",
+      "roic": 4.392156862745098,
+      "netSales": 960000000000,
+      "responseTime": 284
+    }
+  ],
+  "failures": []
+}
