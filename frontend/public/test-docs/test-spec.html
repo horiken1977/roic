@@ -74,13 +74,13 @@
             <tr>
                 <td>ROIC計算ロジックテスト</td>
                 <td>単体テスト</td>
-                <td><span class="status-pending">⏳ 未実施</span></td>
+                <td><span class="status-completed">✅ 完了</span></td>
                 <td>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%">0%</div>
+                        <div class="progress-fill" style="width: 100%">100%</div>
                     </div>
                 </td>
-                <td>テストケース作成・実装</td>
+                <td>35テストケース・100%カバレッジ達成</td>
             </tr>
             <tr>
                 <td>EDINET API連携テスト</td>
@@ -298,6 +298,159 @@ const baseValues = {
     small: { netSales: 50000000000, operatingIncome: 3000000000 }
 };</code></pre>
 
+        <h2>🧪 ROIC計算ロジック ユニットテスト結果</h2>
+        
+        <div class="success-box">
+            <h3>テスト概要</h3>
+            <ul>
+                <li><strong>実施日時</strong>: 2025年7月4日 14:30 JST</li>
+                <li><strong>テスト対象</strong>: ROIC計算ロジック（4つの計算方式）</li>
+                <li><strong>テストファイル</strong>: frontend/src/utils/__tests__/roicCalculations.test.ts</li>
+                <li><strong>結果</strong>: <span class="status-completed">✅ 35テストケース全て成功</span></li>
+                <li><strong>カバレッジ</strong>: <span class="status-completed">✅ 100%（Statement/Branch/Function/Line）</span></li>
+            </ul>
+        </div>
+
+        <h3>📈 テスト統計</h3>
+        <table>
+            <tr>
+                <th>指標</th>
+                <th>値</th>
+            </tr>
+            <tr>
+                <td>総テストケース数</td>
+                <td>35ケース</td>
+            </tr>
+            <tr>
+                <td>成功数</td>
+                <td><span class="status-completed">35ケース</span></td>
+            </tr>
+            <tr>
+                <td>失敗数</td>
+                <td><span class="status-completed">0ケース</span></td>
+            </tr>
+            <tr>
+                <td>Statement Coverage</td>
+                <td><span class="status-completed">100%</span></td>
+            </tr>
+            <tr>
+                <td>Branch Coverage</td>
+                <td><span class="status-completed">100%</span></td>
+            </tr>
+            <tr>
+                <td>Function Coverage</td>
+                <td><span class="status-completed">100%</span></td>
+            </tr>
+            <tr>
+                <td>Line Coverage</td>
+                <td><span class="status-completed">100%</span></td>
+            </tr>
+        </table>
+
+        <h3>🎯 テスト内容詳細</h3>
+        <table>
+            <tr>
+                <th>計算方式</th>
+                <th>テストケース数</th>
+                <th>検証内容</th>
+                <th>ステータス</th>
+            </tr>
+            <tr>
+                <td>基本方式</td>
+                <td>4ケース</td>
+                <td>標準計算・投下資本0・マイナス営業利益・内訳確認</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+            <tr>
+                <td>詳細方式</td>
+                <td>3ケース</td>
+                <td>受取利息含む計算・投下資本構成・調整項目</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+            <tr>
+                <td>アセット方式</td>
+                <td>3ケース</td>
+                <td>総資産ベース・無利子負債控除・計算精度</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+            <tr>
+                <td>修正方式</td>
+                <td>3ケース</td>
+                <td>IFRS16リース調整・未定義値処理・効果確認</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+            <tr>
+                <td>統合機能</td>
+                <td>3ケース</td>
+                <td>全方式一括計算・差異確認・リース効果</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+            <tr>
+                <td>エッジケース</td>
+                <td>3ケース</td>
+                <td>ゼロ値・極小値・極大値処理</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+            <tr>
+                <td>フォーマット機能</td>
+                <td>4ケース</td>
+                <td>百分率・通貨・特殊値・小数点処理</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+            <tr>
+                <td>評価レベル</td>
+                <td>6ケース</td>
+                <td>4段階評価・境界値・マイナス値</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+            <tr>
+                <td>計算精度</td>
+                <td>2ケース</td>
+                <td>微小差検出・税率100%処理</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+            <tr>
+                <td>実データシナリオ</td>
+                <td>2ケース</td>
+                <td>トヨタ類似・IT企業類似データ</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+            <tr>
+                <td>サンプルデータ</td>
+                <td>2ケース</td>
+                <td>サンプル企業データ整合性確認</td>
+                <td><span class="status-completed">✅ 全て成功</span></td>
+            </tr>
+        </table>
+
+        <h3>🔍 重要な検証ポイント</h3>
+        <div class="test-result">
+            <h4>計算精度の検証</h4>
+            <ul>
+                <li>小数点以下4桁の計算精度を確保</li>
+                <li>微小な入力差が適切に出力に反映される</li>
+                <li>税率100%など極端なケースも正確に処理</li>
+            </ul>
+        </div>
+
+        <div class="test-result">
+            <h4>エラーハンドリングの検証</h4>
+            <ul>
+                <li>投下資本が0の場合、ROICは0として安全に処理</li>
+                <li>営業利益がマイナスでも正しく計算される</li>
+                <li>未定義のリース項目は0として適切に扱われる</li>
+            </ul>
+        </div>
+
+        <div class="test-result">
+            <h4>実データシナリオの検証</h4>
+            <ul>
+                <li>トヨタ自動車類似データ: 自動車業界の一般的範囲内でROIC計算</li>
+                <li>IT企業類似データ: 高ROICを示す業界特性を正確に反映</li>
+                <li>業界別の特徴的な財務構造に対応</li>
+            </ul>
+        </div>
+
         <h2>🎯 今後の課題と改善点</h2>
         
         <table>
@@ -328,7 +481,7 @@ const baseValues = {
         </table>
 
         <div class="update-time">
-            最終自動更新: 2025/07/04 12:30:00<br>
+            最終自動更新: 2025/07/04 15:00:00<br>
             🤖 この文書は自動的に更新されます
         </div>
     </div>
