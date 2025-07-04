@@ -26,6 +26,10 @@
     "api/edinet/real-financial.js": {
       "maxDuration": 60,
       "memory": 1024
+    },
+    "api/debug/xbrl-detail.js": {
+      "maxDuration": 60,
+      "memory": 1024
     }
   },
   "headers": [
