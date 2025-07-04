@@ -122,12 +122,13 @@ async function searchDocuments(edinetCode, fiscalYear, apiKey) {
   // 検索日付の範囲（決算発表は通常5-6月）
   const searchDates = [];
   
-  // より細かい日付で検索（特に6月20日台をカバー）
+  // 2024年度の書類は2025年に提出される
+  const submissionYear = fiscalYear + 1;
   const targetDates = [
-    '2024-06-28', '2024-06-27', '2024-06-26', '2024-06-25', '2024-06-24',
-    '2024-06-21', '2024-06-20', '2024-06-19', '2024-06-18', '2024-06-17',
-    '2024-06-16', '2024-06-13', '2024-06-12', '2024-06-11', '2024-06-10',
-    '2024-05-31', '2024-05-30', '2024-05-29', '2024-05-28', '2024-05-27'
+    `${submissionYear}-06-28`, `${submissionYear}-06-27`, `${submissionYear}-06-26`, `${submissionYear}-06-25`, `${submissionYear}-06-24`,
+    `${submissionYear}-06-21`, `${submissionYear}-06-20`, `${submissionYear}-06-19`, `${submissionYear}-06-18`, `${submissionYear}-06-17`,
+    `${submissionYear}-06-16`, `${submissionYear}-06-13`, `${submissionYear}-06-12`, `${submissionYear}-06-11`, `${submissionYear}-06-10`,
+    `${submissionYear}-05-31`, `${submissionYear}-05-30`, `${submissionYear}-05-29`, `${submissionYear}-05-28`, `${submissionYear}-05-27`
   ];
   
   searchDates.push(...targetDates);
@@ -142,8 +143,7 @@ async function searchDocuments(edinetCode, fiscalYear, apiKey) {
       const targetDocs = documents.filter(doc => 
         doc.edinetCode === edinetCode &&
         doc.docTypeCode === '120' && // 有価証券報告書
-        doc.periodEnd >= targetPeriodStart &&
-        doc.periodEnd <= targetPeriodEnd
+        doc.periodEnd && doc.periodEnd.includes(`${fiscalYear + 1}-03-31`)
       );
       
       allDocuments.push(...targetDocs);
