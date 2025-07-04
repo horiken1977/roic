@@ -19,16 +19,12 @@
       "maxDuration": 20,
       "memory": 512
     },
-    "api/debug/mitsubishi.js": {
-      "maxDuration": 40,
-      "memory": 1024
-    },
     "api/edinet/financial-safe.js": {
       "maxDuration": 30,
       "memory": 512
     },
-    "api/edinet/financial-1000.js": {
-      "maxDuration": 30,
+    "api/edinet/real-financial.js": {
+      "maxDuration": 60,
       "memory": 1024
     }
   },
