@@ -22,6 +22,10 @@
     "api/debug/mitsubishi.js": {
       "maxDuration": 40,
       "memory": 1024
+    },
+    "api/edinet/financial-safe.js": {
+      "maxDuration": 30,
+      "memory": 512
     }
   },
   "headers": [

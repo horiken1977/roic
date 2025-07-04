@@ -1,0 +1,78 @@
+{
+  "testInfo": {
+    "testType": "EDINET API Real Data Integration Test",
+    "totalCompanies": 7,
+    "fiscalYear": 2023,
+    "testDuration": "18秒",
+    "averageResponseTime": "816ms"
+  },
+  "results": {
+    "successCount": 0,
+    "failureCount": 7,
+    "successRate": "0.0%"
+  },
+  "dataQuality": {
+    "xbrlData": 0,
+    "estimatedData": 0,
+    "errorData": 7,
+    "xbrlPercentage": "0.0%"
+  },
+  "roicAnalysis": {
+    "calculated": 0,
+    "validRange": 0,
+    "extremeValues": 0,
+    "calculationRate": "0.0%"
+  },
+  "detailedResults": [],
+  "failures": [
+    {
+      "edinetCode": "E02144",
+      "companyName": "トヨタ自動車",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 1900
+    },
+    {
+      "edinetCode": "E04425",
+      "companyName": "ソフトバンクグループ",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 705
+    },
+    {
+      "edinetCode": "E02166",
+      "companyName": "ソニーグループ",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 693
+    },
+    {
+      "edinetCode": "E03814",
+      "companyName": "セブン&アイ・ホールディングス",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 796
+    },
+    {
+      "edinetCode": "E04430",
+      "companyName": "ファーストリテイリング",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 534
+    },
+    {
+      "edinetCode": "E03577",
+      "companyName": "三菱UFJフィナンシャル・グループ",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 507
+    },
+    {
+      "edinetCode": "E03571",
+      "companyName": "三井住友フィナンシャルグループ",
+      "error": "HTTP_500",
+      "message": "HTTP Error: 500",
+      "responseTime": 574
+    }
+  ]
+}
