@@ -121,12 +121,16 @@ async function searchDocuments(edinetCode, fiscalYear, apiKey) {
   
   // 検索日付の範囲（決算発表は通常5-6月）
   const searchDates = [];
-  for (let month = 4; month <= 7; month++) {
-    for (let day = 1; day <= 31; day += 5) {
-      const date = `${fiscalYear + 1}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-      searchDates.push(date);
-    }
-  }
+  
+  // より細かい日付で検索（特に6月20日台をカバー）
+  const targetDates = [
+    '2024-06-28', '2024-06-27', '2024-06-26', '2024-06-25', '2024-06-24',
+    '2024-06-21', '2024-06-20', '2024-06-19', '2024-06-18', '2024-06-17',
+    '2024-06-16', '2024-06-13', '2024-06-12', '2024-06-11', '2024-06-10',
+    '2024-05-31', '2024-05-30', '2024-05-29', '2024-05-28', '2024-05-27'
+  ];
+  
+  searchDates.push(...targetDates);
   
   const allDocuments = [];
   
