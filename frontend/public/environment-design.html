@@ -3,518 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>環境設計書 - ROIC分析アプリケーション</title>
+    <title>環境設計書</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; margin: 0; padding: 0; background: #f5f5f5; }
-        .header { background: #24292e; color: white; padding: 20px 0; margin-bottom: 30px; }
-        .header-content { max-width: 1200px; margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { margin: 0; font-size: 24px; }
-        .nav { display: flex; gap: 20px; }
-        .nav a { color: white; text-decoration: none; padding: 5px 10px; border-radius: 4px; transition: background 0.2s; }
-        .nav a:hover { background: rgba(255,255,255,0.1); }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; margin: 0; padding: 20px; background: #f5f5f5; }
         .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h2, h3, h4 { color: #333; }
-        h2 { border-bottom: 2px solid #e1e4e8; padding-bottom: 10px; margin-top: 30px; }
-        .status-completed { color: #28a745; font-weight: bold; }
-        .status-progress { color: #ffc107; font-weight: bold; }
-        .status-pending { color: #6c757d; font-weight: bold; }
-        .status-critical { color: #dc3545; font-weight: bold; }
-        code { background: #f6f8fa; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
-        pre { background: #f6f8fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background: #f6f8fa; font-weight: bold; }
-        tr:nth-child(even) { background: #fafafa; }
-        .progress-bar { width: 100%; background: #e9ecef; border-radius: 4px; height: 20px; margin: 5px 0; }
-        .progress-fill { background: #28a745; height: 100%; border-radius: 4px; color: white; text-align: center; line-height: 20px; font-size: 12px; }
-        .env-card { background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 15px 0; border-left: 4px solid #007bff; }
-        .env-card.production { border-left-color: #28a745; }
-        .env-card.staging { border-left-color: #ffc107; }
-        .env-card.development { border-left-color: #17a2b8; }
-        .update-time { color: #666; font-style: italic; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e1e4e8; text-align: center; }
-        .architecture-diagram { background: #fff; border: 2px solid #e1e4e8; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; }
-        .component { display: inline-block; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 10px; margin: 5px; min-width: 100px; }
-        .component.frontend { background: #e7f3ff; border-color: #0066cc; }
-        .component.backend { background: #fff2e7; border-color: #cc6600; }
-        .component.database { background: #f0fff0; border-color: #009900; }
-        .component.external { background: #fff0f0; border-color: #cc0000; }
+        h1, h2, h3, h4 { color: #333; }
+        h1 { border-bottom: 2px solid #e1e4e8; padding-bottom: 10px; }
+        .status-completed { color: #28a745; }
+        .status-progress { color: #ffc107; }
+        .status-pending { color: #6c757d; }
+        code { background: #f6f8fa; padding: 2px 4px; border-radius: 3px; }
+        .update-time { color: #666; font-style: italic; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e1e4e8; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <h1>環境設計書</h1>
-            <nav class="nav">
-                <a href="/">トップ</a>
-                <a href="/functional-spec.html">機能設計書</a>
-                <a href="/environment-design.html">環境設計書</a>
-                <a href="/test-docs/test-spec.html">テスト仕様書</a>
-            </nav>
-        </div>
-    </div>
-
     <div class="container">
-        <h2>📊 環境構築進捗管理表</h2>
-        <table>
-            <tr>
-                <th style="width: 25%">環境/コンポーネント</th>
-                <th style="width: 15%">種別</th>
-                <th style="width: 15%">ステータス</th>
-                <th style="width: 10%">進捗</th>
-                <th style="width: 35%">次のアクション</th>
-            </tr>
-            <tr>
-                <td>本番環境（Vercel）</td>
-                <td>Production</td>
-                <td><span class="status-completed">✅ 稼働中</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%">100%</div>
-                    </div>
-                </td>
-                <td>監視・保守・パフォーマンス最適化</td>
-            </tr>
-            <tr>
-                <td>開発環境（ローカル）</td>
-                <td>Development</td>
-                <td><span class="status-completed">✅ 構築済み</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%">100%</div>
-                    </div>
-                </td>
-                <td>開発効率化ツール追加</td>
-            </tr>
-            <tr>
-                <td>CI/CDパイプライン</td>
-                <td>DevOps</td>
-                <td><span class="status-completed">✅ 稼働中</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 90%">90%</div>
-                    </div>
-                </td>
-                <td>自動テスト統合強化</td>
-            </tr>
-            <tr>
-                <td>監視・ログ</td>
-                <td>Monitoring</td>
-                <td><span class="status-progress">🔄 部分稼働</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 60%">60%</div>
-                    </div>
-                </td>
-                <td>包括的監視システム構築</td>
-            </tr>
-            <tr>
-                <td>データベース</td>
-                <td>Infrastructure</td>
-                <td><span class="status-pending">⏳ 未構築</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%">0%</div>
-                    </div>
-                </td>
-                <td>PostgreSQL/MongoDB選定・構築</td>
-            </tr>
-            <tr>
-                <td>API認証</td>
-                <td>Security</td>
-                <td><span class="status-pending">⏳ 未実装</span></td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%">0%</div>
-                    </div>
-                </td>
-                <td>JWT/OAuth実装</td>
-            </tr>
-        </table>
-
-        <h2>🏗️ システムアーキテクチャ</h2>
-        
-        <div class="architecture-diagram">
-            <h3>現在のアーキテクチャ</h3>
-            <div style="margin: 20px 0;">
-                <div class="component frontend">Next.js Frontend</div>
-                <span>↔</span>
-                <div class="component backend">Vercel Functions</div>
-                <span>↔</span>
-                <div class="component external">EDINET API (Simple)</div>
-            </div>
-            <div style="margin: 20px 0;">
-                <div class="component frontend">React Components</div>
-                <span>→</span>
-                <div class="component frontend">Zustand Store</div>
-                <span>→</span>
-                <div class="component frontend">Chart.js</div>
-            </div>
-        </div>
-
-        <h2>🌐 環境別構成</h2>
-
-        <div class="env-card production">
-            <h3>本番環境 <span class="status-completed">✅ 稼働中</span></h3>
-            <table>
-                <tr>
-                    <th>項目</th>
-                    <th>詳細</th>
-                    <th>ステータス</th>
-                </tr>
-                <tr>
-                    <td>ホスティング</td>
-                    <td>Vercel (Edge Functions)</td>
-                    <td><span class="status-completed">✅ 稼働</span></td>
-                </tr>
-                <tr>
-                    <td>ドメイン</td>
-                    <td>https://roic-horikens-projects.vercel.app</td>
-                    <td><span class="status-completed">✅ 設定済み</span></td>
-                </tr>
-                <tr>
-                    <td>フロントエンド</td>
-                    <td>Next.js 14 (App Router)</td>
-                    <td><span class="status-completed">✅ デプロイ済み</span></td>
-                </tr>
-                <tr>
-                    <td>APIエンドポイント</td>
-                    <td>/api/edinet/simple-financial</td>
-                    <td><span class="status-completed">✅ 100%稼働</span></td>
-                </tr>
-                <tr>
-                    <td>SSL証明書</td>
-                    <td>Vercel自動管理</td>
-                    <td><span class="status-completed">✅ 有効</span></td>
-                </tr>
-                <tr>
-                    <td>CDN</td>
-                    <td>Vercel Edge Network</td>
-                    <td><span class="status-completed">✅ 有効</span></td>
-                </tr>
-            </table>
-
-            <h4>パフォーマンス指標</h4>
-            <ul>
-                <li><strong>平均応答時間</strong>: 323ms（目標: <500ms）</li>
-                <li><strong>可用性</strong>: 99.9%+（Vercel SLA）</li>
-                <li><strong>同時接続数</strong>: 1000+ リクエスト/分対応可能</li>
-                <li><strong>データ転送量</strong>: 無制限（Vercel Pro）</li>
-            </ul>
-        </div>
-
-        <div class="env-card staging">
-            <h3>ステージング環境 <span class="status-progress">🔄 部分構築</span></h3>
-            <table>
-                <tr>
-                    <th>項目</th>
-                    <th>詳細</th>
-                    <th>ステータス</th>
-                </tr>
-                <tr>
-                    <td>ブランチ</td>
-                    <td>develop → preview deployment</td>
-                    <td><span class="status-completed">✅ 自動デプロイ</span></td>
-                </tr>
-                <tr>
-                    <td>テストデータ</td>
-                    <td>1000社テストデータセット</td>
-                    <td><span class="status-completed">✅ 準備済み</span></td>
-                </tr>
-                <tr>
-                    <td>CI/CDテスト</td>
-                    <td>GitHub Actions</td>
-                    <td><span class="status-progress">🔄 基本実装</span></td>
-                </tr>
-                <tr>
-                    <td>E2Eテスト</td>
-                    <td>Playwright（予定）</td>
-                    <td><span class="status-pending">⏳ 未実装</span></td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="env-card development">
-            <h3>開発環境 <span class="status-completed">✅ 構築済み</span></h3>
-            <table>
-                <tr>
-                    <th>項目</th>
-                    <th>詳細</th>
-                    <th>ステータス</th>
-                </tr>
-                <tr>
-                    <td>Node.js</td>
-                    <td>v18.17.0+</td>
-                    <td><span class="status-completed">✅ インストール済み</span></td>
-                </tr>
-                <tr>
-                    <td>パッケージマネージャー</td>
-                    <td>npm</td>
-                    <td><span class="status-completed">✅ 設定済み</span></td>
-                </tr>
-                <tr>
-                    <td>ローカルサーバー</td>
-                    <td>http://localhost:3000</td>
-                    <td><span class="status-completed">✅ 稼働</span></td>
-                </tr>
-                <tr>
-                    <td>ホットリロード</td>
-                    <td>Next.js Fast Refresh</td>
-                    <td><span class="status-completed">✅ 有効</span></td>
-                </tr>
-                <tr>
-                    <td>TypeScript</td>
-                    <td>v5.2+（厳密型チェック）</td>
-                    <td><span class="status-completed">✅ 設定済み</span></td>
-                </tr>
-                <tr>
-                    <td>ESLint/Prettier</td>
-                    <td>コード品質管理</td>
-                    <td><span class="status-completed">✅ 設定済み</span></td>
-                </tr>
-            </table>
-        </div>
-
-        <h2>🛠️ 技術スタック</h2>
-
-        <table>
-            <tr>
-                <th>カテゴリ</th>
-                <th>技術</th>
-                <th>バージョン</th>
-                <th>用途</th>
-                <th>ステータス</th>
-            </tr>
-            <tr>
-                <td rowspan="4">フロントエンド</td>
-                <td>Next.js</td>
-                <td>14.2.0</td>
-                <td>Reactフレームワーク</td>
-                <td><span class="status-completed">✅ 採用</span></td>
-            </tr>
-            <tr>
-                <td>TypeScript</td>
-                <td>5.2+</td>
-                <td>型安全性</td>
-                <td><span class="status-completed">✅ 採用</span></td>
-            </tr>
-            <tr>
-                <td>Tailwind CSS</td>
-                <td>3.4+</td>
-                <td>スタイリング</td>
-                <td><span class="status-completed">✅ 採用</span></td>
-            </tr>
-            <tr>
-                <td>Chart.js</td>
-                <td>4.4+</td>
-                <td>グラフ描画</td>
-                <td><span class="status-completed">✅ 採用</span></td>
-            </tr>
-            <tr>
-                <td rowspan="3">バックエンド</td>
-                <td>Vercel Functions</td>
-                <td>Latest</td>
-                <td>サーバーレス</td>
-                <td><span class="status-completed">✅ 稼働</span></td>
-            </tr>
-            <tr>
-                <td>Node.js</td>
-                <td>18+</td>
-                <td>ランタイム</td>
-                <td><span class="status-completed">✅ 稼働</span></td>
-            </tr>
-            <tr>
-                <td>EDINET API</td>
-                <td>v2</td>
-                <td>財務データ</td>
-                <td><span class="status-progress">🔄 シンプル版</span></td>
-            </tr>
-            <tr>
-                <td rowspan="2">インフラ</td>
-                <td>Vercel</td>
-                <td>Pro Plan</td>
-                <td>ホスティング</td>
-                <td><span class="status-completed">✅ 運用中</span></td>
-            </tr>
-            <tr>
-                <td>GitHub</td>
-                <td>Latest</td>
-                <td>ソース管理</td>
-                <td><span class="status-completed">✅ 運用中</span></td>
-            </tr>
-            <tr>
-                <td rowspan="2">テスト</td>
-                <td>Jest</td>
-                <td>29+</td>
-                <td>ユニットテスト</td>
-                <td><span class="status-completed">✅ 実装済み</span></td>
-            </tr>
-            <tr>
-                <td>Playwright</td>
-                <td>1.40+</td>
-                <td>E2Eテスト</td>
-                <td><span class="status-pending">⏳ 未実装</span></td>
-            </tr>
-        </table>
-
-        <h2>🔧 デプロイメント構成</h2>
-
-        <h3>自動デプロイフロー</h3>
-        <pre><code>git push → GitHub → Vercel Build → Production Deploy
-
-1. 開発者がコードをpush
-2. GitHub Actionsでテスト実行
-3. mainブランチマージ時にVercel自動デプロイ
-4. Preview URLで確認後、本番反映
-5. ロールバック機能で問題時即座復旧</code></pre>
-
-        <h3>環境変数管理</h3>
-        <table>
-            <tr>
-                <th>変数名</th>
-                <th>用途</th>
-                <th>設定場所</th>
-                <th>ステータス</th>
-            </tr>
-            <tr>
-                <td>EDINET_API_KEY</td>
-                <td>EDINET API認証</td>
-                <td>Vercel Dashboard</td>
-                <td><span class="status-pending">⏳ 未設定</span></td>
-            </tr>
-            <tr>
-                <td>NEXT_PUBLIC_API_URL</td>
-                <td>API Base URL</td>
-                <td>Vercel Dashboard</td>
-                <td><span class="status-completed">✅ 設定済み</span></td>
-            </tr>
-            <tr>
-                <td>NODE_ENV</td>
-                <td>環境識別</td>
-                <td>Vercel自動設定</td>
-                <td><span class="status-completed">✅ 自動</span></td>
-            </tr>
-        </table>
-
-        <h2>📈 パフォーマンス最適化</h2>
-
-        <h3>現在の最適化状況</h3>
-        <table>
-            <tr>
-                <th>項目</th>
-                <th>実装状況</th>
-                <th>効果</th>
-                <th>ステータス</th>
-            </tr>
-            <tr>
-                <td>コード分割</td>
-                <td>Next.js自動分割</td>
-                <td>初期ロード時間短縮</td>
-                <td><span class="status-completed">✅ 有効</span></td>
-            </tr>
-            <tr>
-                <td>静的生成</td>
-                <td>SSG for ドキュメント</td>
-                <td>表示速度向上</td>
-                <td><span class="status-completed">✅ 実装済み</span></td>
-            </tr>
-            <tr>
-                <td>画像最適化</td>
-                <td>Next.js Image</td>
-                <td>画像読み込み最適化</td>
-                <td><span class="status-completed">✅ 実装済み</span></td>
-            </tr>
-            <tr>
-                <td>API最適化</td>
-                <td>シンプルAPI実装</td>
-                <td>応答時間323ms</td>
-                <td><span class="status-completed">✅ 実装済み</span></td>
-            </tr>
-            <tr>
-                <td>キャッシュ戦略</td>
-                <td>CDN + Browser Cache</td>
-                <td>リピート訪問高速化</td>
-                <td><span class="status-progress">🔄 部分実装</span></td>
-            </tr>
-        </table>
-
-        <h2>🔒 セキュリティ対策</h2>
-
-        <table>
-            <tr>
-                <th>対策項目</th>
-                <th>実装状況</th>
-                <th>レベル</th>
-            </tr>
-            <tr>
-                <td>HTTPS通信</td>
-                <td>Vercel自動SSL</td>
-                <td><span class="status-completed">✅ 実装済み</span></td>
-            </tr>
-            <tr>
-                <td>CORS設定</td>
-                <td>API レベル設定</td>
-                <td><span class="status-completed">✅ 実装済み</span></td>
-            </tr>
-            <tr>
-                <td>入力値検証</td>
-                <td>フロント/バック双方</td>
-                <td><span class="status-completed">✅ 実装済み</span></td>
-            </tr>
-            <tr>
-                <td>環境変数保護</td>
-                <td>Vercel Secrets</td>
-                <td><span class="status-progress">🔄 部分実装</span></td>
-            </tr>
-            <tr>
-                <td>認証システム</td>
-                <td>未実装</td>
-                <td><span class="status-pending">⏳ 計画中</span></td>
-            </tr>
-            <tr>
-                <td>レート制限</td>
-                <td>未実装</td>
-                <td><span class="status-pending">⏳ 計画中</span></td>
-            </tr>
-        </table>
-
-        <h2>⚠️ 今後の課題</h2>
-
-        <table>
-            <tr>
-                <th>優先度</th>
-                <th>課題</th>
-                <th>対応策</th>
-                <th>期限</th>
-            </tr>
-            <tr>
-                <td><span class="status-critical">高</span></td>
-                <td>データベース未実装</td>
-                <td>PostgreSQL on Vercel Storage導入</td>
-                <td>2025/07/15</td>
-            </tr>
-            <tr>
-                <td><span class="status-progress">中</span></td>
-                <td>本格EDINET API連携</td>
-                <td>APIキー取得・複雑なXBRL解析実装</td>
-                <td>2025/07/30</td>
-            </tr>
-            <tr>
-                <td><span class="status-pending">低</span></td>
-                <td>監視システム強化</td>
-                <td>Vercel Analytics + カスタム監視</td>
-                <td>2025/08/15</td>
-            </tr>
-        </table>
-
+        <h1>環境設計書</h1></p><p><strong>最終更新日:</strong> 2025-07-04</p><p><h2>🏗️ システム概要</h2></p><p><h3>プロジェクト情報</h3>
+<li><strong>プロジェクト名:</strong> ROIC分析アプリケーション</li>
+<li><strong>バージョン:</strong> 1.0.0</li>
+<li><strong>開発フェーズ:</strong> MVP基盤構築（完了）</li>
+<li><strong>アーキテクチャ:</strong> フルスタック Web アプリケーション</li></p><p><h2>💻 開発環境</h2></p><p><h3>ローカル開発環境</h3>
+<li><strong>Node.js:</strong> v24.3.0</li>
+<li><strong>npm:</strong> 11.4.2</li>
+<li><strong>Git:</strong> 2.39.5 (Apple Git-154)</li>
+<li><strong>OS:</strong> macOS</li></p><p><h3>Git設定</h3>
+<li><strong>認証方式:</strong> HTTPS</li>
+<li><strong>リモートリポジトリ:</strong> https://github.com/horiken1977/roic.git</li>
+<li><strong>パフォーマンス最適化:</strong></li>
+<p>  - <code>core.preloadindex=true</code>
+<p>  - <code>core.fscache=true</code>
+<p>  - <code>status.submoduleSummary=false</code>
+<p>  - <code><strong>/node_modules/</code> .gitignore追加</p><p><h2>🏗️ アプリケーション構成</h2></p><p><h3>フロントエンド (Next.js)</h3>
+<li></strong>Framework:<strong> Next.js 15.3.4</li>
+<li></strong>Runtime:<strong> React ^19.0.0</li>
+<li></strong>Language:<strong> TypeScript ^5</li>
+<li></strong>Styling:<strong> Tailwind CSS ^4</li>
+<li></strong>State Management:<strong> Zustand ^5.0.6</li>
+<li></strong>HTTP Client:<strong> Axios ^1.10.0</li></p><p><h3>バックエンド (Node.js/Express)</h3>
+<li></strong>Framework:<strong> Express.js ^4.18.2</li>
+<li></strong>Database:<strong> PostgreSQL (AWS RDS) ^8.11.3</li>
+<li></strong>Cloud:<strong> AWS SDK ^2.1498.0</li>
+<li></strong>Logger:<strong> Winston ^3.11.0</li>
+<li></strong>Security:<strong> Helmet, CORS, Rate Limiting</li></p><p><h2>☁️ インフラストラクチャ</h2></p><p><h3>デプロイメント環境</h3>
+<li></strong>フロントエンド:<strong> GitHub Pages (Static Export)</li>
+<li></strong>バックエンド:<strong> AWS Lambda + API Gateway (予定)</li>
+<li></strong>データベース:<strong> AWS RDS (PostgreSQL)</li>
+<li></strong>ストレージ:<strong> AWS S3</li>
+<li></strong>CDN:<strong> CloudFront</li></p><p><h3>CI/CD パイプライン</h3>
+<li></strong>自動テスト:<strong> Jest, Playwright</li>
+<li></strong>静的解析:<strong> ESLint, TypeScript</li>
+<li></strong>ビルド & デプロイ:<strong> GitHub Actions</li>
+<li></strong>セキュリティスキャン:<strong> 実装済み</li></p><p><h2>🛡️ セキュリティ設定</h2></p><p><h3>Git セキュリティ</h3>
+<li></strong>.gitignore設定:<strong> 環境変数、認証キー、AWSクレデンシャル除外</li>
+<li></strong>機密ファイル除外:*<em> .env</em>, <em>.pem, </em>.key, secrets/</li></p><p><h3>アプリケーションセキュリティ</h3>
+<li><strong>HTTPS通信:</strong> 本番環境必須</li>
+<li><strong>JWT認証:</strong> バックエンドAPI</li>
+<li><strong>入力検証:</strong> Joi + express-validator</li>
+<li><strong>レート制限:</strong> express-rate-limit</li></p><p><h2>🔄 自動化機能</h2></p><p><h3>ファイル監視・自動更新</h3>
+<li><strong>監視ファイル:</strong></li>
+<p>  - Frontend: <code>frontend/src/*<em>/</em>.{tsx,ts,js}</code>
+<p>  - Backend: <code>backend/*<em>/</em>.{js,ts,py}</code>
+<p>  - Docs: <code>docs/*<em>/</em>.md</code>
+<p>  - Tests: <code>tests/*<em>/</em>.{js,ts,spec.js,test.js}</code>
+<p>  - Config: <code>config/project-config.json</code></p><p><h3>自動更新対象</h3>
+<li>機能設計書 (<code>docs/functional-spec.md</code>)</li>
+<li>テスト仕様書 (<code>docs/test-spec.md</code>)</li>
+<li>環境設計書 (<code>docs/environment-design.md</code>)</li>
+<li>プロジェクト進捗 (<code>project-progress.md</code>)</li></p><p><h2>📊 パフォーマンス最適化</h2></p><p><h3>Git最適化 (最新実施: 2025-07-04)</h3>
+<li><code><strong>/node_modules/</code> .gitignore追加</li>
+<li><code>core.preloadindex=true</code> (ファイルシステム最適化)</li>
+<li><code>core.fscache=true</code> (キャッシュ有効化)</li>
+<li><code>status.submoduleSummary=false</code> (サブモジュール無効化)</li></p><p><h3>Next.js最適化</h3>
+<li></strong>Turbopack:<strong> 開発サーバー高速化</li>
+<li></strong>Static Export:<strong> 本番環境最適化</li>
+<li></strong>Image Optimization:<strong> 自動画像最適化</li></p><p><h2>🧪 テスト環境</h2></p><p><h3>テスト設定</h3>
+<li></strong>Unit Tests:<strong> Jest ^30.0.3</li>
+<li></strong>Component Tests:<strong> Testing Library ^16.3.0</li>
+<li></strong>E2E Tests:<strong> Playwright ^1.53.2</li>
+<li></strong>Coverage Threshold:<strong> 85%</li></p><p><h3>テスト実行状況</h3>
+<li></strong>ユニットテスト:<strong> 9件 (カバレッジ: 95%)</li>
+<li></strong>E2Eテスト:<strong> 0件 (カバレッジ: 70%)</li>
+<li></strong>統合テスト:<strong> 0件 (カバレッジ: 75%)</li></p><p><h2>🔧 開発ワークフロー</h2></p><p><h3>ローカル開発</h3>
+<p>``<code>bash</p>
+<h1>フロントエンド開発サーバー起動</h1>
+<p>cd frontend && npm run dev</p><p><h1>バックエンド開発サーバー起動  </h1>
+<p>cd backend && npm run dev</p><p><h1>テスト実行</h1>
+<p>npm test</p><p><h1>ビルド & デプロイ</h1>
+<p>npm run deploy</p>
+<p></code>`<code></p><p>---</p><p></strong>注意:<strong> この環境設計書は自動更新されます。環境設定変更時は </code>/config/project-config.json` および関連スクリプトが自動的に本ドキュメントを更新します。</p><p></strong>更新トリガー:*<em>
+<li>パッケージ依存関係の変更</li>
+<li>インフラ設定の変更  </li>
+<li>セキュリティ設定の変更</li>
+<li>パフォーマンス最適化の実施</li></p><p></em>最終更新: 2025/7/5 0:10:19<em>
+<p></em>この文書は環境変更に応じて自動更新されます*</p>
         <div class="update-time">
-            最終自動更新: 2025/07/04 13:00:00<br>
+            最終自動更新: 2025/7/5 0:10:19<br>
             🤖 この文書は自動的に更新されます
         </div>
     </div>
-    
     <script>
-        // Auto-refresh every 60 seconds
-        setTimeout(() => window.location.reload(), 60000);
+        // Auto-refresh every 30 seconds
+        setTimeout(() => window.location.reload(), 30000);
     </script>
 </body>
 </html>

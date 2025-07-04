@@ -2,14 +2,14 @@
 
 ## 概要
 
-### テスト実行状況: 4/4 (100%成功)
+### テスト実行状況: 9/9 (100%成功)
 
 ## ユニットテスト
 
-### 実行済みテスト: 4件
-- **成功**: 4件
+### 実行済みテスト: 9件
+- **成功**: 9件
 - **失敗**: 0件
-- **カバレッジ**: 93%
+- **カバレッジ**: 95%
 
 #### 1. companies
 - **ファイル**: frontend/src/__tests__/companies.test.tsx
@@ -23,8 +23,28 @@
 - **ファイル**: frontend/src/__tests__/page.test.tsx
 - **ステータス**: ✅ 実行済み
 
-#### 4. store
+#### 4. simple
+- **ファイル**: frontend/src/__tests__/simple.test.tsx
+- **ステータス**: ✅ 実行済み
+
+#### 5. IndustryComparison
+- **ファイル**: frontend/src/components/__tests__/IndustryComparison.test.tsx
+- **ステータス**: ✅ 実行済み
+
+#### 6. ROICCalculator
+- **ファイル**: frontend/src/components/__tests__/ROICCalculator.test.tsx
+- **ステータス**: ✅ 実行済み
+
+#### 7. TestProgressWidget
+- **ファイル**: frontend/src/components/__tests__/TestProgressWidget.test.tsx
+- **ステータス**: ✅ 実行済み
+
+#### 8. store
 - **ファイル**: frontend/src/lib/__tests__/store.test.ts
+- **ステータス**: ✅ 実行済み
+
+#### 9. roicCalculations
+- **ファイル**: frontend/src/utils/__tests__/roicCalculations.test.ts
 - **ステータス**: ✅ 実行済み
 
 

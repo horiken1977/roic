@@ -293,8 +293,10 @@ async function extractFinancialData(xbrlContent, edinetCode, fiscalYear) {
       fiscalYear: fiscalYear,
       companyName: extractCompanyName(xbrl) || `企業 ${edinetCode}`,
       
-      // 売上高
+      // 売上高 (IFRS対応)
       netSales: extractNumericValue(facts, [
+        'OperatingRevenuesIFRSKeyFinancialData',
+        'RevenueIFRS', 
         'NetSales',
         'NetSalesOfCompletedConstructionContracts', 
         'OperatingRevenue',
@@ -302,26 +304,35 @@ async function extractFinancialData(xbrlContent, edinetCode, fiscalYear) {
         'Revenues'
       ], currentPeriodContextId),
       
-      // 営業利益
+      // 営業利益 (IFRS対応)
       operatingIncome: extractNumericValue(facts, [
+        'ProfitLossFromOperatingActivitiesIFRS',
+        'OperatingIncomeIFRS',
+        'ProfitLossBeforeTaxIFRSSummaryOfBusinessResults',
         'OperatingIncome',
         'OperatingProfit'
       ], currentPeriodContextId),
       
-      // 総資産
+      // 総資産 (IFRS対応)
       totalAssets: extractNumericValue(facts, [
+        'TotalAssetsIFRSSummaryOfBusinessResults',
+        'AssetsIFRS',
         'Assets',
         'TotalAssets'
       ], currentPeriodContextId),
       
-      // 現金及び現金同等物
+      // 現金及び現金同等物 (IFRS対応)
       cashAndEquivalents: extractNumericValue(facts, [
+        'CashAndCashEquivalentsIFRSSummaryOfBusinessResults',
+        'CashAndCashEquivalentsIFRS',
         'CashAndDeposits',
         'CashAndCashEquivalents'
       ], currentPeriodContextId),
       
-      // 株主資本/純資産
+      // 株主資本/純資産 (IFRS対応)
       shareholdersEquity: extractNumericValue(facts, [
+        'EquityAttributableToOwnersOfParentIFRSSummaryOfBusinessResults',
+        'EquityIFRS',
         'NetAssets',
         'ShareholdersEquity',
         'TotalNetAssets'
@@ -434,26 +445,44 @@ function findElements(obj, elementName, results = []) {
  * 当期のコンテキストIDを特定
  */
 function findCurrentPeriodContext(contexts, fiscalYear) {
-  const targetEndDate = `${fiscalYear + 1}-03-31`;
+  // 当期用のコンテキストパターンを検索
+  const contextPatterns = [
+    'CurrentYearDuration',
+    'CurrentYearInstant', 
+    `${fiscalYear}Duration`,
+    `FY${fiscalYear}Duration`
+  ];
   
+  // パターンマッチング
+  for (const pattern of contextPatterns) {
+    for (const [id, context] of Object.entries(contexts)) {
+      if (id.includes(pattern) || id === pattern) {
+        console.log(`✅ コンテキスト発見: ${id}`);
+        return id;
+      }
+    }
+  }
+  
+  // フォールバック: 日付ベース検索
+  const targetEndDate = `${fiscalYear + 1}-03-31`;
   for (const [id, context] of Object.entries(contexts)) {
     if (context.endDate === targetEndDate && 
         context.startDate === `${fiscalYear}-04-01`) {
+      console.log(`✅ 日付ベースコンテキスト: ${id}`);
       return id;
     }
   }
   
-  // 見つからない場合は近い日付を探す
+  // 最終手段: CurrentYearを含むものを探す
   for (const [id, context] of Object.entries(contexts)) {
-    if (context.endDate && 
-        context.endDate.startsWith(`${fiscalYear + 1}`) &&
-        context.startDate && 
-        context.startDate.startsWith(`${fiscalYear}`)) {
+    if (id.includes('CurrentYear')) {
+      console.log(`⚠️ フォールバックコンテキスト: ${id}`);
       return id;
     }
   }
   
-  return null;
+  console.warn('⚠️ 適切なコンテキストが見つかりません');
+  return Object.keys(contexts)[0] || null;
 }
 
 /**
@@ -478,12 +507,16 @@ function extractCompanyName(xbrl) {
  * 数値を抽出
  */
 function extractNumericValue(facts, possibleKeys, contextId) {
+  console.log(`🔍 数値抽出: ${possibleKeys[0]} (context: ${contextId})`);
+  
   for (const key of possibleKeys) {
     // 完全一致を試す
     if (facts[key]) {
       const fact = facts[key].find(f => f.contextRef === contextId);
       if (fact && fact.value) {
-        return parseFloat(fact.value.replace(/,/g, ''));
+        const value = parseFloat(fact.value.replace(/,/g, ''));
+        console.log(`✅ 完全一致発見: ${key} = ${value}`);
+        return value;
       }
     }
     
@@ -492,11 +525,23 @@ function extractNumericValue(facts, possibleKeys, contextId) {
       if (factKey.includes(key)) {
         const fact = factValues.find(f => f.contextRef === contextId);
         if (fact && fact.value) {
-          return parseFloat(fact.value.replace(/,/g, ''));
+          const value = parseFloat(fact.value.replace(/,/g, ''));
+          console.log(`✅ 部分一致発見: ${factKey} = ${value}`);
+          return value;
         }
       }
     }
   }
+  
+  // デバッグ: 利用可能なコンテキストを表示
+  console.log(`⚠️ ${possibleKeys[0]} の値が見つかりません`);
+  const availableContexts = new Set();
+  for (const [factKey, factValues] of Object.entries(facts)) {
+    if (possibleKeys.some(key => factKey.includes(key))) {
+      factValues.forEach(f => availableContexts.add(f.contextRef));
+    }
+  }
+  console.log(`利用可能なコンテキスト: ${Array.from(availableContexts).join(', ')}`);
   
   return 0;
 }

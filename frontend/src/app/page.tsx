@@ -185,7 +185,7 @@ export default function Home() {
               <div className="text-gray-600">開発中</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">4</div>
+              <div className="text-3xl font-bold text-purple-600 mb-2">9</div>
               <div className="text-gray-600">テスト実行</div>
             </div>
           </div>
