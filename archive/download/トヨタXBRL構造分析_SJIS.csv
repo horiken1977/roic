@@ -1,0 +1,70 @@
+項目,詳細,現在の実装,問題の特定,正しいXBRL要素名,備考
+=== 基本情報 ===,,,,, 
+企業コード,E02144,E02144,正常,E02144,トヨタ自動車
+対象年度,2024年度,2024,正常,2024,2024年4月〜2025年3月期
+コンテキスト総数,278個,278,正常,278,非常に豊富な情報
+ファクト総数,561個,561,正常,561,十分なデータ量
+使用コンテキスト,CurrentYearDuration,CurrentYearDuration,正常,CurrentYearDuration,2024-04-01から2025-03-31
+
+=== 売上高（現在：48兆366億円） ===,,,,, 
+現在の実装,TotalNetRevenuesIFRS,48036704000000,正常,TotalNetRevenuesIFRS,IFRS連結総売上高
+利用可能な要素1,OperatingRevenuesIFRSKeyFinancialData,利用可能,候補,OperatingRevenuesIFRSKeyFinancialData,営業収益（IFRS主要財務データ）
+利用可能な要素2,SalesOfProductsIFRS,利用可能,候補,SalesOfProductsIFRS,製品売上高（IFRS）
+利用可能な要素3,NetSalesSummaryOfBusinessResults,利用可能,単体のみ,NetSalesSummaryOfBusinessResults,売上高（単体・事業概況）
+推奨要素,TotalNetRevenuesIFRS,48036704000000,正常,TotalNetRevenuesIFRS,現在の実装で正しい
+
+=== 営業利益（現在：4兆7956億円） ===,,,,, 
+現在の実装,OperatingProfitLossIFRS,4795586000000,正常,OperatingProfitLossIFRS,IFRS営業損益
+利用可能な要素1,ProfitLossBeforeTaxIFRSSummaryOfBusinessResults,利用可能,税引前利益,ProfitLossBeforeTaxIFRSSummaryOfBusinessResults,税引前利益（事業概況）
+利用可能な要素2,ProfitLossAttributableToOwnersOfParentIFRSSummaryOfBusinessResults,利用可能,親会社純利益,ProfitLossAttributableToOwnersOfParentIFRSSummaryOfBusinessResults,親会社帰属利益（事業概況）
+推奨要素,OperatingProfitLossIFRS,4795586000000,正常,OperatingProfitLossIFRS,現在の実装で正しい
+
+=== 総資産（現在：93兆6014億円） ===,,,,, 
+現在の実装,AssetsIFRS,93601350000000,正常,AssetsIFRS,IFRS総資産
+利用可能な要素1,TotalAssetsIFRSSummaryOfBusinessResults,利用可能,事業概況版,TotalAssetsIFRSSummaryOfBusinessResults,総資産（IFRS事業概況）
+利用可能な要素2,TotalAssetsSummaryOfBusinessResults,利用可能,単体のみ,TotalAssetsSummaryOfBusinessResults,総資産（単体・事業概況）
+推奨要素,AssetsIFRS,93601350000000,正常,AssetsIFRS,現在の実装で正しい
+
+=== 現金及び現金同等物（問題発見） ===,,,,, 
+現在の実装,CashAndCashEquivalentsIFRS,-134089000000,間違い,CashAndCashEquivalentsIFRS,為替変動影響額を取得
+正しい数値,8982404000000（推定）,必要,欠損,CashAndCashEquivalentsIFRS,実際の現金同等物残高
+問題の詳細,為替変動影響額を誤取得,-134089000000,致命的,CashAndCashEquivalentsIFRS,現金CF計算書の項目を誤認識
+修正方針1,CurrentYearInstantコンテキスト使用,必要,修正要,CashAndCashEquivalentsIFRS,期末残高（瞬間値）で取得
+修正方針2,貸借対照表セクション特定,必要,修正要,CashAndCashEquivalentsIFRS,BS項目として識別
+
+=== 有利子負債（問題発見） ===,,,,, 
+現在の実装,計算値（短期+長期+社債）,9416031000000,間違い,複数要素の合計,計算ロジックに問題
+正しい数値1,流動負債,15829516000000,欠損,BorrowingsCurrentIFRS,短期借入金・流動負債
+正しい数値2,非流動負債,22963363000000,欠損,BorrowingsNoncurrentIFRS,長期借入金・非流動負債
+正しい合計,流動+非流動,38792879000000,大幅乖離,有利子負債合計,実際値との大幅差異
+問題の詳細,XBRL要素名の誤認識,不明な9416031,致命的,要調査,どの項目を取得したか不明
+
+=== 株主資本（問題発見） ===,,,,, 
+現在の実装,EquityAttributableToOwnersOfParentIFRS,0.136,異常,EquityAttributableToOwnersOfParentIFRS,比率値を誤取得
+正しい形式,金額ベース（百万円）,必要,欠損,EquityAttributableToOwnersOfParentIFRS,絶対金額での取得必要
+問題の詳細,比率データを誤認識,0.136,致命的,EquityAttributableToOwnersOfParentIFRS,割合値と絶対値の混同
+修正方針,CurrentYearInstantコンテキスト使用,必要,修正要,EquityAttributableToOwnersOfParentIFRS,期末残高（瞬間値）で取得
+
+=== 実効税率（計算項目） ===,,,,, 
+現在の実装,デフォルト30%,0.3,要確認,計算値,法人税等÷税引前利益
+利用可能要素,IncomeTaxExpenseIFRS,利用可能,候補,IncomeTaxExpenseIFRS,法人税等費用
+税引前利益,ProfitLossBeforeTaxIFRS,利用可能,候補,ProfitLossBeforeTaxIFRS,税引前利益
+計算式,法人税等÷税引前利益,必要,修正要,計算値,実際の税率計算
+
+=== コンテキストID分析 ===,,,,, 
+Duration系,CurrentYearDuration,2024-04-01〜2025-03-31,正常,CurrentYearDuration,期間データ用
+Instant系,CurrentYearInstant,2025-03-31時点,正常,CurrentYearInstant,時点データ用
+Prior系,Prior1YearDuration/Instant,前期比較用,正常,Prior1YearDuration/Instant,前期データ
+単体データ,NonConsolidatedMember,単体財務諸表,正常,NonConsolidatedMember,連結vs単体の区別
+
+=== 修正優先度 ===,,,,, 
+優先度1,現金及び現金同等物,致命的,間違い,CashAndCashEquivalentsIFRS,ROIC計算に直接影響
+優先度2,有利子負債,致命的,間違い,複数要素合計,ROIC計算に直接影響
+優先度3,株主資本,重要,間違い,EquityAttributableToOwnersOfParentIFRS,ROE計算に影響
+優先度4,実効税率,中程度,要改善,計算値,NOPAT計算の精度向上
+
+=== デバッグ情報要約 ===,,,,, 
+XBRL構造,577個の要素,正常,正常,XBRL全体,十分な情報量
+Context情報,278個のコンテキスト,正常,正常,Context全体,豊富な時系列・区分
+Fact情報,561個のファクト,正常,正常,Facts全体,充実したデータ
+抽出テスト,一部要素で抽出失敗,問題発見,修正要,extractionTest,contextRef配列問題等

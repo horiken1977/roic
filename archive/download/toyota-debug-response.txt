@@ -1,0 +1,1 @@
+/api/edinet/real-financial/?edinetCode=E02144&fiscalYear=2024&debug=true
