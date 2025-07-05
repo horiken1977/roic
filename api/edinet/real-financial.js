@@ -127,47 +127,73 @@ module.exports = async function handler(req, res) {
  * EDINET APIから書類を検索
  */
 async function searchDocuments(edinetCode, fiscalYear, apiKey) {
-  // 対象期間の設定（決算期末は3月と仮定）
-  const targetPeriodStart = `${fiscalYear}-04-01`;
-  const targetPeriodEnd = `${fiscalYear + 1}-03-31`;
-  
-  // 検索日付の範囲（決算発表は通常5-6月）
-  const searchDates = [];
-  
-  // 2024年度の書類は2025年に提出される
-  const submissionYear = fiscalYear + 1;
-  const targetDates = [
-    `${submissionYear}-06-28`, `${submissionYear}-06-27`, `${submissionYear}-06-26`, `${submissionYear}-06-25`, `${submissionYear}-06-24`,
-    `${submissionYear}-06-21`, `${submissionYear}-06-20`, `${submissionYear}-06-19`, `${submissionYear}-06-18`, `${submissionYear}-06-17`,
-    `${submissionYear}-06-16`, `${submissionYear}-06-13`, `${submissionYear}-06-12`, `${submissionYear}-06-11`, `${submissionYear}-06-10`,
-    `${submissionYear}-05-31`, `${submissionYear}-05-30`, `${submissionYear}-05-29`, `${submissionYear}-05-28`, `${submissionYear}-05-27`
-  ];
-  
-  searchDates.push(...targetDates);
+  console.log(`🔍 書類検索開始: ${edinetCode} ${fiscalYear}年度`);
   
   const allDocuments = [];
+  const submissionYear = fiscalYear + 1;
+  
+  // 段階1: 拡張検索範囲（4月〜8月）
+  const searchMonths = [4, 5, 6, 7, 8];
+  const searchDates = [];
+  
+  for (const month of searchMonths) {
+    // 各月の代表的な日付を検索（1日、10日、20日、月末）
+    const daysToCheck = [1, 10, 20, 25, 28, 30];
+    for (const day of daysToCheck) {
+      const date = new Date(submissionYear, month - 1, day);
+      if (date.getMonth() === month - 1) { // 有効な日付のみ
+        searchDates.push(date.toISOString().split('T')[0]);
+      }
+    }
+  }
+  
+  console.log(`📅 検索日数: ${searchDates.length}日`);
   
   for (const date of searchDates) {
     try {
       const documents = await fetchDocumentList(date, apiKey);
       
-      // 対象企業の有価証券報告書のみフィルタ
+      // 対象企業の有価証券報告書を検索（決算期は問わない）
       const targetDocs = documents.filter(doc => 
         doc.edinetCode === edinetCode &&
         doc.docTypeCode === '120' && // 有価証券報告書
-        doc.periodEnd && doc.periodEnd.includes(`${fiscalYear + 1}-03-31`)
+        doc.periodEnd && isTargetFiscalYear(doc.periodEnd, fiscalYear)
       );
       
-      allDocuments.push(...targetDocs);
+      if (targetDocs.length > 0) {
+        console.log(`✅ ${date}: ${targetDocs.length}件発見`);
+        allDocuments.push(...targetDocs);
+      }
     } catch (error) {
-      console.warn(`${date}の書類取得エラー: ${error.message}`);
+      // エラーは無視して継続
     }
+  }
+  
+  if (allDocuments.length === 0) {
+    console.warn(`⚠️ ${edinetCode}の${fiscalYear}年度書類が見つかりません`);
   }
   
   // 提出日で降順ソート（最新のものを優先）
   return allDocuments.sort((a, b) => 
     new Date(b.submitDateTime) - new Date(a.submitDateTime)
   );
+}
+
+/**
+ * 対象年度の判定（決算期に依存しない）
+ */
+function isTargetFiscalYear(periodEnd, fiscalYear) {
+  const endDate = new Date(periodEnd);
+  const endYear = endDate.getFullYear();
+  const endMonth = endDate.getMonth() + 1;
+  
+  // 1-3月決算: fiscalYear + 1年
+  // 4-12月決算: fiscalYear年
+  if (endMonth >= 1 && endMonth <= 3) {
+    return endYear === fiscalYear + 1;
+  } else {
+    return endYear === fiscalYear;
+  }
 }
 
 /**
