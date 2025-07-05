@@ -132,20 +132,29 @@ async function searchDocuments(edinetCode, fiscalYear, apiKey) {
   const allDocuments = [];
   const submissionYear = fiscalYear + 1;
   
-  // 段階1: 拡張検索範囲（4月〜8月）
+  // 段階1: 拡張検索範囲（既知の成功日付 + 拡張）
+  const knownSuccessDates = [
+    `${submissionYear}-06-18`, `${submissionYear}-06-19`, `${submissionYear}-06-20`,
+    `${submissionYear}-06-25`, `${submissionYear}-06-26`, `${submissionYear}-06-27`
+  ];
+  
+  // 拡張検索範囲（4月〜8月）
   const searchMonths = [4, 5, 6, 7, 8];
-  const searchDates = [];
+  const expandedDates = [];
   
   for (const month of searchMonths) {
-    // 各月の代表的な日付を検索（1日、10日、20日、月末）
-    const daysToCheck = [1, 10, 20, 25, 28, 30];
+    // 各月の代表的な日付を検索
+    const daysToCheck = [1, 10, 15, 20, 25, 28];
     for (const day of daysToCheck) {
       const date = new Date(submissionYear, month - 1, day);
-      if (date.getMonth() === month - 1) { // 有効な日付のみ
-        searchDates.push(date.toISOString().split('T')[0]);
+      if (date.getMonth() === month - 1) {
+        expandedDates.push(date.toISOString().split('T')[0]);
       }
     }
   }
+  
+  // 既知の成功日付を優先し、その後拡張検索
+  const searchDates = [...knownSuccessDates, ...expandedDates];
   
   console.log(`📅 検索日数: ${searchDates.length}日`);
   
@@ -153,11 +162,15 @@ async function searchDocuments(edinetCode, fiscalYear, apiKey) {
     try {
       const documents = await fetchDocumentList(date, apiKey);
       
-      // 対象企業の有価証券報告書を検索（決算期は問わない）
+      // 対象企業の有価証券報告書を検索
       const targetDocs = documents.filter(doc => 
         doc.edinetCode === edinetCode &&
         doc.docTypeCode === '120' && // 有価証券報告書
-        doc.periodEnd && isTargetFiscalYear(doc.periodEnd, fiscalYear)
+        doc.periodEnd && (
+          // フォールバック: 既知の成功パターンも含める
+          isTargetFiscalYear(doc.periodEnd, fiscalYear) ||
+          doc.periodEnd.includes(`${fiscalYear + 1}-03-31`) // トヨタなど3月決算用
+        )
       );
       
       if (targetDocs.length > 0) {
