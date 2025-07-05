@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10企業ROIC分析結果 - ダウンロード</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #e1e4e8;
+            padding-bottom: 10px;
+        }
+        .download-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+        }
+        .download-btn {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 10px 10px 0;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .summary-table th,
+        .summary-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .summary-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        .success {
+            color: #28a745;
+            font-weight: 600;
+        }
+        .failed {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        .roic-high {
+            background: #d4edda;
+            color: #155724;
+        }
+        .roic-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .roic-low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .note {
+            background: #e7f3ff;
+            border: 1px solid #b3d4fc;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .metadata {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e4e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 10企業ROIC分析結果</h1>
+        
+        <div class="note">
+            <strong>📋 分析概要</strong><br>
+            EDINET API を使用した実際の有価証券報告書データに基づく10企業のROIC（投下資本利益率）分析結果です。<br>
+            データは2024年度（2024年4月〜2025年3月期）の最新データを使用しています。
+        </div>
+
+        <div class="download-section">
+            <h2>💾 Excel ファイルダウンロード</h2>
+            <p>以下のファイルをダウンロードして、有価証券報告書との突き合わせ確認にご利用ください。</p>
+            
+            <a href="/downloads/10企業ROIC分析結果_基本.csv" class="download-btn" download>
+                📄 基本レポート (.csv)
+            </a>
+            
+            <a href="/downloads/10企業ROIC分析結果_詳細.csv" class="download-btn" download>
+                📊 詳細レポート (.csv)
+            </a>
+            
+            <a href="/downloads/test-results-2025-07-05.json" class="download-btn" download>
+                🔧 生データ (.json)
+            </a>
+        </div>
+
+        <h2>📈 分析結果サマリー</h2>
+        
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>企業名</th>
+                    <th>EDINETコード</th>
+                    <th>業種</th>
+                    <th>ステータス</th>
+                    <th>ROIC</th>
+                    <th>売上高（兆円）</th>
+                    <th>営業利益（億円）</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>オリエンタルランド</td>
+                    <td>E04707</td>
+                    <td>エンターテイメント</td>
+                    <td class="success">成功</td>
+                    <td class="roic-high">8.08%</td>
+                    <td>0.68</td>
+                    <td>1,721</td>
+                </tr>
+                <tr>
+                    <td>任天堂</td>
+                    <td>E02367</td>
+                    <td>ゲーム</td>
+                    <td class="success">成功</td>
+                    <td class="roic-high">6.21%</td>
+                    <td>1.16</td>
+                    <td>2,826</td>
+                </tr>
+                <tr>
+                    <td>ソフトバンクグループ</td>
+                    <td>E04426</td>
+                    <td>通信・IT</td>
+                    <td class="success">成功</td>
+                    <td class="roic-medium">4.30%</td>
+                    <td>6.54</td>
+                    <td>9,890</td>
+                </tr>
+                <tr>
+                    <td>トヨタ自動車</td>
+                    <td>E02144</td>
+                    <td>自動車</td>
+                    <td class="success">成功</td>
+                    <td class="roic-medium">3.58%</td>
+                    <td>48.04</td>
+                    <td>47,956</td>
+                </tr>
+                <tr>
+                    <td>本田技研工業</td>
+                    <td>E02166</td>
+                    <td>自動車</td>
+                    <td class="success">成功</td>
+                    <td class="roic-medium">2.76%</td>
+                    <td>21.69</td>
+                    <td>12,135</td>
+                </tr>
+                <tr>
+                    <td>ソニーグループ</td>
+                    <td>E01777</td>
+                    <td>エレクトロニクス</td>
+                    <td class="success">成功 ⚠️</td>
+                    <td class="roic-low">0.00%</td>
+                    <td>0.00</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>キーエンス</td>
+                    <td>E01985</td>
+                    <td>精密機器</td>
+                    <td class="failed">失敗</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>東京エレクトロン</td>
+                    <td>E02652</td>
+                    <td>半導体製造装置</td>
+                    <td class="failed">失敗</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>ファーストリテイリング</td>
+                    <td>E03217</td>
+                    <td>小売・アパレル</td>
+                    <td class="failed">失敗</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>日本電産</td>
+                    <td>E01975</td>
+                    <td>電子部品・モーター</td>
+                    <td class="failed">失敗</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>🎯 主な発見事項</h2>
+        <ul>
+            <li><strong>✅ 成功率60%</strong>: 10社中6社で実際のEDINET APIデータ取得に成功</li>
+            <li><strong>🏆 高収益企業</strong>: オリエンタルランド（8.08%）、任天堂（6.21%）が高いROICを記録</li>
+            <li><strong>⚠️ データ品質課題</strong>: ソニーグループでXBRL解析エラー（売上高0円）</li>
+            <li><strong>📊 業界差</strong>: エンターテイメント・ゲーム業界が高収益、製造業は中程度</li>
+            <li><strong>🔍 技術的課題</strong>: 4社で書類検索失敗（決算期・提出日の多様性）</li>
+        </ul>
+
+        <h2>🔧 技術的詳細</h2>
+        <ul>
+            <li><strong>データソース</strong>: EDINET API v2（金融庁電子開示システム）</li>
+            <li><strong>対象期間</strong>: 2024年度（2024年4月〜2025年3月期）</li>
+            <li><strong>ROIC計算式</strong>: NOPAT ÷ 投下資本</li>
+            <li><strong>NOPAT</strong>: 営業利益 × (1 - 実効税率)</li>
+            <li><strong>投下資本</strong>: 総資産 - 現金及び現金同等物</li>
+        </ul>
+
+        <div class="note">
+            <strong>📌 ご注意</strong><br>
+            • ソニーグループは技術的問題でデータが正しく取得できていません<br>
+            • 株主資本の数値に一部異常値が含まれています（XBRLパース課題）<br>
+            • 失敗企業は決算期や提出日の違いによる検索範囲の問題が考えられます
+        </div>
+
+        <div class="metadata">
+            <strong>📅 生成日時</strong>: 2025年7月5日<br>
+            <strong>🔗 プロジェクト</strong>: ROIC分析アプリケーション<br>
+            <strong>🤖 自動生成</strong>: Claude Code による自動生成レポート
+        </div>
+    </div>
+</body>
+</html>
