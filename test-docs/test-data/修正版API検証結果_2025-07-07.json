@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-07-07T06:13:39.630Z",
+  "verificationItems": {
+    "errorHandling": [
+      {
+        "name": "エラー投げすぎ修正 (null返却)",
+        "applied": true
+      },
+      {
+        "name": "マイナス値の絶対値変換",
+        "applied": true
+      }
+    ],
+    "searchKeywords": {
+      "cash": 8,
+      "equity": 10,
+      "debt": 12
+    },
+    "phaseSearch": [
+      {
+        "name": "Phase 1: 厳密一致検索",
+        "implemented": true
+      },
+      {
+        "name": "Phase 2: 部分一致検索",
+        "implemented": true
+      },
+      {
+        "name": "Phase 3: 柔軟検索",
+        "implemented": true
+      }
+    ],
+    "problems": [
+      {
+        "issue": "現金及び現金同等物のマイナス値",
+        "expectedValue": "8,982,404",
+        "fixed": true
+      },
+      {
+        "issue": "株主資本のゼロ値",
+        "expectedValue": "36,878,913",
+        "fixed": true
+      },
+      {
+        "issue": "有利子負債の計算エラー",
+        "expectedValue": "38,792,879",
+        "fixed": true
+      }
+    ]
+  },
+  "summary": {
+    "totalProblems": 3,
+    "fixedProblems": 3,
+    "fixRate": "100%"
+  }
+}

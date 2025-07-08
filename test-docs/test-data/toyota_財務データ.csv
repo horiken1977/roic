@@ -1,0 +1,4 @@
+財務項目,API取得値（円）,表示形式,XBRL要素名,状態,有報記載値,差異,備考
+売上高,45095325000000,45.1兆円,TotalNetRevenuesIFRS,✅ 抽出成功,,,連結売上高
+営業利益,5352934000000,5.4兆円,OperatingProfitLossIFRS,✅ 抽出成功,,,連結営業利益
+総資産,62267140000000,62.3兆円,TotalAssetsIFRSSummaryOfBusinessResults,✅ 抽出成功,,,連結総資産

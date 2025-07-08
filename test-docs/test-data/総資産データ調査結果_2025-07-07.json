@@ -1,0 +1,87 @@
+{
+  "調査日時": "2025-07-07T00:19:44.242Z",
+  "現在のデータ": {
+    "API取得値": 62267140000000,
+    "表示値": "62.3兆円",
+    "XBRL要素": "TotalAssetsIFRSSummaryOfBusinessResults",
+    "兆円換算": "62.27"
+  },
+  "正しいデータ": {
+    "有報記載値": "90,114,296百万円",
+    "円換算": 90114296000000,
+    "兆円換算": "90.11"
+  },
+  "差異分析": {
+    "差異額": -27847156000000,
+    "差異率": "-30.90%",
+    "問題": "API値が約30.89%過小評価"
+  },
+  "資産関連要素": [
+    {
+      "要素名": "TotalAssetsIFRSSummaryOfBusinessResults",
+      "値": "62267140000000",
+      "兆円": "62.27",
+      "正しい値との差異": "30.90%"
+    },
+    {
+      "要素名": "RatioOfOwnersEquityToGrossAssetsIFRSSummaryOfBusinessResults",
+      "値": "0.376",
+      "兆円": "0.00",
+      "正しい値との差異": "100.00%"
+    },
+    {
+      "要素名": "TotalNumberOfIssuedSharesSummaryOfBusinessResults",
+      "値": "3262997000",
+      "兆円": "0.00",
+      "正しい値との差異": "100.00%"
+    },
+    {
+      "要素名": "TotalNumberOfIssuedSharesModelAAClassSharesSummaryOfBusinessResults",
+      "値": "47100000",
+      "兆円": "0.00",
+      "正しい値との差異": "100.00%"
+    },
+    {
+      "要素名": "NetAssetsSummaryOfBusinessResults",
+      "値": "13894021000000",
+      "兆円": "13.89",
+      "正しい値との差異": "84.58%"
+    },
+    {
+      "要素名": "TotalAssetsSummaryOfBusinessResults",
+      "値": "21198281000000",
+      "兆円": "21.20",
+      "正しい値との差異": "76.48%"
+    },
+    {
+      "要素名": "NetAssetsPerShareSummaryOfBusinessResults",
+      "値": "959.55",
+      "兆円": "0.00",
+      "正しい値との差異": "100.00%"
+    },
+    {
+      "要素名": "TotalShareholderReturn",
+      "値": "1.362",
+      "兆円": "0.00",
+      "正しい値との差異": "100.00%"
+    },
+    {
+      "要素名": "TotalReturnOnSharePriceIndex",
+      "値": "1.421",
+      "兆円": "0.00",
+      "正しい値との差異": "100.00%"
+    },
+    {
+      "要素名": "NumberOfIssuedSharesAsOfFiscalYearEndIssuedSharesTotalNumberOfSharesEtc",
+      "値": "15794987460",
+      "兆円": "0.02",
+      "正しい値との差異": "99.98%"
+    }
+  ],
+  "修正が必要な箇所": [
+    "API取得ロジック（コンテキスト期間の修正）",
+    "XBRL要素選択の見直し",
+    "期待値データの2024年3月期への統一",
+    "テストデータの再取得・検証"
+  ]
+}

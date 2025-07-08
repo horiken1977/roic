@@ -1,0 +1,180 @@
+{
+  "timestamp": "2025-07-08T07:16:30.111Z",
+  "investigationType": "actual_debt_elements_analysis",
+  "xbrlStructure": {
+    "rootElements": [
+      "xbrl"
+    ],
+    "xbrlChildCount": 577,
+    "firstFewElements": [
+      "xmlns:iso4217",
+      "xmlns:jpcrp030000-asr_E02144-000",
+      "xmlns:jpcrp_cor",
+      "xmlns:jpdei_cor",
+      "xmlns:jpigp_cor",
+      "xmlns:jppfs_cor",
+      "xmlns:link",
+      "xmlns:xbrldi",
+      "xmlns:xbrli",
+      "xmlns:xlink",
+      "xmlns:xsi",
+      "schemaRef",
+      "roleRef",
+      "context",
+      "unit",
+      "NumberOfSubmissionDEI",
+      "OperatingRevenuesIFRSKeyFinancialData",
+      "ProfitLossBeforeTaxIFRSSummaryOfBusinessResults",
+      "ProfitLossAttributableToOwnersOfParentIFRSSummaryOfBusinessResults",
+      "ComprehensiveIncomeAttributableToOwnersOfParentIFRSSummaryOfBusinessResults"
+    ]
+  },
+  "totalDebtElements": 25,
+  "significantDebtElements": [
+    {
+      "element": "ProceedsFromLongTermDebtFinCFIFRS",
+      "amount": 9276918000000,
+      "context": "CurrentYearDuration",
+      "amountTrillionYen": "9.3"
+    },
+    {
+      "element": "ProceedsFromLongTermDebtFinCFIFRS",
+      "amount": 8122678000000,
+      "context": "Prior1YearDuration",
+      "amountTrillionYen": "8.1"
+    },
+    {
+      "element": "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+      "amount": 6781229000000,
+      "context": "Prior1YearInstant",
+      "amountTrillionYen": "6.8"
+    },
+    {
+      "element": "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+      "amount": 6781229000000,
+      "context": "Prior1YearInstant",
+      "amountTrillionYen": "6.8"
+    },
+    {
+      "element": "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+      "amount": 6774427000000,
+      "context": "CurrentYearInstant",
+      "amountTrillionYen": "6.8"
+    },
+    {
+      "element": "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+      "amount": 6774427000000,
+      "context": "CurrentYearInstant",
+      "amountTrillionYen": "6.8"
+    },
+    {
+      "element": "TradeAndOtherPayablesCLIFRS",
+      "amount": 4986309000000,
+      "context": "CurrentYearInstant",
+      "amountTrillionYen": "5.0"
+    },
+    {
+      "element": "TradeAndOtherPayablesCLIFRS",
+      "amount": 4292092000000,
+      "context": "Prior1YearInstant",
+      "amountTrillionYen": "4.3"
+    },
+    {
+      "element": "ProceedsUponMaturityOfPublicAndCorporateBondsInvCFIFRS",
+      "amount": 1920116000000,
+      "context": "Prior1YearDuration",
+      "amountTrillionYen": "1.9"
+    },
+    {
+      "element": "ShortTermLoansReceivable",
+      "amount": 1905695000000,
+      "context": "CurrentYearInstant_NonConsolidatedMember",
+      "amountTrillionYen": "1.9"
+    },
+    {
+      "element": "ProceedsFromSaleOfEquipmentLeasedToOthersInvCFIFRS",
+      "amount": 1659161000000,
+      "context": "CurrentYearDuration",
+      "amountTrillionYen": "1.7"
+    },
+    {
+      "element": "ProceedsFromSaleOfEquipmentLeasedToOthersInvCFIFRS",
+      "amount": 1542132000000,
+      "context": "Prior1YearDuration",
+      "amountTrillionYen": "1.5"
+    },
+    {
+      "element": "AccountsPayableTrade",
+      "amount": 1264905000000,
+      "context": "CurrentYearInstant_NonConsolidatedMember",
+      "amountTrillionYen": "1.3"
+    },
+    {
+      "element": "ShortTermLoansReceivable",
+      "amount": 1220787000000,
+      "context": "Prior1YearInstant_NonConsolidatedMember",
+      "amountTrillionYen": "1.2"
+    },
+    {
+      "element": "RetirementBenefitLiabilityNCLIFRS",
+      "amount": 1065508000000,
+      "context": "CurrentYearInstant",
+      "amountTrillionYen": "1.1"
+    },
+    {
+      "element": "RetirementBenefitLiabilityNCLIFRS",
+      "amount": 1022749000000,
+      "context": "Prior1YearInstant",
+      "amountTrillionYen": "1.0"
+    },
+    {
+      "element": "BondsPayable",
+      "amount": 1011950000000,
+      "context": "Prior1YearInstant_NonConsolidatedMember",
+      "amountTrillionYen": "1.0"
+    }
+  ],
+  "proposedApiElements": [
+    "ProceedsFromLongTermDebtFinCFIFRS",
+    "ProceedsFromLongTermDebtFinCFIFRS",
+    "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+    "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+    "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+    "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+    "TradeAndOtherPayablesCLIFRS",
+    "TradeAndOtherPayablesCLIFRS",
+    "ProceedsUponMaturityOfPublicAndCorporateBondsInvCFIFRS",
+    "ShortTermLoansReceivable"
+  ],
+  "totalFoundAmount": 66402312000000,
+  "expectedAmount": 38792879000000,
+  "accuracy": 71.17139462631789,
+  "allDebtElements": [
+    "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+    "TradeAndOtherPayablesCLIFRS",
+    "IncomeTaxesPayableCLIFRS",
+    "RetirementBenefitLiabilityNCLIFRS",
+    "OtherFinanceIncomeIFRS",
+    "OtherFinanceCostsIFRS",
+    "IncreaseDecreaseInTradeAndOtherPayablesOpeCFIFRS",
+    "IncreaseDecreaseInRetirementBenefitLiabilityOpeCFIFRS",
+    "ProceedsFromSalesOfFixedAssetsExcludingEquipmentLeasedToOthersInvCFIFRS",
+    "ProceedsFromSaleOfEquipmentLeasedToOthersInvCFIFRS",
+    "ProceedsFromSalesOfPublicAndCorporateBondsAndStocksInvCFIFRS",
+    "ProceedsUponMaturityOfPublicAndCorporateBondsInvCFIFRS",
+    "IncreaseDecreaseInShortTermDebtFinCFIFRS",
+    "ProceedsFromLongTermDebtFinCFIFRS",
+    "ShortTermLoansReceivable",
+    "LongTermLoansReceivable",
+    "NotesPayableTrade",
+    "ElectronicallyRecordedObligationsOperatingCL",
+    "AccountsPayableTrade",
+    "CurrentPortionOfLongTermLoansPayable",
+    "CurrentPortionOfBonds",
+    "AccountsPayableOther",
+    "IncomeTaxesPayable",
+    "BondsPayable",
+    "LongTermLoansPayable"
+  ],
+  "recommendation": "発見された実際の要素名でAPI修正を実施"
+}

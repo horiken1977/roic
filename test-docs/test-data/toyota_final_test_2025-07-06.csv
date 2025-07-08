@@ -1,0 +1,12 @@
+カテゴリ,項目,値,XBRL要素,状態
+基本情報,企業名,トヨタ自動車株式会社,,
+基本情報,EDINETコード,E02144,,
+基本情報,決算年度,2024,,
+,,,,
+財務データ,売上高,45.1兆円,TotalNetRevenuesIFRS,✅ 抽出成功
+財務データ,営業利益,5.4兆円,OperatingProfitLossIFRS,✅ 抽出成功
+財務データ,総資産,62.3兆円,TotalAssetsIFRSSummaryOfBusinessResults,✅ 抽出成功
+,,,,
+ROIC計算,営業利益率,11.87%,,
+ROIC計算,総資産回転率,0.724,,
+ROIC計算,ROIC,8.60%,,✅ 計算成功

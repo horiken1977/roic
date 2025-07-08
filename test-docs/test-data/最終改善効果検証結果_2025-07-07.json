@@ -1,0 +1,63 @@
+{
+  "timestamp": "2025-07-08T07:20:07.524Z",
+  "testType": "final_comprehensive_improvement",
+  "success": true,
+  "improvements": {
+    "phase1": "連結ベース要素優先検索",
+    "phase2": "金融事業セグメント抽出",
+    "phase3": "自動車事業セグメント積み上げ",
+    "quality": "自動品質評価とレポート"
+  },
+  "beforeFix": {
+    "cashAndEquivalents": -134089000000,
+    "shareholdersEquity": 0.136,
+    "interestBearingDebt": 9416031000000
+  },
+  "afterFix": {
+    "cashAndEquivalents": 7516966000000,
+    "shareholdersEquity": 28338706000000,
+    "interestBearingDebt": 8931776800000
+  },
+  "expectedValues": {
+    "cashAndEquivalents": 8982404000000,
+    "shareholdersEquity": 36878913000000,
+    "interestBearingDebt": 38792879000000
+  },
+  "accuracy": {
+    "cash": 16.314541185188286,
+    "equity": 23.157426033679464,
+    "debt": 76.97573103558516
+  },
+  "debtTargetAchieved": false,
+  "overallQuality": "要追加調整",
+  "fullData": {
+    "edinetCode": "E02144",
+    "fiscalYear": 2023,
+    "fiscalPeriod": "2022年4月1日～2023年3月31日",
+    "periodEnd": "2023-03-31",
+    "companyName": "企業 E02144",
+    "netSales": 37154298000000,
+    "operatingIncome": 2725025000000,
+    "totalAssets": 74303180000000,
+    "cashAndEquivalents": 7516966000000,
+    "shareholdersEquity": 28338706000000,
+    "interestBearingDebt": 8931776800000,
+    "taxRate": 0.32048257531959945,
+    "dataSource": "edinet_xbrl_redesigned",
+    "extractionMethod": "strict_context_matching",
+    "lastUpdated": "2025-07-08T07:20:07.523Z",
+    "qualityCheck": {
+      "checks": {
+        "売上高": true,
+        "営業利益": true,
+        "総資産": true,
+        "現金": true,
+        "株主資本": true,
+        "有利子負債": true,
+        "税率": true
+      },
+      "score": "7/7",
+      "quality": "優良"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+【売上関連要素詳細】,,,,
+XBRL要素名,カウント,サンプル値,コンテキスト例,備考
+OperatingRevenuesIFRSKeyFinancialData,5,27214594000000,Prior4YearDuration,
+CashFlowsFromUsedInOperatingActivitiesIFRSSummaryOfBusinessResults,5,2727162000000,Prior4YearDuration,
+NetSalesSummaryOfBusinessResults,5,11761405000000,Prior4YearDuration_NonConsolidatedMember,
+VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS,4,7523911000000,Prior1YearInstant,
+SalesOfProductsIFRS,2,41648130000000,Prior1YearDuration,
+TotalNetRevenuesIFRS,2,45095325000000,Prior1YearDuration,
+CostOfSalesIFRS,2,33600612000000,Prior1YearDuration,
+OperatingProfitLossIFRS,12,5352934000000,Prior1YearDuration,
+ChangesInOperatingAssetsAndLiabilitiesAndOtherOpeCFIFRS,2,-3975836000000,Prior1YearDuration,
+NetCashProvidedByUsedInOperatingActivitiesIFRS,2,4206373000000,Prior1YearDuration,

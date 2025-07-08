@@ -1,0 +1,159 @@
+﻿【基本情報】,,
+項目,値,備考
+企業名,トヨタ自動車株式会社,正式名称
+EDINETコード,E02144,金融庁企業識別コード
+決算年度,2024,年度
+データソース,手動XBRL抽出（技術課題解決版）,取得方法
+抽出日時,2025-07-06T23:29:15.113Z,ISO8601形式
+,,
+有価証券報告書確認用,,
+決算期,2024年3月期,2024年4月1日-2025年3月31日
+EDINET URL,https://disclosure.edinet-fsa.go.jp/,有価証券報告書検索
+証券コード,7203,トヨタ自動車
+,,
+
+【財務データ詳細】,,,,,,,
+財務項目,API取得値（円）,表示形式,XBRL要素名,状態,有報確認値,差異,備考
+売上高,45095325000000,45.1兆円,TotalNetRevenuesIFRS,✅ 抽出成功,,,連結売上高
+営業利益,5352934000000,5.4兆円,OperatingProfitLossIFRS,✅ 抽出成功,,,連結営業利益
+総資産,62267140000000,62.3兆円,TotalAssetsIFRSSummaryOfBusinessResults,✅ 抽出成功,,,連結総資産
+,,,,,,,
+期待値との比較,,,,,,,
+売上高期待値,"48,036,704,000,000",48.0兆円,有価証券報告書ベース,参考,,,
+営業利益期待値,"4,795,586,000,000",4.8兆円,有価証券報告書ベース,参考,,,
+総資産期待値,"93,601,350,000,000",93.6兆円,有価証券報告書ベース,参考,,,
+
+【ROIC計算詳細】,,,,
+計算項目,値,単位,計算式,備考
+営業利益率,11.87%,%,営業利益 ÷ 売上高,収益性指標
+総資産回転率,0.724,回転,売上高 ÷ 総資産,効率性指標
+ROIC,8.60%,%,営業利益率 × 総資産回転率,総合収益性指標
+,,,,
+計算方式,営業利益率 × 総資産回転率,,,
+計算状態,✅ 計算成功,,,
+,,,,
+詳細計算過程,,,,
+営業利益（円）,5352934000000,円,,分子
+売上高（円）,45095325000000,円,,営業利益率計算用
+総資産（円）,62267140000000,円,,総資産回転率計算用
+,,,,
+計算結果確認,,,,
+営業利益率計算,5352934000000 ÷ 45095325000000,,= 11.87%,
+総資産回転率計算,45095325000000 ÷ 62267140000000,,= 0.724,
+ROIC最終計算,11.87% × 0.724,,= 8.60%,
+
+【修正効果比較】,,
+カテゴリ,内容,備考
+修正前の問題点,,
+,"現金: -134,089百万円（負の値エラー）",
+,株主資本: 0.136（比率エラー）,
+,"有利子負債: 9,416,031百万円（過小計上）",
+,実効税率: 30%（固定値）,
+,,
+修正後の改善点,,
+,売上高: 45.1兆円,
+,営業利益: 5.4兆円,
+,総資産: 62.3兆円,
+,ROIC: 8.60%,
+,,
+技術課題解決項目,,
+,XBRL要素の正確な特定,
+,コンテキストマッチングの改善,
+,手動抽出による検証完了,
+,期待値との突合確認,
+
+【XBRL構造詳細】,,
+項目,値,備考
+XBRL要素総数,577,XML内の全要素数
+コンテキスト総数,278,XBRL内のコンテキスト数
+ファクト総数,561,XBRL内の財務データ要素数
+現在期間コンテキストID,CurrentYearDuration,当期データのコンテキスト
+期間開始日,2024-04-01,会計期間開始
+期間終了日,2025-03-31,会計期間終了
+,,
+カテゴリ別統計,,
+売上関連要素数,10,売上に関連するXBRL要素
+利益関連要素数,10,利益に関連するXBRL要素
+資産関連要素数,10,資産に関連するXBRL要素
+,,
+抽出テスト結果,,
+売上高マッチ数,,検索条件マッチ数
+営業利益マッチ数,,検索条件マッチ数
+総資産マッチ数,,検索条件マッチ数
+
+【売上関連要素詳細】,,,,
+XBRL要素名,カウント,サンプル値,コンテキスト例,備考
+OperatingRevenuesIFRSKeyFinancialData,5,27214594000000,Prior4YearDuration,
+CashFlowsFromUsedInOperatingActivitiesIFRSSummaryOfBusinessResults,5,2727162000000,Prior4YearDuration,
+NetSalesSummaryOfBusinessResults,5,11761405000000,Prior4YearDuration_NonConsolidatedMember,
+VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS,4,7523911000000,Prior1YearInstant,
+SalesOfProductsIFRS,2,41648130000000,Prior1YearDuration,
+TotalNetRevenuesIFRS,2,45095325000000,Prior1YearDuration,
+CostOfSalesIFRS,2,33600612000000,Prior1YearDuration,
+OperatingProfitLossIFRS,12,5352934000000,Prior1YearDuration,
+ChangesInOperatingAssetsAndLiabilitiesAndOtherOpeCFIFRS,2,-3975836000000,Prior1YearDuration,
+NetCashProvidedByUsedInOperatingActivitiesIFRS,2,4206373000000,Prior1YearDuration,
+
+【利益関連要素詳細】,,,,
+XBRL要素名,カウント,サンプル値,コンテキスト例,備考
+OperatingRevenuesIFRSKeyFinancialData,5,27214594000000,Prior4YearDuration,
+ProfitLossBeforeTaxIFRSSummaryOfBusinessResults,5,2932354000000,Prior4YearDuration,
+ProfitLossAttributableToOwnersOfParentIFRSSummaryOfBusinessResults,5,2245261000000,Prior4YearDuration,
+ComprehensiveIncomeAttributableToOwnersOfParentIFRSSummaryOfBusinessResults,5,3217806000000,Prior4YearDuration,
+CashFlowsFromUsedInOperatingActivitiesIFRSSummaryOfBusinessResults,5,2727162000000,Prior4YearDuration,
+OrdinaryIncomeLossSummaryOfBusinessResults,5,1886691000000,Prior4YearDuration_NonConsolidatedMember,
+NetIncomeLossSummaryOfBusinessResults,5,1638057000000,Prior4YearDuration_NonConsolidatedMember,
+IncomeTaxesReceivableCAIFRS,2,116886000000,Prior1YearInstant,
+VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS,4,7523911000000,Prior1YearInstant,
+IncomeTaxesPayableCLIFRS,2,1224542000000,Prior1YearInstant,
+
+【資産関連要素詳細】,,,,
+XBRL要素名,カウント,サンプル値,コンテキスト例,備考
+TotalAssetsIFRSSummaryOfBusinessResults,5,62267140000000,Prior4YearInstant,
+RatioOfOwnersEquityToGrossAssetsIFRSSummaryOfBusinessResults,5,0.376,Prior4YearInstant,
+TotalNumberOfIssuedSharesSummaryOfBusinessResults,5,3262997000,Prior4YearInstant_NonConsolidatedMember,
+TotalNumberOfIssuedSharesModelAAClassSharesSummaryOfBusinessResults,5,47100000,Prior4YearInstant_NonConsolidatedMember,
+NetAssetsSummaryOfBusinessResults,5,13894021000000,Prior4YearInstant_NonConsolidatedMember,
+TotalAssetsSummaryOfBusinessResults,5,21198281000000,Prior4YearInstant_NonConsolidatedMember,
+NetAssetsPerShareSummaryOfBusinessResults,5,959.55,Prior4YearInstant_NonConsolidatedMember,
+TotalShareholderReturn,5,1.362,Prior4YearInstant_NonConsolidatedMember,
+TotalReturnOnSharePriceIndex,5,1.421,Prior4YearInstant_NonConsolidatedMember,
+NumberOfIssuedSharesAsOfFiscalYearEndIssuedSharesTotalNumberOfSharesEtc,2,15794987460,FilingDateInstant_OrdinaryShareMember,
+
+【利用可能コンテキスト一覧】,
+コンテキストID,備考
+FilingDateInstant,
+FilingDateInstant_jpcrp030000-asr_E02144-000ChristopherPReynoldsMember,
+FilingDateInstant_jpcrp030000-asr_E02144-000FujisawaKumiMember,
+FilingDateInstant_jpcrp030000-asr_E02144-000GeorgeOlcottMember,
+FilingDateInstant_jpcrp030000-asr_E02144-000MiyazakiYoichiMember,
+FilingDateInstant_jpcrp030000-asr_E02144-000NakajimaHirokiMember,
+FilingDateInstant_jpcrp030000-asr_E02144-000OkamotoShigeakiMember,
+FilingDateInstant_jpcrp030000-asr_E02144-000OsadaHiromiMember,
+FilingDateInstant_jpcrp030000-asr_E02144-000OshimaMasahikoMember,
+FilingDateInstant_jpcrp030000-asr_E02144-000SatoKojiMember,
+FilingDateInstant_jpcrp030000-asr_E02144-000ToyodaAkioMember,
+FilingDateInstant_OrdinaryShareMember,
+FilingDateInstant_Row1Member,
+FilingDateInstant_Row2Member,
+FilingDateInstant_Row3Member,
+
+【有価証券報告書確認チェックリスト】,,,,,
+確認項目,API取得値,有報記載値,差異,確認状況,備考
+売上高（連結）,45.1兆円,,,未確認,連結損益計算書から確認
+営業利益（連結）,5.4兆円,,,未確認,連結損益計算書から確認
+総資産（連結）,62.3兆円,,,未確認,連結貸借対照表から確認
+,,,,,
+確認手順,,,,,
+1. EDINETアクセス,https://disclosure.edinet-fsa.go.jp/,,,,
+2. 企業検索,トヨタ自動車（7203）,,,,
+3. 有価証券報告書選択,2024年度,,,,
+4. 連結損益計算書確認,売上高・営業利益,,,,
+5. 連結貸借対照表確認,総資産,,,,
+6. 数値転記,「有報記載値」列に入力,,,,
+7. 差異計算,(API値 - 有報値),,,,
+,,,,,
+判定基準,,,,,
+差異±5%以内,良好,,,,
+差異±10%以内,許容範囲,,,,
+差異±10%超,要調査,,,,

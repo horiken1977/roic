@@ -1,0 +1,1159 @@
+{
+  "テスト日時": "2025-07-07T00:54:32.501Z",
+  "テスト対象": "トヨタ自動車（E02144）2024年3月期",
+  "再設計版API": true,
+  "結果": {
+    "通常モード（データ取得）": {
+      "success": true,
+      "data": {
+        "edinetCode": "E02144",
+        "fiscalYear": 2024,
+        "companyName": "企業 E02144",
+        "netSales": 48036704000000,
+        "operatingIncome": 4795586000000,
+        "totalAssets": 93601350000000,
+        "cashAndEquivalents": -134089000000,
+        "shareholdersEquity": 0.136,
+        "interestBearingDebt": 9416031000000,
+        "taxRate": 0.3,
+        "dataSource": "edinet_xbrl_real",
+        "lastUpdated": "2025-07-07T00:54:19.671Z"
+      },
+      "improvements": {
+        "totalAssetsImprovement": "50.32",
+        "newROIC": 5.1234154208245934,
+        "accuracyVsExpected": "3.87"
+      }
+    },
+    "デバッグモード（構造解析）": {
+      "success": true,
+      "debug": {
+        "edinetCode": "E02144",
+        "fiscalYear": 2024,
+        "xbrlStructure": {
+          "rootElements": [
+            "xbrl"
+          ],
+          "xbrlChildCount": 577,
+          "firstFewElements": [
+            "xmlns:iso4217",
+            "xmlns:jpcrp030000-asr_E02144-000",
+            "xmlns:jpcrp_cor",
+            "xmlns:jpdei_cor",
+            "xmlns:jpigp_cor",
+            "xmlns:jppfs_cor",
+            "xmlns:link",
+            "xmlns:xbrldi",
+            "xmlns:xbrli",
+            "xmlns:xlink",
+            "xmlns:xsi",
+            "schemaRef",
+            "roleRef",
+            "context",
+            "unit",
+            "NumberOfSubmissionDEI",
+            "OperatingRevenuesIFRSKeyFinancialData",
+            "ProfitLossBeforeTaxIFRSSummaryOfBusinessResults",
+            "ProfitLossAttributableToOwnersOfParentIFRSSummaryOfBusinessResults",
+            "ComprehensiveIncomeAttributableToOwnersOfParentIFRSSummaryOfBusinessResults"
+          ]
+        },
+        "contexts": {
+          "total": 278,
+          "currentPeriodContextId": "CurrentYearDuration",
+          "availableContextIds": [
+            "FilingDateInstant",
+            "FilingDateInstant_jpcrp030000-asr_E02144-000ChristopherPReynoldsMember",
+            "FilingDateInstant_jpcrp030000-asr_E02144-000FujisawaKumiMember",
+            "FilingDateInstant_jpcrp030000-asr_E02144-000GeorgeOlcottMember",
+            "FilingDateInstant_jpcrp030000-asr_E02144-000MiyazakiYoichiMember",
+            "FilingDateInstant_jpcrp030000-asr_E02144-000NakajimaHirokiMember",
+            "FilingDateInstant_jpcrp030000-asr_E02144-000OkamotoShigeakiMember",
+            "FilingDateInstant_jpcrp030000-asr_E02144-000OsadaHiromiMember",
+            "FilingDateInstant_jpcrp030000-asr_E02144-000OshimaMasahikoMember",
+            "FilingDateInstant_jpcrp030000-asr_E02144-000SatoKojiMember",
+            "FilingDateInstant_jpcrp030000-asr_E02144-000ToyodaAkioMember",
+            "FilingDateInstant_OrdinaryShareMember",
+            "FilingDateInstant_Row1Member",
+            "FilingDateInstant_Row2Member",
+            "FilingDateInstant_Row3Member"
+          ],
+          "currentPeriodContext": {
+            "startDate": "2024-04-01",
+            "endDate": "2025-03-31"
+          }
+        },
+        "facts": {
+          "total": 561,
+          "salesRelated": [
+            {
+              "key": "OperatingRevenuesIFRSKeyFinancialData",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearDuration"
+                ],
+                [
+                  "Prior3YearDuration"
+                ],
+                [
+                  "Prior2YearDuration"
+                ]
+              ],
+              "sampleValue": "27214594000000"
+            },
+            {
+              "key": "CashFlowsFromUsedInOperatingActivitiesIFRSSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearDuration"
+                ],
+                [
+                  "Prior3YearDuration"
+                ],
+                [
+                  "Prior2YearDuration"
+                ]
+              ],
+              "sampleValue": "2727162000000"
+            },
+            {
+              "key": "NetSalesSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearDuration_NonConsolidatedMember"
+                ],
+                [
+                  "Prior3YearDuration_NonConsolidatedMember"
+                ],
+                [
+                  "Prior2YearDuration_NonConsolidatedMember"
+                ]
+              ],
+              "sampleValue": "11761405000000"
+            },
+            {
+              "key": "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+              "count": 4,
+              "contexts": [
+                [
+                  "Prior1YearInstant"
+                ],
+                [
+                  "CurrentYearInstant"
+                ],
+                [
+                  "Prior1YearInstant"
+                ]
+              ],
+              "sampleValue": "7523911000000"
+            },
+            {
+              "key": "SalesOfProductsIFRS",
+              "count": 2,
+              "contexts": [
+                [
+                  "Prior1YearDuration"
+                ],
+                [
+                  "CurrentYearDuration"
+                ]
+              ],
+              "sampleValue": "41648130000000"
+            },
+            {
+              "key": "TotalNetRevenuesIFRS",
+              "count": 2,
+              "contexts": [
+                [
+                  "Prior1YearDuration"
+                ],
+                [
+                  "CurrentYearDuration"
+                ]
+              ],
+              "sampleValue": "45095325000000"
+            },
+            {
+              "key": "CostOfSalesIFRS",
+              "count": 2,
+              "contexts": [
+                [
+                  "Prior1YearDuration"
+                ],
+                [
+                  "CurrentYearDuration"
+                ]
+              ],
+              "sampleValue": "33600612000000"
+            },
+            {
+              "key": "OperatingProfitLossIFRS",
+              "count": 12,
+              "contexts": [
+                [
+                  "Prior1YearDuration"
+                ],
+                [
+                  "CurrentYearDuration"
+                ],
+                [
+                  "Prior1YearDuration_jpcrp030000-asr_E02144-000AutomotiveReportableSegmentMember"
+                ]
+              ],
+              "sampleValue": "5352934000000"
+            },
+            {
+              "key": "ChangesInOperatingAssetsAndLiabilitiesAndOtherOpeCFIFRS",
+              "count": 2,
+              "contexts": [
+                [
+                  "Prior1YearDuration"
+                ],
+                [
+                  "CurrentYearDuration"
+                ]
+              ],
+              "sampleValue": "-3975836000000"
+            },
+            {
+              "key": "NetCashProvidedByUsedInOperatingActivitiesIFRS",
+              "count": 2,
+              "contexts": [
+                [
+                  "Prior1YearDuration"
+                ],
+                [
+                  "CurrentYearDuration"
+                ]
+              ],
+              "sampleValue": "4206373000000"
+            }
+          ],
+          "profitRelated": [
+            {
+              "key": "OperatingRevenuesIFRSKeyFinancialData",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearDuration"
+                ],
+                [
+                  "Prior3YearDuration"
+                ],
+                [
+                  "Prior2YearDuration"
+                ]
+              ],
+              "sampleValue": "27214594000000"
+            },
+            {
+              "key": "ProfitLossBeforeTaxIFRSSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearDuration"
+                ],
+                [
+                  "Prior3YearDuration"
+                ],
+                [
+                  "Prior2YearDuration"
+                ]
+              ],
+              "sampleValue": "2932354000000"
+            },
+            {
+              "key": "ProfitLossAttributableToOwnersOfParentIFRSSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearDuration"
+                ],
+                [
+                  "Prior3YearDuration"
+                ],
+                [
+                  "Prior2YearDuration"
+                ]
+              ],
+              "sampleValue": "2245261000000"
+            },
+            {
+              "key": "ComprehensiveIncomeAttributableToOwnersOfParentIFRSSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearDuration"
+                ],
+                [
+                  "Prior3YearDuration"
+                ],
+                [
+                  "Prior2YearDuration"
+                ]
+              ],
+              "sampleValue": "3217806000000"
+            },
+            {
+              "key": "CashFlowsFromUsedInOperatingActivitiesIFRSSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearDuration"
+                ],
+                [
+                  "Prior3YearDuration"
+                ],
+                [
+                  "Prior2YearDuration"
+                ]
+              ],
+              "sampleValue": "2727162000000"
+            },
+            {
+              "key": "OrdinaryIncomeLossSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearDuration_NonConsolidatedMember"
+                ],
+                [
+                  "Prior3YearDuration_NonConsolidatedMember"
+                ],
+                [
+                  "Prior2YearDuration_NonConsolidatedMember"
+                ]
+              ],
+              "sampleValue": "1886691000000"
+            },
+            {
+              "key": "NetIncomeLossSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearDuration_NonConsolidatedMember"
+                ],
+                [
+                  "Prior3YearDuration_NonConsolidatedMember"
+                ],
+                [
+                  "Prior2YearDuration_NonConsolidatedMember"
+                ]
+              ],
+              "sampleValue": "1638057000000"
+            },
+            {
+              "key": "IncomeTaxesReceivableCAIFRS",
+              "count": 2,
+              "contexts": [
+                [
+                  "Prior1YearInstant"
+                ],
+                [
+                  "CurrentYearInstant"
+                ]
+              ],
+              "sampleValue": "116886000000"
+            },
+            {
+              "key": "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+              "count": 4,
+              "contexts": [
+                [
+                  "Prior1YearInstant"
+                ],
+                [
+                  "CurrentYearInstant"
+                ],
+                [
+                  "Prior1YearInstant"
+                ]
+              ],
+              "sampleValue": "7523911000000"
+            },
+            {
+              "key": "IncomeTaxesPayableCLIFRS",
+              "count": 2,
+              "contexts": [
+                [
+                  "Prior1YearInstant"
+                ],
+                [
+                  "CurrentYearInstant"
+                ]
+              ],
+              "sampleValue": "1224542000000"
+            }
+          ],
+          "assetRelated": [
+            {
+              "key": "TotalAssetsIFRSSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearInstant"
+                ],
+                [
+                  "Prior3YearInstant"
+                ],
+                [
+                  "Prior2YearInstant"
+                ]
+              ],
+              "sampleValue": "62267140000000"
+            },
+            {
+              "key": "RatioOfOwnersEquityToGrossAssetsIFRSSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearInstant"
+                ],
+                [
+                  "Prior3YearInstant"
+                ],
+                [
+                  "Prior2YearInstant"
+                ]
+              ],
+              "sampleValue": "0.376"
+            },
+            {
+              "key": "TotalNumberOfIssuedSharesSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior3YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior2YearInstant_NonConsolidatedMember"
+                ]
+              ],
+              "sampleValue": "3262997000"
+            },
+            {
+              "key": "TotalNumberOfIssuedSharesModelAAClassSharesSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior3YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior2YearInstant_NonConsolidatedMember"
+                ]
+              ],
+              "sampleValue": "47100000"
+            },
+            {
+              "key": "NetAssetsSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior3YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior2YearInstant_NonConsolidatedMember"
+                ]
+              ],
+              "sampleValue": "13894021000000"
+            },
+            {
+              "key": "TotalAssetsSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior3YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior2YearInstant_NonConsolidatedMember"
+                ]
+              ],
+              "sampleValue": "21198281000000"
+            },
+            {
+              "key": "NetAssetsPerShareSummaryOfBusinessResults",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior3YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior2YearInstant_NonConsolidatedMember"
+                ]
+              ],
+              "sampleValue": "959.55"
+            },
+            {
+              "key": "TotalShareholderReturn",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior3YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior2YearInstant_NonConsolidatedMember"
+                ]
+              ],
+              "sampleValue": "1.362"
+            },
+            {
+              "key": "TotalReturnOnSharePriceIndex",
+              "count": 5,
+              "contexts": [
+                [
+                  "Prior4YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior3YearInstant_NonConsolidatedMember"
+                ],
+                [
+                  "Prior2YearInstant_NonConsolidatedMember"
+                ]
+              ],
+              "sampleValue": "1.421"
+            },
+            {
+              "key": "NumberOfIssuedSharesAsOfFiscalYearEndIssuedSharesTotalNumberOfSharesEtc",
+              "count": 2,
+              "contexts": [
+                [
+                  "FilingDateInstant_OrdinaryShareMember"
+                ],
+                [
+                  "FilingDateInstant"
+                ]
+              ],
+              "sampleValue": "15794987460"
+            }
+          ]
+        },
+        "extractionTest": {
+          "netSales": {
+            "targetContext": "CurrentYearDuration",
+            "searchKeys": [
+              "OperatingRevenuesIFRSKeyFinancialData",
+              "RevenueIFRS",
+              "NetSales"
+            ],
+            "matches": [],
+            "allAvailableContexts": [
+              [
+                "Prior4YearDuration"
+              ],
+              [
+                "Prior3YearDuration"
+              ],
+              [
+                "Prior2YearDuration"
+              ],
+              [
+                "Prior1YearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "Prior1YearDuration_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember"
+              ],
+              [
+                "Prior4YearDuration_NonConsolidatedMember"
+              ],
+              [
+                "Prior3YearDuration_NonConsolidatedMember"
+              ],
+              [
+                "Prior2YearDuration_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearDuration_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember"
+              ]
+            ]
+          },
+          "operatingIncome": {
+            "targetContext": "CurrentYearDuration",
+            "searchKeys": [
+              "ProfitLossFromOperatingActivitiesIFRS",
+              "OperatingIncomeIFRS",
+              "ProfitLossBeforeTaxIFRSSummaryOfBusinessResults"
+            ],
+            "matches": [],
+            "allAvailableContexts": [
+              [
+                "Prior4YearDuration"
+              ],
+              [
+                "Prior3YearDuration"
+              ],
+              [
+                "Prior2YearDuration"
+              ],
+              [
+                "Prior1YearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ]
+            ]
+          },
+          "totalAssets": {
+            "targetContext": "CurrentYearDuration",
+            "searchKeys": [
+              "TotalAssetsIFRSSummaryOfBusinessResults",
+              "AssetsIFRS",
+              "Assets"
+            ],
+            "matches": [],
+            "allAvailableContexts": [
+              [
+                "Prior4YearInstant"
+              ],
+              [
+                "Prior3YearInstant"
+              ],
+              [
+                "Prior2YearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant_jpcrp030000-asr_E02144-000AutomotiveReportableSegmentMember"
+              ],
+              [
+                "Prior1YearInstant_jpcrp030000-asr_E02144-000FinancialServicesReportableSegmentMember"
+              ],
+              [
+                "Prior1YearInstant_OtherReportableSegmentsMember"
+              ],
+              [
+                "Prior1YearInstant_jpcrp030000-asr_E02144-000CorporateExpensesAndEliminationMember"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant_jpcrp030000-asr_E02144-000AutomotiveReportableSegmentMember"
+              ],
+              [
+                "CurrentYearInstant_jpcrp030000-asr_E02144-000FinancialServicesReportableSegmentMember"
+              ],
+              [
+                "CurrentYearInstant_OtherReportableSegmentsMember"
+              ],
+              [
+                "CurrentYearInstant_jpcrp030000-asr_E02144-000CorporateExpensesAndEliminationMember"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior4YearInstant"
+              ],
+              [
+                "Prior3YearInstant"
+              ],
+              [
+                "Prior2YearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior4YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior3YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior4YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior3YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior4YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior3YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "Prior1YearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "Prior1YearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "Prior1YearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "Prior1YearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "Prior1YearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "Prior1YearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant"
+              ],
+              [
+                "CurrentYearInstant"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_CapitalStockMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_LegalCapitalSurplusMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_OtherCapitalSurplusMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_CapitalSurplusMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_LegalRetainedEarningsMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_ReserveForSpecialDepreciationMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_ReserveForAdvancedDepreciationOfNoncurrentAssetsMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_GeneralReserveMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_CapitalStockMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_LegalCapitalSurplusMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_OtherCapitalSurplusMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_CapitalSurplusMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_LegalRetainedEarningsMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_ReserveForSpecialDepreciationMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_ReserveForAdvancedDepreciationOfNoncurrentAssetsMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_GeneralReserveMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_RetainedEarningsBroughtForwardMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_RetainedEarningsMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_TreasuryStockMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_ShareholdersEquityMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_ValuationDifferenceOnAvailableForSaleSecuritiesMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember_ValuationAndTranslationAdjustmentsMember"
+              ],
+              [
+                "Prior2YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_RetainedEarningsBroughtForwardMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_RetainedEarningsMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_TreasuryStockMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_ShareholdersEquityMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_ValuationDifferenceOnAvailableForSaleSecuritiesMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_ValuationAndTranslationAdjustmentsMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_CapitalStockMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_LegalCapitalSurplusMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_OtherCapitalSurplusMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_CapitalSurplusMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_LegalRetainedEarningsMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_ReserveForSpecialDepreciationMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_ReserveForAdvancedDepreciationOfNoncurrentAssetsMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_GeneralReserveMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_CapitalStockMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_LegalCapitalSurplusMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_OtherCapitalSurplusMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_CapitalSurplusMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_LegalRetainedEarningsMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_ReserveForSpecialDepreciationMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_ReserveForAdvancedDepreciationOfNoncurrentAssetsMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_GeneralReserveMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_RetainedEarningsBroughtForwardMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_RetainedEarningsMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_TreasuryStockMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_ShareholdersEquityMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_ValuationDifferenceOnAvailableForSaleSecuritiesMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember_ValuationAndTranslationAdjustmentsMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_RetainedEarningsBroughtForwardMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_RetainedEarningsMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_TreasuryStockMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_ShareholdersEquityMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_ValuationDifferenceOnAvailableForSaleSecuritiesMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember_ValuationAndTranslationAdjustmentsMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "Prior1YearDuration_NonConsolidatedMember_ReserveForAdvancedDepreciationOfNoncurrentAssetsMember"
+              ],
+              [
+                "Prior1YearDuration_NonConsolidatedMember_RetainedEarningsBroughtForwardMember"
+              ],
+              [
+                "Prior1YearDuration_NonConsolidatedMember_RetainedEarningsMember"
+              ],
+              [
+                "Prior1YearDuration_NonConsolidatedMember_ShareholdersEquityMember"
+              ],
+              [
+                "Prior1YearDuration_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember_ReserveForAdvancedDepreciationOfNoncurrentAssetsMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember_RetainedEarningsBroughtForwardMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember_RetainedEarningsMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember_ShareholdersEquityMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember_ReserveForAdvancedDepreciationOfNoncurrentAssetsMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember_RetainedEarningsBroughtForwardMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember_RetainedEarningsMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember_ShareholdersEquityMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "CurrentYearDuration"
+              ],
+              [
+                "CurrentYearInstant_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearDuration_NonConsolidatedMember"
+              ],
+              [
+                "CurrentYearDuration"
+              ]
+            ]
+          }
+        }
+      }
+    }
+  },
+  "成功率": "2/2",
+  "主要改善": {
+    "totalAssetsImprovement": "50.32",
+    "newROIC": 5.1234154208245934,
+    "accuracyVsExpected": "3.87"
+  }
+}

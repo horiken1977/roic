@@ -1,0 +1,61 @@
+{
+  "timestamp": "2025-07-08T06:54:34.135Z",
+  "company": "E02144 (トヨタ自動車)",
+  "fiscal_year": "2023",
+  "analysis_type": "debt_structure_identification",
+  "expected_structure": {
+    "automotive": {
+      "短期借入金": 1200000000000,
+      "長期借入金": 3500000000000,
+      "社債": 2000000000000,
+      "小計": 6700000000000
+    },
+    "financial_services": {
+      "金融事業短期借入金": 8000000000000,
+      "金融事業長期借入金": 20000000000000,
+      "金融事業社債": 4000000000000,
+      "小計": 32000000000000
+    },
+    "total": 38700000000000
+  },
+  "current_extraction": {
+    "短期借入金": 579216000000,
+    "長期借入金": 296000000000,
+    "社債": 1011950000000,
+    "合計": 1887166000000
+  },
+  "correct_elements": {
+    "consolidated": [
+      "BorrowingsIFRS",
+      "ConsolidatedBorrowings",
+      "TotalBorrowings",
+      "InterestBearingLiabilitiesIFRS",
+      "FinancialLiabilitiesIFRS"
+    ],
+    "financial_segment": [
+      "FinancialServicesBorrowings",
+      "FinancialServicesDebt",
+      "CustomerFinancingLiabilities",
+      "DealerFinancingPayable",
+      "VehicleFinancingLiabilities"
+    ],
+    "segment_disclosure": [
+      "SegmentBorrowings",
+      "FinancialServicesSegmentLiabilities",
+      "AutomotiveSegmentBorrowings",
+      "ConsolidatedFinancialPosition"
+    ]
+  },
+  "gap_analysis": {
+    "missing_amount": 36905713000000,
+    "missing_percentage": 95.1,
+    "primary_cause": "金融事業セグメントの有利子負債未取得",
+    "solution": "連結ベース要素とセグメント情報の組み合わせ"
+  },
+  "next_steps": [
+    "連結ベースXBRL要素の直接検索",
+    "セグメント情報からの金融事業負債抽出",
+    "改善されたAPIロジックの実装",
+    "Vercel本番環境での動作確認"
+  ]
+}

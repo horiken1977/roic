@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-07-08T06:42:39.249Z",
+  "improvements": {
+    "keywords_added": 47,
+    "categories": [
+      "basic",
+      "ifrs",
+      "automotive",
+      "detailed",
+      "lease",
+      "consolidated"
+    ],
+    "expected_improvement": "95.1% → 10%以下（目標）",
+    "vercel_ready": true
+  },
+  "next_steps": [
+    "改善版APIでテスト実行",
+    "Vercel本番環境での動作確認",
+    "精度検証と最終調整"
+  ]
+}
