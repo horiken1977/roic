@@ -1,0 +1,134 @@
+[
+  {
+    "element": "ProceedsFromLongTermDebtFinCFIFRS",
+    "amount": 9276918000000,
+    "context": "CurrentYearDuration",
+    "amountTrillion": "9.3"
+  },
+  {
+    "element": "ProceedsFromLongTermDebtFinCFIFRS",
+    "amount": 8122678000000,
+    "context": "Prior1YearDuration",
+    "amountTrillion": "8.1"
+  },
+  {
+    "element": "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+    "amount": 6781229000000,
+    "context": "Prior1YearInstant",
+    "amountTrillion": "6.8"
+  },
+  {
+    "element": "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+    "amount": 6781229000000,
+    "context": "Prior1YearInstant",
+    "amountTrillion": "6.8"
+  },
+  {
+    "element": "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+    "amount": 6774427000000,
+    "context": "CurrentYearInstant",
+    "amountTrillion": "6.8"
+  },
+  {
+    "element": "VehiclesAndEquipmentOnOperatingLeasesAcquisitionCostIFRS",
+    "amount": 6774427000000,
+    "context": "CurrentYearInstant",
+    "amountTrillion": "6.8"
+  },
+  {
+    "element": "TradeAndOtherPayablesCLIFRS",
+    "amount": 4986309000000,
+    "context": "CurrentYearInstant",
+    "amountTrillion": "5.0"
+  },
+  {
+    "element": "TradeAndOtherPayablesCLIFRS",
+    "amount": 4292092000000,
+    "context": "Prior1YearInstant",
+    "amountTrillion": "4.3"
+  },
+  {
+    "element": "ProceedsUponMaturityOfPublicAndCorporateBondsInvCFIFRS",
+    "amount": 1920116000000,
+    "context": "Prior1YearDuration",
+    "amountTrillion": "1.9"
+  },
+  {
+    "element": "ShortTermLoansReceivable",
+    "amount": 1905695000000,
+    "context": "CurrentYearInstant_NonConsolidatedMember",
+    "amountTrillion": "1.9"
+  },
+  {
+    "element": "ProceedsFromSaleOfEquipmentLeasedToOthersInvCFIFRS",
+    "amount": 1659161000000,
+    "context": "CurrentYearDuration",
+    "amountTrillion": "1.7"
+  },
+  {
+    "element": "ProceedsFromSaleOfEquipmentLeasedToOthersInvCFIFRS",
+    "amount": 1542132000000,
+    "context": "Prior1YearDuration",
+    "amountTrillion": "1.5"
+  },
+  {
+    "element": "AccountsPayableTrade",
+    "amount": 1264905000000,
+    "context": "CurrentYearInstant_NonConsolidatedMember",
+    "amountTrillion": "1.3"
+  },
+  {
+    "element": "ShortTermLoansReceivable",
+    "amount": 1220787000000,
+    "context": "Prior1YearInstant_NonConsolidatedMember",
+    "amountTrillion": "1.2"
+  },
+  {
+    "element": "RetirementBenefitLiabilityNCLIFRS",
+    "amount": 1065508000000,
+    "context": "CurrentYearInstant",
+    "amountTrillion": "1.1"
+  },
+  {
+    "element": "RetirementBenefitLiabilityNCLIFRS",
+    "amount": 1022749000000,
+    "context": "Prior1YearInstant",
+    "amountTrillion": "1.0"
+  },
+  {
+    "element": "BondsPayable",
+    "amount": 1011950000000,
+    "context": "Prior1YearInstant_NonConsolidatedMember",
+    "amountTrillion": "1.0"
+  },
+  {
+    "element": "AccountsPayableTrade",
+    "amount": 944991000000,
+    "context": "Prior1YearInstant_NonConsolidatedMember",
+    "amountTrillion": "0.9"
+  },
+  {
+    "element": "ProceedsUponMaturityOfPublicAndCorporateBondsInvCFIFRS",
+    "amount": 939747000000,
+    "context": "CurrentYearDuration",
+    "amountTrillion": "0.9"
+  },
+  {
+    "element": "BondsPayable",
+    "amount": 840590000000,
+    "context": "CurrentYearInstant_NonConsolidatedMember",
+    "amountTrillion": "0.8"
+  },
+  {
+    "element": "IncomeTaxesPayableCLIFRS",
+    "amount": 826815000000,
+    "context": "Prior1YearInstant",
+    "amountTrillion": "0.8"
+  },
+  {
+    "element": "IncreaseDecreaseInTradeAndOtherPayablesOpeCFIFRS",
+    "amount": 712400000000,
+    "context": "CurrentYearDuration",
+    "amountTrillion": "0.7"
+  }
+]

@@ -60,25 +60,73 @@ class AutoDialogueRecorder {
         second: '2-digit'
       });
       
+      console.log(`\n${'='.repeat(60)}`);
       console.log(`📝 Recording checkpoint: ${type} at ${japaneseTime}`);
+      console.log(`${'='.repeat(60)}`);
       
       // 現在の状況を収集
+      console.log('🔍 Collecting current status...');
       const currentStatus = this.collectCurrentStatus();
       
+      // 状況サマリーをログ出力
+      this.logStatusSummary(currentStatus);
+      
       // 記録内容を生成
+      console.log('📄 Generating record content...');
       const recordContent = this.generateRecordContent(type, japaneseTime, currentStatus);
       
       // CLAUDE.mdに追記
+      console.log('💾 Saving to CLAUDE.md...');
       this.appendToClaude(recordContent);
       
       // 最終記録時刻を保存
       fs.writeFileSync(this.lastRecordFile, timestamp);
       
       console.log('✅ Checkpoint recorded successfully');
+      console.log(`📁 File: ${this.claudeFilePath}`);
+      console.log(`⏰ Next recording: ${new Date(Date.now() + this.interval).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}`);
+      console.log(`${'='.repeat(60)}\n`);
       
     } catch (error) {
       console.error('❌ Failed to record checkpoint:', error.message);
+      console.error('Stack trace:', error.stack);
     }
+  }
+
+  /**
+   * 状況サマリーをログ出力
+   */
+  logStatusSummary(status) {
+    console.log('📊 Status Summary:');
+    console.log(`   ├─ Working Directory: ${path.basename(status.workingDirectory)}`);
+    console.log(`   ├─ Uptime: ${Math.floor(status.systemInfo.uptime / 60)}分`);
+    console.log(`   ├─ Node.js: ${status.systemInfo.nodeVersion}`);
+    
+    // Git状況
+    if (status.gitStatus && status.gitStatus !== 'No git repo') {
+      const gitLines = status.gitStatus.split('\n').filter(line => line.trim());
+      if (gitLines.length === 0) {
+        console.log(`   ├─ Git: Clean (no changes)`);
+      } else {
+        console.log(`   ├─ Git: ${gitLines.length} changes`);
+      }
+    } else {
+      console.log(`   ├─ Git: No repo or error`);
+    }
+    
+    // ファイル数
+    console.log(`   ├─ Recent Files: ${status.recentFiles.length} found`);
+    
+    // テスト結果
+    if (status.testResults && status.testResults.unit) {
+      console.log(`   ├─ Tests: ${status.testResults.unit.passed}/${status.testResults.unit.total} passed`);
+      console.log(`   ├─ Coverage: ${status.testResults.unit.coverage}%`);
+    } else {
+      console.log(`   ├─ Tests: No results available`);
+    }
+    
+    // プロセス数
+    console.log(`   └─ Processes: ${status.runningProcesses.length} Node.js processes`);
   }
 
   /**
@@ -254,7 +302,9 @@ class AutoDialogueRecorder {
    * 手動記録トリガー
    */
   manualRecord(note = '') {
+    console.log(`\n${'='.repeat(60)}`);
     console.log('📝 Manual recording triggered');
+    console.log(`${'='.repeat(60)}`);
     
     const currentStatus = this.collectCurrentStatus();
     const japaneseTime = new Date().toLocaleString('ja-JP', {
@@ -267,17 +317,25 @@ class AutoDialogueRecorder {
       second: '2-digit'
     });
     
+    // 状況サマリーをログ出力
+    this.logStatusSummary(currentStatus);
+    
+    console.log('📄 Generating manual record content...');
     let content = `\n## 📝 手動記録 - ${japaneseTime}\n\n`;
     
     if (note) {
       content += `### 💭 メモ\n${note}\n\n`;
+      console.log(`💭 Note: ${note}`);
     }
     
     content += this.generateRecordContent('periodic', japaneseTime, currentStatus);
     
+    console.log('💾 Saving manual record to CLAUDE.md...');
     this.appendToClaude(content);
     
     console.log('✅ Manual record completed');
+    console.log(`📁 File: ${this.claudeFilePath}`);
+    console.log(`${'='.repeat(60)}\n`);
   }
 }
 

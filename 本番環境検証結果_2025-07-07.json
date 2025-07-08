@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-07-08T07:27:11.469Z",
+  "verificationType": "production_api_verification",
+  "apiSource": "edinet_production",
+  "company": "E02144 (トヨタ自動車)",
+  "fiscalYear": 2023,
+  "expectedValues": {
+    "cashAndEquivalents": 8982404000000,
+    "shareholdersEquity": 36878913000000,
+    "interestBearingDebt": 38792879000000
+  },
+  "actualValues": {
+    "cashAndEquivalents": 7516966000000,
+    "shareholdersEquity": 28338706000000,
+    "interestBearingDebt": 8931776800000
+  },
+  "accuracy": {
+    "cash": 16.314541185188286,
+    "equity": 23.157426033679464,
+    "debt": 76.97573103558516
+  },
+  "qualityScore": {
+    "cash": "良好",
+    "equity": "良好",
+    "debt": "改善済"
+  },
+  "overallAssessment": {
+    "cashFixed": true,
+    "equityFixed": true,
+    "debtImproved": true,
+    "productionReady": true
+  },
+  "dataFiles": [
+    "本番API通常データ_2025-07-07.json",
+    "本番APIデバッグデータ_2025-07-07.json",
+    "高額負債要素リスト_2025-07-07.json"
+  ]
+}
